@@ -1,0 +1,300 @@
+package GUI_Dialog;
+
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.sql.Date;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
+import javax.swing.JComboBox;
+
+public class HoaDonInsert extends JDialog {
+
+	private static final long serialVersionUID = 1L;
+	private JButton btnThem;
+	private JButton btnXacNhan;
+	
+	int mouseX, mouseY;
+	private JButton btnHuy;
+	private JTextField txtMaHD;
+	private JTextField txtNgayLap;
+	private JTextField txtTongTien;
+	private JTextField txtMaHD_CTHD;
+	private JTextField txtDonGia;
+	private JTextField txtSoLuong;
+	private JTextField txtThanhTien;
+	
+
+	public HoaDonInsert() {
+		init();
+		addListener();
+		setVisible(true);
+		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+	}
+	
+	private void addListener() {
+		btnXacNhan.addActionListener(e -> {
+			dispose();
+		});
+		btnThem.addActionListener(e -> {
+			dispose();
+		});
+		btnHuy.addActionListener(e ->{
+			dispose();
+		});
+		
+		addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent evt) {
+				mouseX = evt.getX();
+				mouseY = evt.getY();
+			}
+		});
+		
+		addMouseMotionListener(new MouseMotionAdapter() {
+			public void mouseDragged(MouseEvent evt) {
+				int newX = getLocation().x + evt.getX() - mouseX;
+				int newY = getLocation().y + evt.getY() - mouseY;
+				
+				setLocation(newX, newY);
+			}
+		});
+	}
+	
+	
+	private void init() {
+		setBounds(100, 100, 700, 500);
+		setLocationRelativeTo(null);
+		getContentPane().setLayout(new BorderLayout(0, 10));
+		setResizable(false);
+//		setUndecorated(true);
+
+//		============================= CENTER =============================
+		JPanel pnCenter = new JPanel();
+		pnCenter.setBorder(BorderFactory.createLineBorder(Color.black, 2));
+		pnCenter.setLayout(new BorderLayout());
+		getContentPane().add(pnCenter, BorderLayout.CENTER);
+		
+		// ============================= CENTER =============================
+		JPanel pnthongTin = new JPanel();
+		pnthongTin.setLayout(new GridLayout(1,2));
+		pnCenter.add(pnthongTin, BorderLayout.CENTER);
+		
+		JPanel pnThongTinLeft = new JPanel();
+		pnthongTin.add(pnThongTinLeft);
+		pnThongTinLeft.setLayout(null);
+		
+		JLabel lblHoaDon = new JLabel("Hóa đơn");
+		lblHoaDon.setHorizontalAlignment(SwingConstants.CENTER);
+		lblHoaDon.setFont(new Font("Tahoma", Font.BOLD, 20));
+		lblHoaDon.setBounds(116, 10, 120 , 30);
+		pnThongTinLeft.add(lblHoaDon);
+		
+		JLabel lblMaHD = new JLabel("Mã hóa đơn");
+		lblMaHD.setFont(new Font("Tahoma", Font.BOLD, 15));
+		lblMaHD.setBounds(60, 50, 120, 20);
+		pnThongTinLeft.add(lblMaHD);
+		
+		txtMaHD = new JTextField();
+		txtMaHD.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		txtMaHD.setBounds(190, 50, 100, 20);
+		pnThongTinLeft.add(txtMaHD);
+		txtMaHD.setColumns(10);
+		
+		JLabel lblMaKH = new JLabel("Mã khách hàng");
+		lblMaKH.setFont(new Font("Tahoma", Font.BOLD, 15));
+		lblMaKH.setBounds(60, 80, 120, 20);
+		pnThongTinLeft.add(lblMaKH);
+		
+		JLabel lblMaNV = new JLabel("Mã nhân viên");
+		lblMaNV.setFont(new Font("Tahoma", Font.BOLD, 15));
+		lblMaNV.setBounds(60, 110, 120, 20);
+		pnThongTinLeft.add(lblMaNV);
+		
+		JLabel lblMaKM = new JLabel("Mã khuyến mãi");
+		lblMaKM.setFont(new Font("Tahoma", Font.BOLD, 15));
+		lblMaKM.setBounds(60, 140, 120, 20);
+		pnThongTinLeft.add(lblMaKM);
+		
+		JLabel lblNgayLap = new JLabel("Ngày lập");
+		lblNgayLap.setFont(new Font("Tahoma", Font.BOLD, 15));
+		lblNgayLap.setBounds(60, 170, 120, 20);
+		pnThongTinLeft.add(lblNgayLap);
+		
+		JLabel lblTongTien = new JLabel("Tổng tiền");
+		lblTongTien.setFont(new Font("Tahoma", Font.BOLD, 15));
+		lblTongTien.setBounds(60, 200, 120, 20);
+		pnThongTinLeft.add(lblTongTien);
+		
+		JComboBox cbBoxMaKH = new JComboBox();
+		cbBoxMaKH.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		cbBoxMaKH.setBounds(190, 80, 100, 20);
+		pnThongTinLeft.add(cbBoxMaKH);
+		
+		JComboBox cbBoxMaNV = new JComboBox();
+		cbBoxMaNV.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		cbBoxMaNV.setBounds(190, 110, 100, 20);
+		pnThongTinLeft.add(cbBoxMaNV);
+		
+		JComboBox cbBoxMaKM = new JComboBox();
+		cbBoxMaKM.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		cbBoxMaKM.setBounds(190, 140, 100, 20);
+		pnThongTinLeft.add(cbBoxMaKM);
+		
+		txtNgayLap = new JTextField();
+		txtNgayLap.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		txtNgayLap.setBounds(190, 170, 100, 20);
+		pnThongTinLeft.add(txtNgayLap);
+		txtNgayLap.setColumns(10);
+		
+		txtTongTien = new JTextField();
+		txtTongTien.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		txtTongTien.setBounds(190, 200, 100, 20);
+		pnThongTinLeft.add(txtTongTien);
+		txtTongTien.setColumns(10);
+		
+		JPanel pnThongTinRight = new JPanel();
+		pnthongTin.add(pnThongTinRight);
+		pnThongTinRight.setLayout(null);
+		
+		JLabel lblCTHD = new JLabel("Chi tiết hóa đơn");
+		lblCTHD.setHorizontalAlignment(SwingConstants.CENTER);
+		lblCTHD.setFont(new Font("Tahoma", Font.BOLD, 20));
+		lblCTHD.setBounds(70, 10, 200, 30);
+		pnThongTinRight.add(lblCTHD);
+		
+		JLabel lblMaHD_CTHD = new JLabel("Mã hóa đơn");
+		lblMaHD_CTHD.setFont(new Font("Tahoma", Font.BOLD, 15));
+		lblMaHD_CTHD.setBounds(60, 50, 120, 20);
+		pnThongTinRight.add(lblMaHD_CTHD);
+		
+		txtMaHD_CTHD = new JTextField();
+		txtMaHD_CTHD.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		txtMaHD_CTHD.setBounds(190, 50, 100, 20);
+		pnThongTinRight.add(txtMaHD_CTHD);
+		txtMaHD_CTHD.setColumns(10);
+		
+		JLabel lblMaSP = new JLabel("Mã sản phẩm");
+		lblMaSP.setFont(new Font("Tahoma", Font.BOLD, 15));
+		lblMaSP.setBounds(60, 80, 120, 20);
+		pnThongTinRight.add(lblMaSP);
+		
+		JComboBox comboBox = new JComboBox();
+		comboBox.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		comboBox.setBounds(190, 80, 100, 20);
+		pnThongTinRight.add(comboBox);
+		
+		JLabel lblMaKM_CTHD = new JLabel("Mã khuyến mãi");
+		lblMaKM_CTHD.setFont(new Font("Tahoma", Font.BOLD, 15));
+		lblMaKM_CTHD.setBounds(60, 110, 120, 20);
+		pnThongTinRight.add(lblMaKM_CTHD);
+		
+		JComboBox cbBoxMaKM_CTHD = new JComboBox();
+		cbBoxMaKM_CTHD.setBounds(190, 110, 100, 20);
+		pnThongTinRight.add(cbBoxMaKM_CTHD);
+		
+		JLabel lblDonGia = new JLabel("Đơn giá");
+		lblDonGia.setFont(new Font("Tahoma", Font.BOLD, 15));
+		lblDonGia.setBounds(60, 140, 120, 20);
+		pnThongTinRight.add(lblDonGia);
+		
+		txtDonGia = new JTextField();
+		txtDonGia.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		txtDonGia.setBounds(190, 140, 100, 20);
+		pnThongTinRight.add(txtDonGia);
+		txtDonGia.setColumns(10);
+		
+		JLabel lblSoLuong = new JLabel("Số lượng");
+		lblSoLuong.setFont(new Font("Tahoma", Font.BOLD, 15));
+		lblSoLuong.setBounds(60, 170, 120, 20);
+		pnThongTinRight.add(lblSoLuong);
+		
+		txtSoLuong = new JTextField();
+		txtSoLuong.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		txtSoLuong.setBounds(190, 170, 100, 20);
+		pnThongTinRight.add(txtSoLuong);
+		txtSoLuong.setColumns(10);
+		
+		JLabel lblThanhTien = new JLabel("Thành tiền");
+		lblThanhTien.setFont(new Font("Tahoma", Font.BOLD, 15));
+		lblThanhTien.setBounds(60, 200, 120, 20);
+		pnThongTinRight.add(lblThanhTien);
+		
+		txtThanhTien = new JTextField();
+		txtThanhTien.setBounds(190, 200, 100, 20);
+		pnThongTinRight.add(txtThanhTien);
+		txtThanhTien.setColumns(10);
+		
+		
+		// ============================= SOUTH =============================
+		DefaultTableModel dtmCTHD = new DefaultTableModel();
+		dtmCTHD.addColumn("Mã hóa đơn");
+		dtmCTHD.addColumn("Mã sản phẩm");
+		dtmCTHD.addColumn("Mã khuyến mãi");
+		dtmCTHD.addColumn("Đơn giá");
+		dtmCTHD.addColumn("Số lượng");
+		dtmCTHD.addColumn("Thành tiền");
+		
+		JTable tblCTHD = new JTable(dtmCTHD);
+		
+		JScrollPane scrPaneCTHD = new JScrollPane(tblCTHD);
+		scrPaneCTHD.setPreferredSize(new Dimension(0,150));
+		pnCenter.add(scrPaneCTHD, BorderLayout.SOUTH);
+		
+//		============================= BOTTOM =============================
+		JPanel pnBottom = new JPanel();
+		pnBottom.setBorder(BorderFactory.createLineBorder(Color.black, 2));
+		pnBottom.setPreferredSize(new Dimension(0,40));
+		pnBottom.setLayout(new FlowLayout(FlowLayout.RIGHT, 10, 5));
+		
+		getContentPane().add(pnBottom, BorderLayout.SOUTH);
+		
+		btnThem = new JButton("Thêm");
+		btnThem.setPreferredSize(new Dimension(150, 30));
+		btnThem.setFont(new Font("Tahoma", Font.BOLD, 20));
+		pnBottom.add(btnThem);
+		
+		btnXacNhan = new JButton("Xác nhận");
+		btnXacNhan.setPreferredSize(new Dimension(150, 30));
+		btnXacNhan.setFont(new Font("Tahoma", Font.BOLD, 20));
+		pnBottom.add(btnXacNhan);
+		
+		btnHuy = new JButton("Hủy");
+		btnHuy.setPreferredSize(new Dimension(150, 30));
+		btnHuy.setFont(new Font("Tahoma", Font.BOLD, 20));
+		pnBottom.add(btnHuy);
+	}
+	
+
+
+
+	public static void main(String[] args) {
+		try {
+			HoaDonInsert dialog = new HoaDonInsert();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+}
+
+

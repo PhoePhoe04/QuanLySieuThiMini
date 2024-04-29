@@ -14,6 +14,7 @@ import DTO.TaiKhoanDTO;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.UIManager;
 import javax.swing.JButton;
 import java.awt.Font;
 import java.sql.SQLException;
@@ -21,16 +22,13 @@ import java.awt.FlowLayout;
 
 public class DangNhap extends JFrame {
 	
-	private TaiKhoanDTO taiKhoan;
-	private TaiKhoanBUS taiKhoanBUS;
+
 	
 	private JPanel contentPane;
 	private JTextField txtTaiKhoan;
 	private JPasswordField pfPassword;
 	
 	public DangNhap() throws SQLException{
-		this.taiKhoanBUS = new TaiKhoanBUS();
-		this.taiKhoan = new TaiKhoanDTO();
 		this.init();
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
@@ -50,16 +48,6 @@ public class DangNhap extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JLabel lblTaiKhoan = new JLabel("Tài Khoản");
-		lblTaiKhoan.setFont(new Font("Tahoma", Font.BOLD, 15));
-		lblTaiKhoan.setBounds(300, 120, 100, 30);
-		contentPane.add(lblTaiKhoan);
-		
-		JLabel lblMatKhau = new JLabel("Mật khẩu");
-		lblMatKhau.setFont(new Font("Tahoma", Font.BOLD, 15));
-		lblMatKhau.setBounds(300, 180, 100, 30);
-		contentPane.add(lblMatKhau);
-		
 		txtTaiKhoan = new JTextField();
 		txtTaiKhoan.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		txtTaiKhoan.setBounds(400, 120, 250, 30);
@@ -75,13 +63,11 @@ public class DangNhap extends JFrame {
 		JButton btnDangNhap = new JButton("Đăng nhập");
 		btnDangNhap.setFont(new Font("Tahoma", Font.BOLD, 15));
 		btnDangNhap.setBounds(400, 230, 120, 50);
-		btnDangNhap.addActionListener( e -> { dangNhapListener(); });
 		contentPane.add(btnDangNhap);
 		
 		JButton btnThoat = new JButton("Thoát");
 		btnThoat.setFont(new Font("Tahoma", Font.BOLD, 15));
 		btnThoat.setBounds(570, 230, 80, 50);
-		btnThoat.addActionListener( e -> { thoatListener(); });
 		contentPane.add(btnThoat);
 		
 		JPanel panel = new JPanel();
@@ -96,42 +82,11 @@ public class DangNhap extends JFrame {
 		
 	}
 	
-//	 Các hàm xử lý ActionListener	
-	
-	private void thoatListener() {
-		try {
-			this.dispose();
-			System.exit(0);
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
-	}
-
-	private void dangNhapListener() {
-		this.taiKhoan.setTenDangNhap(this.txtTaiKhoan.getText());
-		this.taiKhoan.setMatKhau(this.pfPassword.getText());
-
-		try {
-			if(taiKhoanBUS.checkLogin(taiKhoan.getTenDangNhap(), taiKhoan.getMatKhau())) {
-				JOptionPane.showMessageDialog(this, "Đăng nhập thành công");
-				System.out.println("Đăng nhập thành công");
-				
-				
-			}
-			else {
-				JOptionPane.showMessageDialog(this, "Tài khoản hoặc mật khẩu không chính xác");
-				System.out.println("Tài khoản hoặc mật khẩu không chính xác");
-			}
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
 //	 Hàm main để test
 	
 	public static void main(String[] args) {
 		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			new DangNhap();
 		} catch (Exception e) {
 			// TODO: handle exception
