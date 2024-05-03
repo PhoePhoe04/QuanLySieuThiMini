@@ -45,6 +45,7 @@ public class HoaDonPanel extends JPanel {
 	private DefaultTableModel dtmHoaDon;
 	private DefaultTableModel dtmCTHD;
 	private ArrayList<HoaDonDTO> list_HD;
+	private ArrayList<ChiTietHoaDonDTO> list_CTHD;
 	private JButton btnXoa;
 	private JTable tblHoaDon;
 	private JTable tblCTHD;
@@ -54,48 +55,10 @@ public class HoaDonPanel extends JPanel {
 		init();
 		addActionListener();
 	}
-	
-	private void addActionListener() {
-		btnThem.addActionListener(e -> {
-			JDialog hoaDonInsert = new HoaDonInsert();
-		});
-		
-		btnXoa.addActionListener(e ->{
-			int selectedRow = tblHoaDon.getSelectedRow();
-	        if (selectedRow != -1) {
-	        	int option = JOptionPane.showConfirmDialog(this,
-	        			"Bạn có chắc muốn xóa hóa đơn này!",
-	        			"Xác nhận xóa hóa đơn",
-	        			JOptionPane.YES_NO_OPTION
-	        			);
-	        	if(option == JOptionPane.YES_OPTION) {
-	        		String maHD = (String) tblHoaDon.getValueAt(selectedRow, tblHoaDon.getColumn("Mã hóa đơn").getModelIndex());
-		            removeRowFromTblHoaDon(selectedRow);
-		            removeRowsFromTblCTHD(maHD);
-	        	}
-	        } else {
-	        	JOptionPane.showMessageDialog(this, 
-						"Bạn chưa chọn hóa đơn muốn xóa!"
-						);
-	        }
-	        
-		});
-		
-		tblHoaDon.getSelectionModel().addListSelectionListener(e -> {
-			if(!e.getValueIsAdjusting()) {
-				int selectedRow = tblHoaDon.getSelectedRow();
-				if(selectedRow != -1) {
-					String maHD = (String) tblHoaDon.getValueAt(selectedRow, tblHoaDon.getColumn("Mã hóa đơn").getModelIndex());
-					filter_tblCTHD(maHD);
-				}
-			}
-		});
-	}
 
 	/*
 	 *  KHỞI TẠO PANEL
 	 */
-	
 	
 	private void init() {
 		setSize(1200,800);
@@ -139,6 +102,7 @@ public class HoaDonPanel extends JPanel {
 		pnCenter.setBorder(BorderFactory.createLineBorder(Color.black, 2));
 		add(pnCenter, BorderLayout.CENTER);
 		pnCenter.setLayout(null);
+		
 		addRow();
 		
 		tblHoaDon = new JTable(dtmHoaDon);
@@ -164,44 +128,146 @@ public class HoaDonPanel extends JPanel {
 		lblCTHD.setFont(new Font("Tahoma", Font.BOLD, 20));
 		lblCTHD.setBounds(680, 10, 200, 30);
 		pnCenter.add(lblCTHD);
-		
-		
 	}
+	
+	/*
+	 * XỬ LÝ SỰ KIỆN
+	 */
+	private void addActionListener() {
+		btnThem.addActionListener(e -> {
+			HoaDonInsert dialog = new HoaDonInsert();
+			if(dialog.showDialog(HoaDonPanel.this)) {
+				HoaDonDTO hoaDon = dialog.getHoaDon();
+				list_HD.add(hoaDon);
+				addRow(hoaDon);
+			}
+			System.out.println(dialog.showDialog(HoaDonPanel.this));
+		});
+		
+		btnXoa.addActionListener(e ->{
+			xoaHD_CTHD();
+		});
+		
+		tblHoaDon.getSelectionModel().addListSelectionListener(e -> {
+			if(!e.getValueIsAdjusting()) {
+				int selectedRow = tblHoaDon.getSelectedRow();
+				if(selectedRow != -1) {
+					String maHD = (String) tblHoaDon.getValueAt(selectedRow, tblHoaDon.getColumn("Mã hóa đơn").getModelIndex());
+					filter_tblCTHD(maHD);
+				}
+			}
+		});
+	}
+	
 	
 	
 	/*
-	 *  CÁC HẢM XỬ LÝ LISTENER
+	 *  CÁC HẢM HỖ TRỢ
 	 */
+	public void addList() {
+		this.list_HD = new ArrayList<HoaDonDTO>();
+		HoaDonDTO hoaDon_1 = new HoaDonDTO("HD01", "KH01", "NV01", "KM01", Date.valueOf("2004-06-15"), 12233);
+		HoaDonDTO hoaDon_2 = new HoaDonDTO("HD02", "KH01", "NV01", "KM01", Date.valueOf("2004-06-15"), 12233);
+		list_HD.add(hoaDon_1);
+		list_HD.add(hoaDon_2);
+		
+		this.list_CTHD = new ArrayList<ChiTietHoaDonDTO>();
+		ChiTietHoaDonDTO cthd_1_1 = new ChiTietHoaDonDTO("HD01", "SP01", "KM01", 4, 100, 400);
+		ChiTietHoaDonDTO cthd_1_2 = new ChiTietHoaDonDTO("HD01", "SP02", "KM01", 4, 100, 400);
+		ChiTietHoaDonDTO cthd_1_3 = new ChiTietHoaDonDTO("HD01", "SP03", "KM01", 4, 100, 400);
+		ChiTietHoaDonDTO cthd_2_1 = new ChiTietHoaDonDTO("HD02", "SP01", "KM01", 4, 100, 400);
+		ChiTietHoaDonDTO cthd_2_2 = new ChiTietHoaDonDTO("HD02", "SP01", "KM01", 4, 100, 400);
+		ChiTietHoaDonDTO cthd_2_3 = new ChiTietHoaDonDTO("HD02", "SP01", "KM01", 4, 100, 400);
+		ChiTietHoaDonDTO cthd_1_4 = new ChiTietHoaDonDTO("HD01", "SP05", "KM01", 4, 100, 400);
+		ChiTietHoaDonDTO cthd_1_5 = new ChiTietHoaDonDTO("HD01", "SP04", "KM01", 4, 100, 400);
+		ChiTietHoaDonDTO cthd_2_4 = new ChiTietHoaDonDTO("HD02", "SP01", "KM01", 4, 100, 400);
+		ChiTietHoaDonDTO cthd_2_5 = new ChiTietHoaDonDTO("HD02", "SP01", "KM01", 4, 100, 400);
+		ChiTietHoaDonDTO cthd_2_6 = new ChiTietHoaDonDTO("HD02", "SP01", "KM01", 4, 100, 400);
+		ChiTietHoaDonDTO cthd_2_7 = new ChiTietHoaDonDTO("HD02", "SP01", "KM01", 4, 100, 400);
+		
+		list_CTHD.add(cthd_1_1);
+		list_CTHD.add(cthd_1_2);
+		list_CTHD.add(cthd_1_3);
+		list_CTHD.add(cthd_2_1);
+		list_CTHD.add(cthd_2_2);
+		list_CTHD.add(cthd_2_3);
+		list_CTHD.add(cthd_1_4);
+		list_CTHD.add(cthd_1_5);
+		list_CTHD.add(cthd_2_4);
+		list_CTHD.add(cthd_2_5);
+		list_CTHD.add(cthd_2_6);
+		list_CTHD.add(cthd_2_7);
+
+	}
 	
-	
-	private void addRow() {
-		String[] columnNames_HD = {"Mã hóa đơn", "Mã khách hàng", "Mã nhân viên", "Mã khuyến mãi", "Ngày lập", "Tổng tiền"};
-		Object[][] data_HD = {
-				{"HD01", "KH01", "NV01", "KM01", Date.valueOf("2004-06-15"), 12233},
-				{"HD02", "KH01", "NV01", "KM01", Date.valueOf("2004-06-15"), 122333}
-		};
-		
-		dtmHoaDon = new DefaultTableModel(data_HD, columnNames_HD);
-		
-		String[] columnNames_CTHD = {"Mã hóa đơn", "Mã sản phẩm", "Mã khuyến mãi", "Số lượng", "Đơn giá", "Thành tiền"};
-		Object[][] data_CTHD = {
-				{"HD01", "SP01", "KM01", 4, 100, 400},
-				{"HD01", "SP02", "KM01", 4, 100, 400},
-				{"HD01", "SP03", "KM01", 4, 100, 400},
-				{"HD01", "SP04", "KM01", 4, 100, 400},
-				{"HD02", "SP05", "KM01", 4, 100, 400},
-				{"HD02", "SP06", "KM01", 4, 100, 400},
-				{"HD02", "SP07", "KM01", 4, 100, 400},
-				{"HD01", "SP08", "KM01", 4, 100, 400},
-				{"HD02", "SP09", "KM01", 4, 100, 400},
-				{"HD02", "SP010", "KM01", 4, 100, 400},
-				{"HD01", "SP011", "KM01", 4, 100, 400},
-		};
-		
-		dtmCTHD = new DefaultTableModel(data_CTHD, columnNames_CTHD);
+	private void addRow(HoaDonDTO hoaDon, ArrayList<ChiTietHoaDonDTO> lst_CTHD) {
 		
 	}
 	
+	private void addRow() {
+		addList();
+		
+		dtmHoaDon = new DefaultTableModel();
+		
+		dtmHoaDon.addColumn("Mã hóa đơn");
+		dtmHoaDon.addColumn("Mã khách hàng");
+		dtmHoaDon.addColumn("Mã nhân viên");
+		dtmHoaDon.addColumn("Mã khuyến mãi");
+		dtmHoaDon.addColumn("Ngày lập");
+		dtmHoaDon.addColumn("Tổng tiền");
+		
+		for(int i = 0; i < list_HD.size(); i++) {
+			HoaDonDTO hoaDon = list_HD.get(i);
+			Object[] data = new Object[] {hoaDon.getMaHD(), hoaDon.getMaKH(), hoaDon.getMaNV(), hoaDon.getMaKM(), hoaDon.getNgayLap(), hoaDon.getTongTien()};
+			dtmHoaDon.addRow(data);
+		}
+	
+		dtmCTHD = new DefaultTableModel();
+		
+		dtmCTHD.addColumn("Mã hóa đơn");
+		dtmCTHD.addColumn("Mã sản phẩm");
+		dtmCTHD.addColumn("Mã khuyến mãi");
+		dtmCTHD.addColumn("Số lượng");
+		dtmCTHD.addColumn("Đơn giá");
+		dtmCTHD.addColumn("Thành tiền");
+		
+		for(int i = 0; i < list_CTHD.size(); i++) {
+			ChiTietHoaDonDTO cthd = list_CTHD.get(i);
+			Object[] data = new Object[] {cthd.getMaHD(), cthd.getMaSP(), cthd.getMaKM(), cthd.getSoLuong(), cthd.getDonGia(), cthd.getThanhTien()};
+			dtmCTHD.addRow(data);
+		}
+		
+	}
+	
+	private void addRow(HoaDonDTO hoaDon) {
+		dtmHoaDon.addRow(new Object[] {
+				hoaDon.getMaHD(), 
+				hoaDon.getMaKH(), 
+				hoaDon.getMaNV(), hoaDon.getMaKM(), 
+				hoaDon.getNgayLap(), 
+				hoaDon.getTongTien()
+		});
+	}
+	
+	private void xoaHD_CTHD() {
+		int selectedRow = tblHoaDon.getSelectedRow();
+        if (selectedRow != -1) {
+        	int option = JOptionPane.showConfirmDialog(this,
+        			"Bạn có chắc muốn xóa hóa đơn này!",
+        			"Xác nhận xóa hóa đơn",
+        			JOptionPane.YES_NO_OPTION
+        			);
+        	if(option == JOptionPane.YES_OPTION) {
+        		String maHD = (String) tblHoaDon.getValueAt(selectedRow, tblHoaDon.getColumn("Mã hóa đơn").getModelIndex());
+	            removeRowFromTblHoaDon(selectedRow);
+	            removeRowsFromTblCTHD(maHD);
+        	}
+        } else {
+        	JOptionPane.showMessageDialog(this, 
+					"Bạn chưa chọn hóa đơn muốn xóa!"
+					);
+        }
+	}
 	
 	private void filter_tblCTHD(String selectedMaHD) {
 		 DefaultTableModel dtmCTHD = (DefaultTableModel) tblCTHD.getModel();

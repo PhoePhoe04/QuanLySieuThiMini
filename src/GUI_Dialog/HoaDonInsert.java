@@ -3,10 +3,13 @@ package GUI_Dialog;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -15,7 +18,13 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
+
+import DTO.ChiTietHoaDonDTO;
+import DTO.HoaDonDTO;
+
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -30,10 +39,12 @@ import java.awt.event.MouseMotionAdapter;
 import javax.swing.JComboBox;
 
 public class HoaDonInsert extends JDialog {
-
 	private static final long serialVersionUID = 1L;
-	private JButton btnThem;
-	private JButton btnXacNhan;
+	
+	private HoaDonDTO hoaDon;
+	private ArrayList<ChiTietHoaDonDTO> lst_CTHD;
+	
+	boolean dataAccepted = false;
 	
 	int mouseX, mouseY;
 	private JButton btnHuy;
@@ -44,50 +55,35 @@ public class HoaDonInsert extends JDialog {
 	private JTextField txtDonGia;
 	private JTextField txtSoLuong;
 	private JTextField txtThanhTien;
+	private JButton btnThem;
+	private JButton btnXacNhan;
+	private JComboBox cbBoxMaKH;
+	private JComboBox cbBoxMaNV;
+	private JComboBox cbBoxMaKM;
+	private JComboBox cbBoxMaSP;
+	private JComboBox cbBoxMaKM_CTHD;
+
+	private DefaultTableModel dtmCTHD;
 	
 
 	public HoaDonInsert() {
 		init();
 		addListener();
-		setVisible(true);
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		
+		this.lst_CTHD = new ArrayList<ChiTietHoaDonDTO>();
+		
+		setVisible(true);
 	}
 	
-	private void addListener() {
-		btnXacNhan.addActionListener(e -> {
-			dispose();
-		});
-		btnThem.addActionListener(e -> {
-			dispose();
-		});
-		btnHuy.addActionListener(e ->{
-			dispose();
-		});
-		
-		addMouseListener(new MouseAdapter() {
-			public void mousePressed(MouseEvent evt) {
-				mouseX = evt.getX();
-				mouseY = evt.getY();
-			}
-		});
-		
-		addMouseMotionListener(new MouseMotionAdapter() {
-			public void mouseDragged(MouseEvent evt) {
-				int newX = getLocation().x + evt.getX() - mouseX;
-				int newY = getLocation().y + evt.getY() - mouseY;
-				
-				setLocation(newX, newY);
-			}
-		});
-	}
-	
+
 	
 	private void init() {
 		setBounds(100, 100, 700, 500);
 		setLocationRelativeTo(null);
 		getContentPane().setLayout(new BorderLayout(0, 10));
 		setResizable(false);
-//		setUndecorated(true);
+		setModal(true);
 
 //		============================= CENTER =============================
 		JPanel pnCenter = new JPanel();
@@ -146,28 +142,34 @@ public class HoaDonInsert extends JDialog {
 		lblTongTien.setBounds(60, 200, 120, 20);
 		pnThongTinLeft.add(lblTongTien);
 		
-		JComboBox cbBoxMaKH = new JComboBox();
+		cbBoxMaKH = new JComboBox();
 		cbBoxMaKH.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		cbBoxMaKH.setBounds(190, 80, 100, 20);
 		pnThongTinLeft.add(cbBoxMaKH);
 		
-		JComboBox cbBoxMaNV = new JComboBox();
+		cbBoxMaNV = new JComboBox();
 		cbBoxMaNV.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		cbBoxMaNV.setBounds(190, 110, 100, 20);
 		pnThongTinLeft.add(cbBoxMaNV);
 		
-		JComboBox cbBoxMaKM = new JComboBox();
+		cbBoxMaKM = new JComboBox();
 		cbBoxMaKM.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		cbBoxMaKM.setBounds(190, 140, 100, 20);
 		pnThongTinLeft.add(cbBoxMaKM);
 		
-		txtNgayLap = new JTextField();
+		Date currentDate = new Date(System.currentTimeMillis());
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		String formattedDate = formatter.format(currentDate);
+		
+		txtNgayLap = new JTextField(formattedDate);
+		txtNgayLap.setEditable(false);
 		txtNgayLap.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		txtNgayLap.setBounds(190, 170, 100, 20);
 		pnThongTinLeft.add(txtNgayLap);
 		txtNgayLap.setColumns(10);
 		
-		txtTongTien = new JTextField();
+		txtTongTien = new JTextField("0");
+		txtTongTien.setEditable(false);
 		txtTongTien.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		txtTongTien.setBounds(190, 200, 100, 20);
 		pnThongTinLeft.add(txtTongTien);
@@ -189,6 +191,7 @@ public class HoaDonInsert extends JDialog {
 		pnThongTinRight.add(lblMaHD_CTHD);
 		
 		txtMaHD_CTHD = new JTextField();
+		txtMaHD_CTHD.setEditable(false);
 		txtMaHD_CTHD.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		txtMaHD_CTHD.setBounds(190, 50, 100, 20);
 		pnThongTinRight.add(txtMaHD_CTHD);
@@ -199,17 +202,17 @@ public class HoaDonInsert extends JDialog {
 		lblMaSP.setBounds(60, 80, 120, 20);
 		pnThongTinRight.add(lblMaSP);
 		
-		JComboBox comboBox = new JComboBox();
-		comboBox.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		comboBox.setBounds(190, 80, 100, 20);
-		pnThongTinRight.add(comboBox);
+		cbBoxMaSP = new JComboBox();
+		cbBoxMaSP.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		cbBoxMaSP.setBounds(190, 80, 100, 20);
+		pnThongTinRight.add(cbBoxMaSP);
 		
 		JLabel lblMaKM_CTHD = new JLabel("Mã khuyến mãi");
 		lblMaKM_CTHD.setFont(new Font("Tahoma", Font.BOLD, 15));
 		lblMaKM_CTHD.setBounds(60, 110, 120, 20);
 		pnThongTinRight.add(lblMaKM_CTHD);
 		
-		JComboBox cbBoxMaKM_CTHD = new JComboBox();
+		cbBoxMaKM_CTHD = new JComboBox();
 		cbBoxMaKM_CTHD.setBounds(190, 110, 100, 20);
 		pnThongTinRight.add(cbBoxMaKM_CTHD);
 		
@@ -218,7 +221,8 @@ public class HoaDonInsert extends JDialog {
 		lblDonGia.setBounds(60, 140, 120, 20);
 		pnThongTinRight.add(lblDonGia);
 		
-		txtDonGia = new JTextField();
+		txtDonGia = new JTextField("5000");
+		txtDonGia.setEditable(false);
 		txtDonGia.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		txtDonGia.setBounds(190, 140, 100, 20);
 		pnThongTinRight.add(txtDonGia);
@@ -241,13 +245,14 @@ public class HoaDonInsert extends JDialog {
 		pnThongTinRight.add(lblThanhTien);
 		
 		txtThanhTien = new JTextField();
+		txtThanhTien.setEditable(false);
 		txtThanhTien.setBounds(190, 200, 100, 20);
 		pnThongTinRight.add(txtThanhTien);
 		txtThanhTien.setColumns(10);
 		
 		
 		// ============================= SOUTH =============================
-		DefaultTableModel dtmCTHD = new DefaultTableModel();
+		dtmCTHD = new DefaultTableModel();
 		dtmCTHD.addColumn("Mã hóa đơn");
 		dtmCTHD.addColumn("Mã sản phẩm");
 		dtmCTHD.addColumn("Mã khuyến mãi");
@@ -270,11 +275,13 @@ public class HoaDonInsert extends JDialog {
 		getContentPane().add(pnBottom, BorderLayout.SOUTH);
 		
 		btnThem = new JButton("Thêm");
+		btnThem.setEnabled(false);
 		btnThem.setPreferredSize(new Dimension(150, 30));
 		btnThem.setFont(new Font("Tahoma", Font.BOLD, 20));
 		pnBottom.add(btnThem);
 		
 		btnXacNhan = new JButton("Xác nhận");
+		btnXacNhan.setEnabled(false);
 		btnXacNhan.setPreferredSize(new Dimension(150, 30));
 		btnXacNhan.setFont(new Font("Tahoma", Font.BOLD, 20));
 		pnBottom.add(btnXacNhan);
@@ -285,12 +292,207 @@ public class HoaDonInsert extends JDialog {
 		pnBottom.add(btnHuy);
 	}
 	
+	
+	/*
+	 * HÀM XỬ LÝ SỰ KIỆN
+	 */
+	
+	private void addListener() {
+		
+		btnXacNhan.addActionListener(e -> {
+			dataAccepted = true;
+			dispose();
+		});
+		
+		btnThem.addActionListener(e -> {
+			themCTHD();
+		});
+		
+		btnHuy.addActionListener(e ->{
+			if(this.lst_CTHD.size() > 0)
+				this.lst_CTHD.clear();
+			dispose();
+		});
+		
+		addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent evt) {
+				mouseX = evt.getX();
+				mouseY = evt.getY();
+			}
+		});
+		
+		addMouseMotionListener(new MouseMotionAdapter() {
+			public void mouseDragged(MouseEvent evt) {
+				int newX = getLocation().x + evt.getX() - mouseX;
+				int newY = getLocation().y + evt.getY() - mouseY;
+				
+				setLocation(newX, newY);
+			}
+		});
+		
+		txtMaHD.getDocument().addDocumentListener(new DocumentListener() {
+			
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				txtMaHD_CTHD.setText(txtMaHD.getText());
+			}
+			
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				txtMaHD_CTHD.setText(txtMaHD.getText());
+			}
+			
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				txtMaHD_CTHD.setText(txtMaHD.getText());
+			}
+		});
+		
+		txtSoLuong.getDocument().addDocumentListener(new DocumentListener() {
+			
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				if(!txtSoLuong.getText().isEmpty() && txtSoLuong.getText().matches("[0-9]+"))
+					txtThanhTien.setText(Integer.parseInt(txtSoLuong.getText()) * Double.parseDouble(txtDonGia.getText())+"");
+				else
+					txtThanhTien.setText("");
+			}
+			
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				if(!txtSoLuong.getText().isEmpty() && txtSoLuong.getText().matches("[0-9]+"))
+					txtThanhTien.setText(Integer.parseInt(txtSoLuong.getText()) * Double.parseDouble(txtDonGia.getText())+"");
+				else
+					txtThanhTien.setText("");
+			}
+			
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				if(!txtSoLuong.getText().isEmpty() && txtSoLuong.getText().matches("[0-9]+"))
+					txtThanhTien.setText(Integer.parseInt(txtSoLuong.getText()) * Double.parseDouble(txtDonGia.getText())+"");
+				else
+					txtThanhTien.setText("");
+			}
+		});
+		
+		txtMaHD_CTHD.getDocument().addDocumentListener(dcmListenerbtnThem);
+		txtDonGia.getDocument().addDocumentListener(dcmListenerbtnThem);
+		txtSoLuong.getDocument().addDocumentListener(dcmListenerbtnThem);
+		txtThanhTien.getDocument().addDocumentListener(dcmListenerbtnThem);
+		
+		txtMaHD.getDocument().addDocumentListener(dcmListenerbtnXacNhan);
+		cbBoxMaKH.addItemListener(e ->{
+			if(cbBoxMaKH.getSelectedItem().equals(""))
+				btnXacNhan.setEnabled(false);
+			else
+				btnXacNhan.setEnabled(true);
+		});
+		cbBoxMaKM.addItemListener(e ->{
+			if(cbBoxMaKH.getSelectedItem().equals(""))
+				btnXacNhan.setEnabled(false);
+			else
+				btnXacNhan.setEnabled(true);
+		});
+		cbBoxMaNV.addItemListener(e ->{
+			if(cbBoxMaKH.getSelectedItem().equals(""))
+				btnXacNhan.setEnabled(false);
+			else
+				btnXacNhan.setEnabled(true);
+		});
+	}
+	
+	
+	/*
+	 *  CÁC HÀM XỬ LÝ
+	 *  
+	 */
+	
+	public boolean showDialog(Component parentComponent) {
+		return dataAccepted;
+	}
+	
+	
+	public void themCTHD() {
+		String maHD = txtMaHD_CTHD.getText();
+		String maSP = cbBoxMaSP.getSelectedItem()+"";
+		String maKM = cbBoxMaKM.getSelectedItem()+"";
+		int soLuong = Integer.parseInt(txtSoLuong.getText());
+		double donGia = Double.parseDouble(txtDonGia.getText());
+		double thanhTien = Double.parseDouble(txtThanhTien.getText());
+		ChiTietHoaDonDTO cthd = new ChiTietHoaDonDTO(maHD, maSP, maKM, soLuong, donGia, thanhTien);
+		Object[] data = new Object[] {maHD, maSP, maKM, soLuong, donGia, thanhTien};		
+		txtTongTien.setText(Double.parseDouble(txtTongTien.getText()) + Double.parseDouble(txtThanhTien.getText())+"");
+		this.lst_CTHD.add(cthd);
+		dtmCTHD.addRow(data);
+	}
 
-
+	DocumentListener dcmListenerbtnThem = new DocumentListener() {
+		
+		@Override
+		public void removeUpdate(DocumentEvent e) {
+			updateButtonEnable();
+		}
+		
+		@Override
+		public void insertUpdate(DocumentEvent e) {
+			updateButtonEnable();
+		}
+		
+		@Override
+		public void changedUpdate(DocumentEvent e) {
+			updateButtonEnable();
+		}
+		private void updateButtonEnable() {
+			btnThem.setEnabled(
+					!txtMaHD_CTHD.getText().isEmpty() &&
+					!txtSoLuong.getText().isEmpty() &&
+					!txtDonGia.getText().isEmpty()&&
+					!txtThanhTien.getText().isEmpty()
+					);
+		}
+	};
+	
+	DocumentListener dcmListenerbtnXacNhan = new DocumentListener() {
+		
+		@Override
+		public void removeUpdate(DocumentEvent e) {
+			updateButtonEnable();
+		}
+		
+		@Override
+		public void insertUpdate(DocumentEvent e) {
+			updateButtonEnable();
+		}
+		
+		@Override
+		public void changedUpdate(DocumentEvent e) {
+			updateButtonEnable();
+		}
+		private void updateButtonEnable() {
+			btnXacNhan.setEnabled(!txtMaHD.getText().isEmpty());
+		}
+	};;
+	
+	public HoaDonDTO getHoaDon() {
+		return new HoaDonDTO(
+				txtMaHD.getText(),
+				cbBoxMaKH.getSelectedItem()+"",
+				cbBoxMaNV.getSelectedItem()+"",
+				cbBoxMaKM.getSelectedItem()+"",
+				Date.valueOf(txtNgayLap.getText()+""),
+				Double.parseDouble(txtTongTien.getText())
+				);
+	}
+	
+	public ArrayList<ChiTietHoaDonDTO> getCTHD(){
+		return this.lst_CTHD;
+	}
 
 	public static void main(String[] args) {
 		try {
 			HoaDonInsert dialog = new HoaDonInsert();
+			HoaDonDTO hd = dialog.getHoaDon();
+			System.out.println(hd.toString());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
