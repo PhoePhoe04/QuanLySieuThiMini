@@ -3,16 +3,17 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import DTO.SanPham_DTO;
-public class SanPham_DAO extends Connect{
+public class SanPham_DAO{
+	MyConnect connect;
 
-	public ArrayList<SanPham_DTO> getSanPhams(){
+	public ArrayList<SanPham_DTO> getSanPhams(String condition, String orderBy){
+		connect = new MyConnect();
 		ArrayList<SanPham_DTO> sanphams = new ArrayList<>();
 		try {
-			getConnection();
-			Statement statement = connection.createStatement();
-			ResultSet resultSet = statement.executeQuery(" SELECT * FROM SanPham");
+			ResultSet resultSet = connect.select("sanpham", condition, orderBy);
 			while(resultSet.next()) {
 				SanPham_DTO sanpham = new SanPham_DTO();
 				sanpham.setMaSP(resultSet.getString("maSP"));
@@ -25,57 +26,76 @@ public class SanPham_DAO extends Connect{
 			}				
 		}catch(SQLException e) {
 			System.out.println("Failed to get products" + e.getMessage());
+		}finally {
+			connect.Close();
 		}
 		return sanphams;
 	}
 	
-	public void addSanPham(SanPham_DTO sanpham) {
+	public ArrayList<SanPham_DTO> getSanPhams(String condition){
+		return this.getSanPhams(condition, null);
+	}
+	
+	public ArrayList<SanPham_DTO> getSanPhams(){
+		return this.getSanPhams(null);
+	}
+	
+	public int addSanPham(SanPham_DTO sanpham) {
+		connect = new MyConnect();
+		int ketQua = 0;
 		try {
-			getConnection();
-			Statement statement = connection.createStatement();
-			String query = "INSERT INTO SanPham(maSP, tenSP, maLSP,donGia, soLuong, donViTinh) VALUES ('"
-					+ sanpham.getMaSP()+"', '"
-					+ sanpham.getTenSP()+"', '"
-					+ sanpham.getMaLSP()+"', '"
-					+ sanpham.getDonGia()+"','"
-					+ sanpham.getSoLuong()+"','"
-					+ sanpham.getDonViTinh()+ ")";
-			statement.executeUpdate(query);
-			closeConnection();
-		} catch (SQLException e) {
+			HashMap<String, Object> insertValues = new HashMap<String, Object>();
+			
+			insertValues.put("maSP", sanpham.getMaSP());
+			insertValues.put("tenSP", sanpham.getTenSP());
+			insertValues.put("maLSP", sanpham.getMaLSP());
+			insertValues.put("donGia", sanpham.getDonGia());
+			insertValues.put("soLuong", sanpham.getSoLuong());
+			insertValues.put("donViTinh", sanpham.getDonViTinh());
+			
+			ketQua = connect.insert("sanpham", insertValues);
+		} catch (Exception e) {
 			System.out.println("Error while adding to the database:" + e.getMessage());
+		} finally {
+			connect.Close();
 		}
+		return ketQua;
 	}
 	
-	public void deleteSanPham(String id) {
+	public int deleteSanPham(SanPham_DTO sanpham) {
+		connect = new MyConnect();
+		int ketQua = 0;
 		try {
-			getConnection();
-			Statement statement = connection.createStatement();
-			String query = "DELETE FROM SanPham WHERE maSp = '"+ id + "'";
-			statement.executeUpdate(query);	
-		} catch(SQLException e) {
+			String condition = " maSP = '"+ sanpham.getMaSP()+"'";
+			ketQua = connect.delete("sanpham", condition);
+		} catch(Exception e) {
 			System.out.println(" ERROR while deleting from the database" + e.getMessage());
+		} finally {
+			connect.Close();
 		}
-		
+		return ketQua;
 	}
 	
-	public void editSanPham(SanPham_DTO sanpham) {
+	public int editSanPham(SanPham_DTO sanpham) {
+		connect = new MyConnect();
+		int ketQua = 0;
 		try {
-			getConnection();
-			Statement statement = connection.createStatement();
-			String query = "UPDATE SanPham SET maSP = '"
-					+ sanpham.getMaSP() + "', tenSP = '"
-					+ sanpham.getTenSP() + "', maLSP = '"
-					+ sanpham.getMaLSP() + "', donGia = '"
-					+ sanpham.getDonGia() + "', soLuong = '"
-					+ sanpham.getSoLuong() + "', donViTinh ='"
-					+ sanpham.getDonViTinh() 
-					+ "' WHERE maSP = '" + sanpham.getMaSP() 
-					+ "'";
-			statement.executeUpdate(query);
-		}catch(SQLException e) {
+			HashMap<String, Object> updateValues = new HashMap<String, Object>();
+			
+			updateValues.put("tenSP", sanpham.getMaSP());
+			updateValues.put("maLSP", sanpham.getMaLSP());
+			updateValues.put("donGia", sanpham.getDonGia());
+			updateValues.put("soLuong", sanpham.getSoLuong());
+			updateValues.put("donViTinh", sanpham.getDonViTinh());
+			
+			String condition = " maSP = '"+ sanpham.getMaSP()+"'";
+			
+			ketQua = connect.update("sanpham", updateValues, condition);
+		}catch(Exception e) {
 			System.out.println("ERROR wwhile editing the database: " + e.getMessage());
+		}finally {
+			connect.Close();
 		}
-	
+		return ketQua;
 	}
 }

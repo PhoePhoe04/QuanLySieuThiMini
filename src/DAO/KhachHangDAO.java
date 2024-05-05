@@ -17,12 +17,12 @@ public class KhachHangDAO {
 		HashMap<String, Object> insertValues = new HashMap<String, Object>();
 		
 		insertValues.put("maKH", khachHang.getMaKH());
-		insertValues.put("hoKH", khachHang.getHoKhachHang());
-		insertValues.put("tenKH", khachHang.getTenKhachHang());
+		insertValues.put("hoKH", khachHang.getHoKH());
+		insertValues.put("tenKH", khachHang.getTenKH());
 		insertValues.put("gioiTinh", khachHang.isGioiTinh());
 		insertValues.put("diaChi", khachHang.getDiaChi());
 		insertValues.put("soDienThoai", khachHang.getSoDienThoai());
-		insertValues.put("email", khachHang.getGmail());
+		insertValues.put("gmail", khachHang.getGmail());
 		
 		int kq = connect.insert("khachhang", insertValues);
 		
@@ -36,12 +36,12 @@ public class KhachHangDAO {
 		
 		HashMap<String, Object> updateValues = new HashMap<String, Object>();
 		
-		updateValues.put("hoKH", khachHang.getHoKhachHang());
-		updateValues.put("tenKH", khachHang.getTenKhachHang());
+		updateValues.put("hoKH", khachHang.getHoKH());
+		updateValues.put("tenKH", khachHang.getTenKH());
 		updateValues.put("gioiTinh", khachHang.isGioiTinh());
 		updateValues.put("diaChi", khachHang.getDiaChi());
 		updateValues.put("soDienThoai", khachHang.getSoDienThoai());
-		updateValues.put("email", khachHang.getGmail());
+		updateValues.put("gmail", khachHang.getGmail());
 		
 		String condition = " maKH = '"+ khachHang.getMaKH()+ "'";
 		
@@ -71,15 +71,15 @@ public class KhachHangDAO {
 		ArrayList<KhachHangDTO> list = new ArrayList<KhachHangDTO>();
 		
 		while(rs.next()) {
-			KhachHangDTO kh = new KhachHangDTO();
-			
-			kh.setMaKH(rs.getString("maKH"));
-			kh.setHoKhachHang(rs.getString("hoKH"));
-			kh.setTenKhachHang(rs.getString("tenKH"));
-			kh.setGioiTinh(rs.getBoolean("gioiTinh"));
-			kh.setDiaChi(rs.getString("diaChi"));
-			kh.setSoDienThoai(rs.getString("soDienThoai"));
-			kh.setGmail(rs.getString("email"));
+			KhachHangDTO kh = new KhachHangDTO(
+					rs.getString("maKH"),
+					rs.getString("hoKH"),
+					rs.getString("tenKH"),
+					rs.getBoolean("gioiTinh"),
+					rs.getString("diaChi"),
+					rs.getString("soDienThoai"),
+					rs.getString("gmail")
+					);
 			
 			list.add(kh);
 		}
@@ -95,6 +95,8 @@ public class KhachHangDAO {
 	public ArrayList<KhachHangDTO> docDB() throws SQLException{
 		return this.docDB(null);
 	}
+	
+	
 	public ArrayList<KhachHangDTO> timTheoMa(KhachHangDTO khachhang) throws SQLException{
 		connect = new MyConnect();
 		String condition = "maKH = '"+khachhang.getMaKH()+"'";
@@ -105,12 +107,12 @@ public class KhachHangDAO {
 			KhachHangDTO kh = new KhachHangDTO();
 			
 			kh.setMaKH(rs.getString("maKH"));
-			kh.setHoKhachHang(rs.getString("hoKH"));
-			kh.setTenKhachHang(rs.getString("tenKH"));
+			kh.setHoKH(rs.getString("hoKH"));
+			kh.setTenKH(rs.getString("tenKH"));
 			kh.setGioiTinh(rs.getBoolean("gioiTinh"));
 			kh.setDiaChi(rs.getString("diaChi"));
 			kh.setSoDienThoai(rs.getString("soDienThoai"));
-			kh.setGmail(rs.getString("email"));
+			kh.setGmail(rs.getString("gmail"));
 			
 			list.add(kh);
 		}

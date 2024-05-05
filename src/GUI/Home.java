@@ -14,6 +14,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseMotionListener;
+import java.sql.SQLException;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -23,6 +24,9 @@ import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
 import GUI_Panel.HoaDonPanel;
+import GUI_Panel.KhachHangPanel;
+import GUI_Panel.NhaCungCapPanel;
+import GUI_Panel.PhieuNhapPanel;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -55,15 +59,30 @@ public class Home extends JFrame {
 	private JButton btnHoaDon;
 	private JButton btnHome;
 	private JButton btnDangXuat;
+	private JButton btnPhieuNhap;
+	private JButton btnNhaCungCap;
+	private JButton btnKhachHang;
 	
 	private void addActionListener() {
 		btnHome.addActionListener(e ->{
 			cardLayout.show(cardPanel, "trangChu");
 		});
+		
 		btnHoaDon.addActionListener(e ->{
 			cardLayout.show(cardPanel, "hoaDon");
 		});
 		
+		btnNhaCungCap.addActionListener(e ->{
+			cardLayout.show(cardPanel, "nhaCungCap");
+		});
+		
+		btnPhieuNhap.addActionListener(e ->{
+			cardLayout.show(cardPanel, "phieuNhap");
+		});
+		
+		btnKhachHang.addActionListener(e ->{
+			cardLayout.show(cardPanel, "khachHang");
+		});
 		
 		btnDangXuat.addActionListener(e ->{
 			dispose();
@@ -114,9 +133,9 @@ public class Home extends JFrame {
 		pnLeft.add(pnLeftBottom, BorderLayout.CENTER);
 		GridBagLayout gbl_pnLeftBottom = new GridBagLayout();
 		gbl_pnLeftBottom.columnWidths = new int[]{20, 160, 20};
-		gbl_pnLeftBottom.rowHeights = new int[]{50, 50, 50, 50, 50, 50, 50, 50, 0};
+		gbl_pnLeftBottom.rowHeights = new int[]{10, 50, 50, 50, 50, 50, 50, 50, 0, 0, 0, 0};
 		gbl_pnLeftBottom.columnWeights = new double[]{0.0, 0.0, 0.0};
-		gbl_pnLeftBottom.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_pnLeftBottom.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		pnLeftBottom.setLayout(gbl_pnLeftBottom);
 		
 		btnHome = new JButton("Trang chủ");
@@ -128,7 +147,7 @@ public class Home extends JFrame {
 		btnHome.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 18));
 		GridBagConstraints gbc_btnHome = new GridBagConstraints();
 		gbc_btnHome.fill = GridBagConstraints.BOTH;
-		gbc_btnHome.insets = new Insets(0, 0, 15, 5);
+		gbc_btnHome.insets = new Insets(0, 0, 10, 5);
 		gbc_btnHome.gridx = 1;
 		gbc_btnHome.gridy = 1;
 		pnLeftBottom.add(btnHome, gbc_btnHome);
@@ -140,7 +159,7 @@ public class Home extends JFrame {
 		btnHoaDon.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 18));
 		GridBagConstraints gbc_btnHoaDon = new GridBagConstraints();
 		gbc_btnHoaDon.fill = GridBagConstraints.BOTH;
-		gbc_btnHoaDon.insets = new Insets(0, 0, 15, 5);
+		gbc_btnHoaDon.insets = new Insets(0, 0, 10, 5);
 		gbc_btnHoaDon.gridx = 1;
 		gbc_btnHoaDon.gridy = 2;
 		pnLeftBottom.add(btnHoaDon, gbc_btnHoaDon);
@@ -152,19 +171,19 @@ public class Home extends JFrame {
 		btnNhanVien.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 18));
 		GridBagConstraints gbc_btnNhanVien = new GridBagConstraints();
 		gbc_btnNhanVien.fill = GridBagConstraints.BOTH;
-		gbc_btnNhanVien.insets = new Insets(0, 0, 15, 5);
+		gbc_btnNhanVien.insets = new Insets(0, 0, 10, 5);
 		gbc_btnNhanVien.gridx = 1;
 		gbc_btnNhanVien.gridy = 3;
 		pnLeftBottom.add(btnNhanVien, gbc_btnNhanVien);
 		
-		JButton btnKhachHang = new JButton("Khách hàng");
+		btnKhachHang = new JButton("Khách hàng");
 		btnKhachHang.setHorizontalAlignment(SwingConstants.LEFT);
 		btnKhachHang.setHorizontalTextPosition(SwingConstants.RIGHT);
 		btnKhachHang.setIcon(new ImageIcon(Home.class.getResource("/Image/iconCustomer.png")));
 		btnKhachHang.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 18));
 		GridBagConstraints gbc_btnKhachHang = new GridBagConstraints();
 		gbc_btnKhachHang.fill = GridBagConstraints.BOTH;
-		gbc_btnKhachHang.insets = new Insets(0, 0, 15, 5);
+		gbc_btnKhachHang.insets = new Insets(0, 0, 10, 5);
 		gbc_btnKhachHang.gridx = 1;
 		gbc_btnKhachHang.gridy = 4;
 		pnLeftBottom.add(btnKhachHang, gbc_btnKhachHang);
@@ -176,10 +195,29 @@ public class Home extends JFrame {
 		btnSanPham.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 18));
 		GridBagConstraints gbc_btnSanPham = new GridBagConstraints();
 		gbc_btnSanPham.fill = GridBagConstraints.BOTH;
-		gbc_btnSanPham.insets = new Insets(0, 0, 15, 5);
+		gbc_btnSanPham.insets = new Insets(0, 0, 10, 5);
 		gbc_btnSanPham.gridx = 1;
 		gbc_btnSanPham.gridy = 5;
 		pnLeftBottom.add(btnSanPham, gbc_btnSanPham);
+		
+		btnNhaCungCap = new JButton("Nhà cung cấp");
+		btnNhaCungCap.setIcon(new ImageIcon(Home.class.getResource("/Image/supplier_icon.png")));
+		btnNhaCungCap.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
+		GridBagConstraints gbc_btnNhaCungCap = new GridBagConstraints();
+		gbc_btnNhaCungCap.fill = GridBagConstraints.BOTH;
+		gbc_btnNhaCungCap.insets = new Insets(0, 0, 10, 5);
+		gbc_btnNhaCungCap.gridx = 1;
+		gbc_btnNhaCungCap.gridy = 6;
+		pnLeftBottom.add(btnNhaCungCap, gbc_btnNhaCungCap);
+		
+		btnPhieuNhap = new JButton("Phiếu nhập");
+		btnPhieuNhap.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 18));
+		GridBagConstraints gbc_btnPhieuNhap = new GridBagConstraints();
+		gbc_btnPhieuNhap.fill = GridBagConstraints.BOTH;
+		gbc_btnPhieuNhap.insets = new Insets(0, 0, 10, 5);
+		gbc_btnPhieuNhap.gridx = 1;
+		gbc_btnPhieuNhap.gridy = 7;
+		pnLeftBottom.add(btnPhieuNhap, gbc_btnPhieuNhap);
 		
 		JButton btnKhuyenMai = new JButton("Khuyến mãi");
 		btnKhuyenMai.setHorizontalAlignment(SwingConstants.LEFT);
@@ -188,9 +226,9 @@ public class Home extends JFrame {
 		btnKhuyenMai.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 18));
 		GridBagConstraints gbc_btnKhuyenMai = new GridBagConstraints();
 		gbc_btnKhuyenMai.fill = GridBagConstraints.BOTH;
-		gbc_btnKhuyenMai.insets = new Insets(0, 0, 15, 5);
+		gbc_btnKhuyenMai.insets = new Insets(0, 0, 10, 5);
 		gbc_btnKhuyenMai.gridx = 1;
-		gbc_btnKhuyenMai.gridy = 6;
+		gbc_btnKhuyenMai.gridy = 8;
 		pnLeftBottom.add(btnKhuyenMai, gbc_btnKhuyenMai);
 		
 		btnDangXuat = new JButton("Đăng xuất");
@@ -200,9 +238,9 @@ public class Home extends JFrame {
 		btnDangXuat.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 18));
 		GridBagConstraints gbc_btnDangXuat = new GridBagConstraints();
 		gbc_btnDangXuat.fill = GridBagConstraints.BOTH;
-		gbc_btnDangXuat.insets = new Insets(0, 0, 15, 5);
+		gbc_btnDangXuat.insets = new Insets(0, 0, 10, 5);
 		gbc_btnDangXuat.gridx = 1;
-		gbc_btnDangXuat.gridy = 7;
+		gbc_btnDangXuat.gridy = 9;
 		pnLeftBottom.add(btnDangXuat, gbc_btnDangXuat);
 		
 		
@@ -212,13 +250,24 @@ public class Home extends JFrame {
 		cardPanel = new JPanel(cardLayout);
 		getContentPane().add(cardPanel, BorderLayout.CENTER);
 		
-		JPanel hoaDon = new HoaDonPanel();
-		JPanel trangChu = new JPanel();
 		
-		cardPanel.add(trangChu, "trangChu");
-		cardPanel.add(hoaDon, "hoaDon");
-		
-		
+		try {
+			JPanel trangChu = new JPanel();
+			JPanel hoaDon = new HoaDonPanel();
+			JPanel nhaCungCap = new NhaCungCapPanel();
+			JPanel phieuNhap = new PhieuNhapPanel();
+			JPanel khachHang = new KhachHangPanel();
+			
+			
+			cardPanel.add(trangChu, "trangChu");
+			cardPanel.add(hoaDon, "hoaDon");
+			cardPanel.add(nhaCungCap,"nhaCungCap");
+			cardPanel.add(phieuNhap,"phieuNhap");
+			cardPanel.add(khachHang, "khachHang");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 

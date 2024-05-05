@@ -23,8 +23,8 @@ public class NhanVienDAO {
 			HashMap<String, Object> insertValues = new HashMap<String, Object>();
 			
 			insertValues.put("maNV", nhanVien.getMaNV());
-			insertValues.put("hoNV", nhanVien.getHoNhanVien());
-			insertValues.put("tenNV", nhanVien.getTenNhanVien());
+			insertValues.put("hoNV", nhanVien.getHoNV());
+			insertValues.put("tenNV", nhanVien.getTenNV());
 			insertValues.put("ngaySinh", nhanVien.getNgaySinh());
 			insertValues.put("gioiTinh", nhanVien.isGioiTinh());
 			insertValues.put("diaChi", nhanVien.getDiaChi());
@@ -49,8 +49,8 @@ public class NhanVienDAO {
 		try {
 			HashMap<String, Object> updateValues = new HashMap<String, Object>();
 			
-			updateValues.put("hoNV", nhanVien.getHoNhanVien());
-			updateValues.put("tenNV", nhanVien.getTenNhanVien());
+			updateValues.put("hoNV", nhanVien.getHoNV());
+			updateValues.put("tenNV", nhanVien.getTenNV());
 			updateValues.put("ngaySinh", nhanVien.getNgaySinh());
 			updateValues.put("gioiTinh", nhanVien.isGioiTinh());
 			updateValues.put("diaChi", nhanVien.getDiaChi());
@@ -96,8 +96,8 @@ public class NhanVienDAO {
 			while(rs.next()) {
 				NhanVienDTO nhanVien = new NhanVienDTO();
 				nhanVien.setMaNV(rs.getString("maNV"));
-				nhanVien.setHoNhanVien(rs.getString("hoNV"));
-				nhanVien.setTenNhanVien(rs.getString("tenNV"));
+				nhanVien.setHoNV(rs.getString("hoNV"));
+				nhanVien.setTenNV(rs.getString("tenNV"));
 				nhanVien.setNgaySinh(rs.getDate("ngaySinh"));
 				nhanVien.setGioiTinh(rs.getBoolean("gioiTinh"));
 				nhanVien.setDiaChi(rs.getString("diaChi"));
@@ -131,8 +131,8 @@ public class NhanVienDAO {
 			NhanVienDTO nv = new NhanVienDTO();
 			
 			nv.setMaNV(rs.getString("maNV"));
-			nv.setHoNhanVien(rs.getString("hoNV"));
-			nv.setTenNhanVien(rs.getString("tenNV"));
+			nv.setHoNV(rs.getString("hoNV"));
+			nv.setTenNV(rs.getString("tenNV"));
 			nv.setNgaySinh(rs.getDate("ngaySinh"));
 			nv.setGioiTinh(rs.getBoolean("gioiTinh"));
 			nv.setDiaChi(rs.getString("diaChi"));

@@ -4,63 +4,87 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import DTO.LoaiSP_DTO;
 
-public class LoaiSP_DAO extends Connect{
-	public ArrayList<LoaiSP_DTO> getLoaiSPs(){
-		ArrayList<LoaiSP_DTO> loaisanphams = new ArrayList<>();
+public class LoaiSP_DAO {
+	MyConnect connect;
+	
+	public ArrayList<LoaiSP_DTO> getLoaiSPs(String condition, String orderBy){
+		connect = new MyConnect();
+		ArrayList<LoaiSP_DTO> list = new ArrayList<LoaiSP_DTO>();
+		
 		try {
-			getConnection();
-			Statement statement = connection.createStatement();
-			ResultSet resultSet = statement.executeQuery(" SELECT * FROM LoaiSP");
-			while(resultSet.next()) {
-				LoaiSP_DTO loaisp = new LoaiSP_DTO();
-				loaisp.setMaLSP(resultSet.getString("maLSP"));
-				loaisp.setTenLSP(resultSet.getString("tenLSP"));
-				loaisanphams.add(loaisp);
-			}
+			ResultSet rs = connect.select("loaisanpham", condition, orderBy);
+			while(rs.next()) {
+				LoaiSP_DTO lsp = new LoaiSP_DTO(rs.getString("maLSP"), rs.getString("tenLSP"));
+				list.add(lsp);
+				}
 		} catch(SQLException e) {
 			System.out.println("Failed to get products" + e.getMessage());
+		} finally {
+			connect.Close();
 		}
-		return loaisanphams;
+		return list;
 	}
-	public void addLoaiSP(LoaiSP_DTO loaisp) {
+	
+	public ArrayList<LoaiSP_DTO> getLoaiSPs(String condition){
+		return this.getLoaiSPs(condition, null);
+	}
+	
+	public ArrayList<LoaiSP_DTO> getLoaiSPs(){
+		return this.getLoaiSPs(null);
+	}
+	
+	public int addLoaiSP(LoaiSP_DTO loaisp) {
+		connect = new MyConnect();
+		int ketQua = 0;
 		try {
-			getConnection();
-			Statement statement =connection.createStatement();
-			String query = "INSERT INTO LoaiSP ( maLSP, tenLSP) VALUES ('"
-					+ loaisp.getMaLSP() + "','"
-					+ loaisp.getTenLSP()+ ")";
-			statement.executeUpdate(query);
-			closeConnection();
-		}catch(SQLException e) {
+			HashMap<String, Object> insertValues = new HashMap<String, Object>();
+			
+			insertValues.put("maLSP", loaisp.getMaLSP());
+			insertValues.put("tenLSP", loaisp.getTenLSP());
+			
+			ketQua = connect.insert("loaisanpham", insertValues);
+		}catch(Exception e) {
 			System.out.println(" Error while adding to the database" + e.getMessage());
 			
-		}			
-	}
-	public void deleteLoaiSP(String id) {
-		try {
-			getConnection();
-			Statement statement = connection.createStatement();
-			String query = " DELETE FROM LoaiSP WHERE maLSP = '" + id + "'";
-			statement.executeUpdate(query);
-		} catch(SQLException e) {
-			System.out.println("Error while deleting from the database: " + e.getMessage());
+		}finally {
+			connect.Close();
 		}
+		return ketQua;
 	}
-	public void editLoaiSP(LoaiSP_DTO loaisp) {
+	
+	public int deleteLoaiSP(LoaiSP_DTO loaisp) {
+		connect = new MyConnect();
+		int ketQua = 0;
 		try {
-			getConnection();
-			Statement statement = connection.createStatement();
-			String query = "UPDATE LoaiSP SET maLSP = '"
-					+ loaisp.getMaLSP() + "', tenLSP = '"
-					+loaisp.getTenLSP() 
-					+ "'WHERE maLSP = '" + loaisp.getMaLSP()
-					+ "'";
-			statement.executeUpdate(query);
-			} catch(SQLException e) {
-				System.out.println("Error while editing the database: " + e.getMessage());
-			}
+			String condition = " maLSP = '"+ loaisp.getMaLSP()+"'";
+			ketQua = connect.delete("loaisanpham", condition);
+		} catch(Exception e) {
+			System.out.println("Error while deleting from the database: " + e.getMessage());
+		}finally {
+			connect.Close();
+		}
+		return ketQua;
+	}
+	
+	public int editLoaiSP(LoaiSP_DTO loaisp) {
+		connect = new MyConnect();
+		int ketQua = 0;
+		try {
+			HashMap<String, Object> updateValues = new HashMap<String, Object>();
+			updateValues.put("tenLSP", loaisp.getTenLSP());
+			
+			String condition = " maLSP = '"+ loaisp.getMaLSP()+"'";
+			
+			ketQua = connect.update("loaisanpham", updateValues, condition);
+		} catch(Exception e) {
+			System.out.println("Error while deleting from the database: " + e.getMessage());
+		}finally {
+			connect.Close();
+		}
+		return ketQua;
 	}
 }

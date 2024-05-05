@@ -8,6 +8,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.sql.Date;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
@@ -22,10 +23,15 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 
+import BUS.KhachHangBUS;
+import BUS.NhanVienBUS;
+import BUS.SanPham_BUS;
 import DTO.ChiTietHoaDonDTO;
 import DTO.HoaDonDTO;
+import DTO.SanPham_DTO;
 
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
@@ -33,6 +39,8 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -41,10 +49,13 @@ import javax.swing.JComboBox;
 public class HoaDonInsert extends JDialog {
 	private static final long serialVersionUID = 1L;
 	
-	private HoaDonDTO hoaDon;
+	boolean dataAccepted = false;
+	
 	private ArrayList<ChiTietHoaDonDTO> lst_CTHD;
 	
-	boolean dataAccepted = false;
+	private KhachHangBUS khachHangBUS;
+	private NhanVienBUS nhanVienBUS;
+	private SanPham_BUS sanPhamBUS;
 	
 	int mouseX, mouseY;
 	private JButton btnHuy;
@@ -64,21 +75,26 @@ public class HoaDonInsert extends JDialog {
 	private JComboBox cbBoxMaKM_CTHD;
 
 	private DefaultTableModel dtmCTHD;
+
+	private JTable tblCTHD;
 	
 
 	public HoaDonInsert() {
-		init();
-		addListener();
-		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		
-		this.lst_CTHD = new ArrayList<ChiTietHoaDonDTO>();
-		
-		setVisible(true);
+		try {
+			
+			this.lst_CTHD = new ArrayList<ChiTietHoaDonDTO>();
+			init();
+			addListener();
+			setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			
+			setVisible(true);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
-
-	
-	private void init() {
+	private void init() throws SQLException{
 		setBounds(100, 100, 700, 500);
 		setLocationRelativeTo(null);
 		getContentPane().setLayout(new BorderLayout(0, 10));
@@ -108,53 +124,63 @@ public class HoaDonInsert extends JDialog {
 		
 		JLabel lblMaHD = new JLabel("Mã hóa đơn");
 		lblMaHD.setFont(new Font("Tahoma", Font.BOLD, 15));
-		lblMaHD.setBounds(60, 50, 120, 20);
+		lblMaHD.setBounds(20, 50, 120, 20);
 		pnThongTinLeft.add(lblMaHD);
 		
 		txtMaHD = new JTextField();
 		txtMaHD.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		txtMaHD.setBounds(190, 50, 100, 20);
+		txtMaHD.setBounds(150, 50, 100, 20);
 		pnThongTinLeft.add(txtMaHD);
 		txtMaHD.setColumns(10);
 		
 		JLabel lblMaKH = new JLabel("Mã khách hàng");
 		lblMaKH.setFont(new Font("Tahoma", Font.BOLD, 15));
-		lblMaKH.setBounds(60, 80, 120, 20);
+		lblMaKH.setBounds(20, 80, 120, 20);
 		pnThongTinLeft.add(lblMaKH);
 		
 		JLabel lblMaNV = new JLabel("Mã nhân viên");
 		lblMaNV.setFont(new Font("Tahoma", Font.BOLD, 15));
-		lblMaNV.setBounds(60, 110, 120, 20);
+		lblMaNV.setBounds(20, 110, 120, 20);
 		pnThongTinLeft.add(lblMaNV);
 		
 		JLabel lblMaKM = new JLabel("Mã khuyến mãi");
 		lblMaKM.setFont(new Font("Tahoma", Font.BOLD, 15));
-		lblMaKM.setBounds(60, 140, 120, 20);
+		lblMaKM.setBounds(20, 140, 120, 20);
 		pnThongTinLeft.add(lblMaKM);
 		
 		JLabel lblNgayLap = new JLabel("Ngày lập");
 		lblNgayLap.setFont(new Font("Tahoma", Font.BOLD, 15));
-		lblNgayLap.setBounds(60, 170, 120, 20);
+		lblNgayLap.setBounds(20, 170, 120, 20);
 		pnThongTinLeft.add(lblNgayLap);
 		
 		JLabel lblTongTien = new JLabel("Tổng tiền");
 		lblTongTien.setFont(new Font("Tahoma", Font.BOLD, 15));
-		lblTongTien.setBounds(60, 200, 120, 20);
+		lblTongTien.setBounds(20, 200, 120, 20);
 		pnThongTinLeft.add(lblTongTien);
 		
 		cbBoxMaKH = new JComboBox();
+		this.khachHangBUS = new KhachHangBUS();
+		cbBoxMaKH.addItem("");
+		for(int i = 0; i < khachHangBUS.getListKH().size(); i++) {
+			cbBoxMaKH.addItem(khachHangBUS.getListKH().get(i).getMaKH());
+		}
 		cbBoxMaKH.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		cbBoxMaKH.setBounds(190, 80, 100, 20);
+		cbBoxMaKH.setBounds(150, 80, 100, 20);
 		pnThongTinLeft.add(cbBoxMaKH);
 		
 		cbBoxMaNV = new JComboBox();
+		this.nhanVienBUS = new NhanVienBUS();
+		cbBoxMaNV.addItem("");
+		for(int i = 0; i < nhanVienBUS.getList_NV().size();i++) {
+			cbBoxMaNV.addItem(nhanVienBUS.getList_NV().get(i).getMaNV());
+		}
 		cbBoxMaNV.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		cbBoxMaNV.setBounds(190, 110, 100, 20);
+		cbBoxMaNV.setBounds(150, 110, 100, 20);
 		pnThongTinLeft.add(cbBoxMaNV);
 		
 		cbBoxMaKM = new JComboBox();
 		cbBoxMaKM.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		cbBoxMaKM.setBounds(190, 140, 100, 20);
+		cbBoxMaKM.setBounds(150, 140, 100, 20);
 		pnThongTinLeft.add(cbBoxMaKM);
 		
 		Date currentDate = new Date(System.currentTimeMillis());
@@ -164,14 +190,14 @@ public class HoaDonInsert extends JDialog {
 		txtNgayLap = new JTextField(formattedDate);
 		txtNgayLap.setEditable(false);
 		txtNgayLap.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		txtNgayLap.setBounds(190, 170, 100, 20);
+		txtNgayLap.setBounds(150, 170, 100, 20);
 		pnThongTinLeft.add(txtNgayLap);
 		txtNgayLap.setColumns(10);
 		
 		txtTongTien = new JTextField("0");
 		txtTongTien.setEditable(false);
 		txtTongTien.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		txtTongTien.setBounds(190, 200, 100, 20);
+		txtTongTien.setBounds(150, 200, 100, 20);
 		pnThongTinLeft.add(txtTongTien);
 		txtTongTien.setColumns(10);
 		
@@ -203,6 +229,11 @@ public class HoaDonInsert extends JDialog {
 		pnThongTinRight.add(lblMaSP);
 		
 		cbBoxMaSP = new JComboBox();
+		this.sanPhamBUS = new SanPham_BUS();
+		cbBoxMaSP.addItem("");
+		for(int i = 0; i < sanPhamBUS.getList().size(); i++) {
+			cbBoxMaSP.addItem(sanPhamBUS.getList().get(i).getMaSP());
+		}
 		cbBoxMaSP.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		cbBoxMaSP.setBounds(190, 80, 100, 20);
 		pnThongTinRight.add(cbBoxMaSP);
@@ -221,7 +252,7 @@ public class HoaDonInsert extends JDialog {
 		lblDonGia.setBounds(60, 140, 120, 20);
 		pnThongTinRight.add(lblDonGia);
 		
-		txtDonGia = new JTextField("5000");
+		txtDonGia = new JTextField();
 		txtDonGia.setEditable(false);
 		txtDonGia.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		txtDonGia.setBounds(190, 140, 100, 20);
@@ -260,7 +291,7 @@ public class HoaDonInsert extends JDialog {
 		dtmCTHD.addColumn("Số lượng");
 		dtmCTHD.addColumn("Thành tiền");
 		
-		JTable tblCTHD = new JTable(dtmCTHD);
+		tblCTHD = new JTable(dtmCTHD);
 		
 		JScrollPane scrPaneCTHD = new JScrollPane(tblCTHD);
 		scrPaneCTHD.setPreferredSize(new Dimension(0,150));
@@ -305,6 +336,7 @@ public class HoaDonInsert extends JDialog {
 		});
 		
 		btnThem.addActionListener(e -> {
+			txtMaHD.setEditable(false);
 			themCTHD();
 		});
 		
@@ -375,30 +407,37 @@ public class HoaDonInsert extends JDialog {
 			}
 		});
 		
+		cbBoxMaSP.addActionListener(e -> {
+			String maSP = cbBoxMaSP.getSelectedItem().toString();
+			SanPham_DTO sp = null;
+			for(SanPham_DTO spDTO : sanPhamBUS.getList()) {
+				if(spDTO.getMaSP().equals(maSP)) {
+					sp = spDTO;
+					break;
+				}
+			}
+			if(sp != null) {
+				txtDonGia.setText(sp.getDonGia());
+				txtSoLuong.setText("");
+			}
+			else {
+				txtDonGia.setText("");
+				txtSoLuong.setText("");
+			}
+				
+		});
+		
+		// Listener btnThem
 		txtMaHD_CTHD.getDocument().addDocumentListener(dcmListenerbtnThem);
 		txtDonGia.getDocument().addDocumentListener(dcmListenerbtnThem);
 		txtSoLuong.getDocument().addDocumentListener(dcmListenerbtnThem);
 		txtThanhTien.getDocument().addDocumentListener(dcmListenerbtnThem);
 		
+		// Listener btnXacNhan
 		txtMaHD.getDocument().addDocumentListener(dcmListenerbtnXacNhan);
-		cbBoxMaKH.addItemListener(e ->{
-			if(cbBoxMaKH.getSelectedItem().equals(""))
-				btnXacNhan.setEnabled(false);
-			else
-				btnXacNhan.setEnabled(true);
-		});
-		cbBoxMaKM.addItemListener(e ->{
-			if(cbBoxMaKH.getSelectedItem().equals(""))
-				btnXacNhan.setEnabled(false);
-			else
-				btnXacNhan.setEnabled(true);
-		});
-		cbBoxMaNV.addItemListener(e ->{
-			if(cbBoxMaKH.getSelectedItem().equals(""))
-				btnXacNhan.setEnabled(false);
-			else
-				btnXacNhan.setEnabled(true);
-		});
+		cbBoxMaKH.addItemListener(iListenerbtnXacNhan);
+		cbBoxMaNV.addItemListener(iListenerbtnXacNhan);
+		
 	}
 	
 	
@@ -469,9 +508,20 @@ public class HoaDonInsert extends JDialog {
 			updateButtonEnable();
 		}
 		private void updateButtonEnable() {
-			btnXacNhan.setEnabled(!txtMaHD.getText().isEmpty());
+			btnXacNhan.setEnabled(!txtMaHD.getText().isEmpty() && cbBoxMaKH.getSelectedIndex() > 0 && cbBoxMaNV.getSelectedIndex() > 0 );
 		}
-	};;
+	};
+	
+	ItemListener iListenerbtnXacNhan = new ItemListener() {
+		
+		@Override
+		public void itemStateChanged(ItemEvent e) {
+			if(cbBoxMaKH.getSelectedIndex() > 0 && cbBoxMaNV.getSelectedIndex() > 0 && !txtMaHD.getText().isEmpty())
+				btnXacNhan.setEnabled(true);
+			else
+				btnXacNhan.setEnabled(false);
+		}
+	};
 	
 	public HoaDonDTO getHoaDon() {
 		return new HoaDonDTO(

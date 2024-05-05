@@ -61,7 +61,7 @@ public class MyConnect {
 		 */
 		for (String key : columnValues.keySet()) {
 			query.append(key + ",");
-			if(columnValues.get(key) instanceof String)
+			if(columnValues.get(key) instanceof String && !columnValues.get(key).equals("null"))
 				values.append("'"+ columnValues.get(key)+ "',");
 			else if(columnValues.get(key) instanceof Date)
 				values.append("'"+ columnValues.get(key)+ "',");// Nếu giá trị là chuỗi hoặc Date sẽ thêm vào '' ngược lại thì truyền thẳng giá trị vào
@@ -185,8 +185,10 @@ public class MyConnect {
 	public static void main(String[] args) {
 		MyConnect cn = new MyConnect();
 		try {
-			
-			
+			if(cn.connect == null) {
+				System.out.println("huhu");
+			}else
+				System.out.println(cn.connect);
 		} catch (Exception e) {
 			// TODO: handle exception
 		} finally {

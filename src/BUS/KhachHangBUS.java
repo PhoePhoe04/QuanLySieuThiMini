@@ -7,7 +7,6 @@ import java.util.regex.Pattern;
 
 import DAO.KhachHangDAO;
 import DTO.KhachHangDTO;
-import DTO.NhanVienDTO;
 
 public class KhachHangBUS {
 	private ArrayList<KhachHangDTO> list_KH;
@@ -69,6 +68,10 @@ public class KhachHangBUS {
 		return false;
 	}
 	
+	public ArrayList<KhachHangDTO> getListKH(){
+		return this.list_KH;
+	}
+	
 	
 //	=============================== CÁC HÀM XỬ LÝ LOGIC ===============================
 	private boolean check(KhachHangDTO kh) {
@@ -104,5 +107,16 @@ public class KhachHangBUS {
 		return true;
 	}
 	
-
+	public static void main(String[] args) {
+		try {
+			KhachHangBUS kh = new KhachHangBUS();
+			ArrayList<KhachHangDTO> lst = kh.getListKH();
+			System.out.println(lst.size());
+			for (KhachHangDTO khachHangDTO : lst) {
+				System.out.println(khachHangDTO.toString());
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+	}
 }

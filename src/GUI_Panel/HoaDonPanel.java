@@ -15,6 +15,8 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
+import BUS.ChiTietHoaDonBUS;
+import BUS.HoaDonBUS;
 import DTO.ChiTietHoaDonDTO;
 import DTO.HoaDonDTO;
 import GUI_Dialog.HoaDonInsert;
@@ -40,18 +42,21 @@ import java.awt.event.ActionEvent;
 
 public class HoaDonPanel extends JPanel {
 	
+	private HoaDonBUS hoaDonBUS;
+	private ChiTietHoaDonBUS cthdBUS;
+	
 	private JButton btnThem;
 	private JButton btnSua;
 	private DefaultTableModel dtmHoaDon;
 	private DefaultTableModel dtmCTHD;
-	private ArrayList<HoaDonDTO> list_HD;
-	private ArrayList<ChiTietHoaDonDTO> list_CTHD;
 	private JButton btnXoa;
 	private JTable tblHoaDon;
 	private JTable tblCTHD;
 	
 	
 	public HoaDonPanel() {
+		this.hoaDonBUS = new HoaDonBUS();
+		this.cthdBUS = new ChiTietHoaDonBUS();
 		init();
 		addActionListener();
 	}
@@ -103,7 +108,18 @@ public class HoaDonPanel extends JPanel {
 		add(pnCenter, BorderLayout.CENTER);
 		pnCenter.setLayout(null);
 		
-		addRow();
+		dtmHoaDon = new DefaultTableModel();
+		dtmHoaDon.addColumn("Mã hóa đơn");
+		dtmHoaDon.addColumn("Mã khách hàng");
+		dtmHoaDon.addColumn("Mã nhân viên");
+		dtmHoaDon.addColumn("Mã khuyến mãi");
+		dtmHoaDon.addColumn("Ngày lập");
+		dtmHoaDon.addColumn("Tổng tiền");
+		
+		for(int i = 0; i < hoaDonBUS.getList_hoadon().size(); i++) {
+			HoaDonDTO hd = hoaDonBUS.getList_hoadon().get(i);
+			dtmHoaDon.addRow(new Object[] {hd.getMaHD(), hd.getMaKH(), hd.getMaNV(), hd.getMaKM(), hd.getNgayLap(), hd.getTongTien()});
+		}
 		
 		tblHoaDon = new JTable(dtmHoaDon);
 	
@@ -116,6 +132,19 @@ public class HoaDonPanel extends JPanel {
 		lblHoaDon.setFont(new Font("Tahoma", Font.BOLD, 20));
 		lblHoaDon.setBounds(20, 10, 200, 30);
 		pnCenter.add(lblHoaDon);
+		
+		dtmCTHD = new DefaultTableModel();
+		dtmCTHD.addColumn("Mã hóa đơn");
+		dtmCTHD.addColumn("Mã sản phẩm");
+		dtmCTHD.addColumn("Mã khuyến mãi");
+		dtmCTHD.addColumn("Đơn giá");
+		dtmCTHD.addColumn("Số lượng");
+		dtmCTHD.addColumn("Thành tiền");
+		
+		for(int i = 0; i < cthdBUS.getList_CTHD().size(); i++) {
+			ChiTietHoaDonDTO cthd = cthdBUS.getList_CTHD().get(i);
+			dtmCTHD.addRow(new Object[] {cthd.getMaHD(), cthd.getMaSP(), cthd.getMaKM(), cthd.getSoLuong(), cthd.getDonGia(), cthd.getThanhTien()});
+		}
 			
 		tblCTHD = new JTable(dtmCTHD);
 		
@@ -138,8 +167,8 @@ public class HoaDonPanel extends JPanel {
 			HoaDonInsert dialog = new HoaDonInsert();
 			if(dialog.showDialog(HoaDonPanel.this)) {
 				HoaDonDTO hoaDon = dialog.getHoaDon();
-				list_HD.add(hoaDon);
-				addRow(hoaDon);
+				ArrayList<ChiTietHoaDonDTO> list = dialog.getCTHD();
+				addData(hoaDon, list);
 			}
 			System.out.println(dialog.showDialog(HoaDonPanel.this));
 		});
@@ -159,94 +188,27 @@ public class HoaDonPanel extends JPanel {
 		});
 	}
 	
-	
-	
 	/*
 	 *  CÁC HẢM HỖ TRỢ
 	 */
-	public void addList() {
-		this.list_HD = new ArrayList<HoaDonDTO>();
-		HoaDonDTO hoaDon_1 = new HoaDonDTO("HD01", "KH01", "NV01", "KM01", Date.valueOf("2004-06-15"), 12233);
-		HoaDonDTO hoaDon_2 = new HoaDonDTO("HD02", "KH01", "NV01", "KM01", Date.valueOf("2004-06-15"), 12233);
-		list_HD.add(hoaDon_1);
-		list_HD.add(hoaDon_2);
-		
-		this.list_CTHD = new ArrayList<ChiTietHoaDonDTO>();
-		ChiTietHoaDonDTO cthd_1_1 = new ChiTietHoaDonDTO("HD01", "SP01", "KM01", 4, 100, 400);
-		ChiTietHoaDonDTO cthd_1_2 = new ChiTietHoaDonDTO("HD01", "SP02", "KM01", 4, 100, 400);
-		ChiTietHoaDonDTO cthd_1_3 = new ChiTietHoaDonDTO("HD01", "SP03", "KM01", 4, 100, 400);
-		ChiTietHoaDonDTO cthd_2_1 = new ChiTietHoaDonDTO("HD02", "SP01", "KM01", 4, 100, 400);
-		ChiTietHoaDonDTO cthd_2_2 = new ChiTietHoaDonDTO("HD02", "SP01", "KM01", 4, 100, 400);
-		ChiTietHoaDonDTO cthd_2_3 = new ChiTietHoaDonDTO("HD02", "SP01", "KM01", 4, 100, 400);
-		ChiTietHoaDonDTO cthd_1_4 = new ChiTietHoaDonDTO("HD01", "SP05", "KM01", 4, 100, 400);
-		ChiTietHoaDonDTO cthd_1_5 = new ChiTietHoaDonDTO("HD01", "SP04", "KM01", 4, 100, 400);
-		ChiTietHoaDonDTO cthd_2_4 = new ChiTietHoaDonDTO("HD02", "SP01", "KM01", 4, 100, 400);
-		ChiTietHoaDonDTO cthd_2_5 = new ChiTietHoaDonDTO("HD02", "SP01", "KM01", 4, 100, 400);
-		ChiTietHoaDonDTO cthd_2_6 = new ChiTietHoaDonDTO("HD02", "SP01", "KM01", 4, 100, 400);
-		ChiTietHoaDonDTO cthd_2_7 = new ChiTietHoaDonDTO("HD02", "SP01", "KM01", 4, 100, 400);
-		
-		list_CTHD.add(cthd_1_1);
-		list_CTHD.add(cthd_1_2);
-		list_CTHD.add(cthd_1_3);
-		list_CTHD.add(cthd_2_1);
-		list_CTHD.add(cthd_2_2);
-		list_CTHD.add(cthd_2_3);
-		list_CTHD.add(cthd_1_4);
-		list_CTHD.add(cthd_1_5);
-		list_CTHD.add(cthd_2_4);
-		list_CTHD.add(cthd_2_5);
-		list_CTHD.add(cthd_2_6);
-		list_CTHD.add(cthd_2_7);
-
-	}
-	
-	private void addRow(HoaDonDTO hoaDon, ArrayList<ChiTietHoaDonDTO> lst_CTHD) {
-		
-	}
-	
-	private void addRow() {
-		addList();
-		
-		dtmHoaDon = new DefaultTableModel();
-		
-		dtmHoaDon.addColumn("Mã hóa đơn");
-		dtmHoaDon.addColumn("Mã khách hàng");
-		dtmHoaDon.addColumn("Mã nhân viên");
-		dtmHoaDon.addColumn("Mã khuyến mãi");
-		dtmHoaDon.addColumn("Ngày lập");
-		dtmHoaDon.addColumn("Tổng tiền");
-		
-		for(int i = 0; i < list_HD.size(); i++) {
-			HoaDonDTO hoaDon = list_HD.get(i);
-			Object[] data = new Object[] {hoaDon.getMaHD(), hoaDon.getMaKH(), hoaDon.getMaNV(), hoaDon.getMaKM(), hoaDon.getNgayLap(), hoaDon.getTongTien()};
-			dtmHoaDon.addRow(data);
+	public void addData(HoaDonDTO hoaDon, ArrayList<ChiTietHoaDonDTO> list_CTHD) {
+		if(hoaDon != null) 
+			if(hoaDonBUS.them(hoaDon))
+				dtmHoaDon.addRow(new Object[] {hoaDon.getMaHD(), hoaDon.getMaKH(), hoaDon.getMaNV(), hoaDon.getMaKM() == "null" ? "": hoaDon.getMaKM(), hoaDon.getNgayLap(), hoaDon.getTongTien()});
+			
+		if(list_CTHD != null) {
+			for (ChiTietHoaDonDTO cthd : list_CTHD) {
+				if(cthdBUS.them(cthd))
+					dtmCTHD.addRow(new Object[] {cthd.getMaHD(), cthd.getMaSP(), cthd.getMaKM() == "null" ? "":cthd.getMaKM(), cthd.getSoLuong(), cthd.getDonGia(), cthd.getThanhTien()});
+			}
 		}
-	
-		dtmCTHD = new DefaultTableModel();
-		
-		dtmCTHD.addColumn("Mã hóa đơn");
-		dtmCTHD.addColumn("Mã sản phẩm");
-		dtmCTHD.addColumn("Mã khuyến mãi");
-		dtmCTHD.addColumn("Số lượng");
-		dtmCTHD.addColumn("Đơn giá");
-		dtmCTHD.addColumn("Thành tiền");
-		
-		for(int i = 0; i < list_CTHD.size(); i++) {
-			ChiTietHoaDonDTO cthd = list_CTHD.get(i);
-			Object[] data = new Object[] {cthd.getMaHD(), cthd.getMaSP(), cthd.getMaKM(), cthd.getSoLuong(), cthd.getDonGia(), cthd.getThanhTien()};
-			dtmCTHD.addRow(data);
-		}
-		
+			
 	}
-	
-	private void addRow(HoaDonDTO hoaDon) {
-		dtmHoaDon.addRow(new Object[] {
-				hoaDon.getMaHD(), 
-				hoaDon.getMaKH(), 
-				hoaDon.getMaNV(), hoaDon.getMaKM(), 
-				hoaDon.getNgayLap(), 
-				hoaDon.getTongTien()
-		});
+	public void addData(HoaDonDTO hoaDon) {
+		addData(hoaDon,null);
+	}
+	public void addData(ArrayList<ChiTietHoaDonDTO> list_CTHD) {
+		addData(null,list_CTHD);
 	}
 	
 	private void xoaHD_CTHD() {

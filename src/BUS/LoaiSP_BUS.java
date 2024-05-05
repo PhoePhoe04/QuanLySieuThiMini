@@ -11,6 +11,8 @@ public class LoaiSP_BUS {
 	private LoaiSP_DAO db;
 	  
 	public LoaiSP_BUS() {
+		this.db = new LoaiSP_DAO();
+		this.loaisanphams = db.getLoaiSPs();
 	}
 	
 	public boolean checkid(String id) {
@@ -31,9 +33,12 @@ public class LoaiSP_BUS {
 		}
 	}
 	
-	public void deleteLoaiSP(String id) {
-		loaisanphams.removeIf(sanpham -> sanpham.getMaLSP().equals(id));
-		db.deleteLoaiSP(id);
+	public boolean deleteLoaiSP(LoaiSP_DTO lsp) {
+		if(loaisanphams.removeIf(sanpham -> sanpham.equals(lsp))) {
+			db.deleteLoaiSP(lsp);
+			return true;
+		}
+		return false;
 	}
 
 	public void editLoaiSp(LoaiSP_DTO sanpham) {
@@ -46,9 +51,21 @@ public class LoaiSP_BUS {
 		}
 	}
 	
-	public void getdata() {
-		db = new LoaiSP_DAO();
-		loaisanphams = db.getLoaiSPs();
-		}
-	
+	public ArrayList<LoaiSP_DTO> getList(){
+		return this.loaisanphams;
 	}
+	
+	public static void main(String[] args) {
+		LoaiSP_BUS lspBus = new LoaiSP_BUS();
+		ArrayList<LoaiSP_DTO> list = lspBus.getList();
+		LoaiSP_DTO lsp = new LoaiSP_DTO("LSP004", "Bánh kẹo");
+		try {
+			for (LoaiSP_DTO loaiSP_DTO : list) {
+				System.out.println(loaiSP_DTO.toString());
+			}
+			System.out.println(lspBus.deleteLoaiSP(lsp));
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+	}
+}

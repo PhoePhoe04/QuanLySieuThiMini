@@ -66,7 +66,7 @@ public class HoaDonBUS {
 		}
 		System.out.println();
 		
-		System.out.println(hoaDonBUS.xoa(hoaDon) ? "YES\n":"NO\n");
+		System.out.println(hoaDonBUS.them(hoaDon) ? "YES\n":"NO\n");
 		
 		System.out.println("AFTER");
 		for (HoaDonDTO hoaDonDTO : list) {
