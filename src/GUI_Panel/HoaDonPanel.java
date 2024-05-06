@@ -73,12 +73,13 @@ public class HoaDonPanel extends JPanel {
 		
 		JPanel pnTop = new JPanel();
 		pnTop.setBorder(BorderFactory.createLineBorder(Color.black, 2));
-		pnTop.setPreferredSize(new Dimension(1200, 70));
+		pnTop.setPreferredSize(new Dimension(1200, 80));
 		add(pnTop, BorderLayout.NORTH);
-		pnTop.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10));
+		pnTop.setLayout(null);
 		
 		
 		btnThem = new JButton("Thêm");
+		btnThem.setBounds(20, 15, 150, 50);
 		btnThem.setHorizontalAlignment(SwingConstants.LEFT);
 		btnThem.setIcon(new ImageIcon(HoaDonPanel.class.getResource("/Image/add_icon.png")));
 		btnThem.setFont(new Font("Tahoma", Font.BOLD, 25));
@@ -87,6 +88,7 @@ public class HoaDonPanel extends JPanel {
 		pnTop.add(btnThem);
 		
 		btnSua = new JButton("Sửa");
+		btnSua.setBounds(180, 15, 150, 50);
 		btnSua.setHorizontalAlignment(SwingConstants.LEFT);
 		btnSua.setIcon(new ImageIcon(HoaDonPanel.class.getResource("/Image/edit_icon.png")));
 		btnSua.setFont(new Font("Tahoma", Font.BOLD, 25));
@@ -94,6 +96,7 @@ public class HoaDonPanel extends JPanel {
 		pnTop.add(btnSua);
 		
 		btnXoa = new JButton("Xóa");
+		btnXoa.setBounds(340, 15, 150, 50);
 		btnXoa.setHorizontalAlignment(SwingConstants.LEFT);
 		btnXoa.setIcon(new ImageIcon(HoaDonPanel.class.getResource("/Image/delete2_icon.png")));
 		btnXoa.setFont(new Font("Tahoma", Font.BOLD, 25));
@@ -125,7 +128,7 @@ public class HoaDonPanel extends JPanel {
 	
 		JScrollPane scrPaneHoaDon = new JScrollPane(tblHoaDon);
 		scrPaneHoaDon.setBorder(BorderFactory.createLineBorder(Color.black,2));
-		scrPaneHoaDon.setBounds(20, 50, 650, 650);
+		scrPaneHoaDon.setBounds(20, 50, 650, 640);
 		pnCenter.add(scrPaneHoaDon);
 		
 		JLabel lblHoaDon = new JLabel("HÓA ĐƠN");
@@ -150,7 +153,7 @@ public class HoaDonPanel extends JPanel {
 		
 		JScrollPane scrPaneChiTietHoaDon = new JScrollPane(tblCTHD);
 		scrPaneChiTietHoaDon.setBorder(BorderFactory.createLineBorder(Color.black,2));;
-		scrPaneChiTietHoaDon.setBounds(680, 50, 500, 650);
+		scrPaneChiTietHoaDon.setBounds(680, 50, 500, 640);
 		pnCenter.add(scrPaneChiTietHoaDon);
 		
 		JLabel lblCTHD = new JLabel("CHI TIẾT HÓA ĐƠN");

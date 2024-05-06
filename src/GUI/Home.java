@@ -201,6 +201,8 @@ public class Home extends JFrame {
 		pnLeftBottom.add(btnSanPham, gbc_btnSanPham);
 		
 		btnNhaCungCap = new JButton("Nhà cung cấp");
+		btnNhaCungCap.setHorizontalAlignment(SwingConstants.LEFT);
+		btnNhaCungCap.setHorizontalTextPosition(SwingConstants.RIGHT);
 		btnNhaCungCap.setIcon(new ImageIcon(Home.class.getResource("/Image/supplier_icon.png")));
 		btnNhaCungCap.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
 		GridBagConstraints gbc_btnNhaCungCap = new GridBagConstraints();
@@ -211,6 +213,9 @@ public class Home extends JFrame {
 		pnLeftBottom.add(btnNhaCungCap, gbc_btnNhaCungCap);
 		
 		btnPhieuNhap = new JButton("Phiếu nhập");
+		btnPhieuNhap.setHorizontalAlignment(SwingConstants.LEFT);
+		btnPhieuNhap.setHorizontalTextPosition(SwingConstants.RIGHT);
+		btnPhieuNhap.setIcon(new ImageIcon(Home.class.getResource("/Image/phieunhaphang_icon.png")));
 		btnPhieuNhap.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 18));
 		GridBagConstraints gbc_btnPhieuNhap = new GridBagConstraints();
 		gbc_btnPhieuNhap.fill = GridBagConstraints.BOTH;

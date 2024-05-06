@@ -99,22 +99,22 @@ public class PhieuNhapPanel extends JPanel {
         // TOP
         JPanel pnTop = new JPanel();
         pnTop.setBorder(BorderFactory.createLineBorder(Color.black, 2));
-        pnTop.setPreferredSize(new Dimension(1200, 70));
+        pnTop.setPreferredSize(new Dimension(1200, 80));
         add(pnTop, BorderLayout.NORTH);
-        pnTop.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10));
+        pnTop.setLayout(null);
 
         btnThem = new JButton("Thêm");
+        btnThem.setBounds(20, 15, 150, 50);
         btnThem.setHorizontalAlignment(SwingConstants.LEFT);
         btnThem.setIcon(new ImageIcon(PhieuNhapPanel.class.getResource("/Image/add_icon.png")));
         btnThem.setFont(new Font("Tahoma", Font.BOLD, 25));
-        btnThem.setPreferredSize(new Dimension(150, 50));
         pnTop.add(btnThem);
 
         btnXoa = new JButton("Xóa");
+        btnXoa.setBounds(180, 15, 150, 50);
         btnXoa.setHorizontalAlignment(SwingConstants.LEFT);
         btnXoa.setIcon(new ImageIcon(PhieuNhapPanel.class.getResource("/Image/delete2_icon.png")));
         btnXoa.setFont(new Font("Tahoma", Font.BOLD, 25));
-        btnXoa.setPreferredSize(new Dimension(150, 50));
         pnTop.add(btnXoa);
 
         // CENTER
@@ -128,7 +128,7 @@ public class PhieuNhapPanel extends JPanel {
 
         JScrollPane scrPanePhieuNhap = new JScrollPane(tblPhieuNhap);
         scrPanePhieuNhap.setBorder(BorderFactory.createLineBorder(Color.black, 2));
-        scrPanePhieuNhap.setBounds(20, 50, 650, 650);
+        scrPanePhieuNhap.setBounds(20, 50, 650, 640);
         pnCenter.add(scrPanePhieuNhap);
 
         JLabel lblPhieuNhap = new JLabel("PHIẾU NHẬP");
@@ -140,7 +140,7 @@ public class PhieuNhapPanel extends JPanel {
 
         JScrollPane scrPaneChiTiet = new JScrollPane(tblChiTiet);
         scrPaneChiTiet.setBorder(BorderFactory.createLineBorder(Color.black, 2));
-        scrPaneChiTiet.setBounds(680, 50, 500, 650);
+        scrPaneChiTiet.setBounds(680, 50, 500, 640);
         pnCenter.add(scrPaneChiTiet);
 
         JLabel lblChiTiet = new JLabel("CHI TIẾT PHIẾU NHẬP");
