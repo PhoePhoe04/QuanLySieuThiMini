@@ -42,11 +42,12 @@ public class ChiTietHoaDonDAO {
 		try {
 			HashMap<String, Object> updateValues = new HashMap<String, Object>();
 			
+			updateValues.put("maKM", cthd.getMaKM());
 			updateValues.put("soLuong", cthd.getSoLuong());
 			updateValues.put("donGia", cthd.getDonGia());
 			updateValues.put("thanhTien", cthd.getThanhTien());
 			
-			String condition = " maHD = '"+ cthd.getMaHD()+ "'"+ " && "+ " maSP ='"+ cthd.getMaSP()+ "'"+ " && "+ " maKM ='"+cthd.getMaKM()+  "'"; 
+			String condition = " maHD = '"+ cthd.getMaHD()+ "'"+ " && "+ " maSP ='"+ cthd.getMaSP()+ "'"; 
 			
 			ketQua = connect.update("chitiethoadon", updateValues, condition);
 		} catch (Exception e) {
@@ -64,7 +65,7 @@ public class ChiTietHoaDonDAO {
 		int ketQua = 0;
 		
 		try {
-			String condition = " maHD = '"+ cthd.getMaHD()+ "'"+ " && "+ " maSP ='"+ cthd.getMaSP()+ "'"+ " && "+ " maKM ='"+cthd.getMaKM()+  "'"; 
+			String condition = " maHD = '"+ cthd.getMaHD()+ "'"+ " && "+ " maSP ='"+ cthd.getMaSP()+ "'"; 
 			
 			ketQua = connect.delete("chitiethoadon", condition);
 		} catch (Exception e) {

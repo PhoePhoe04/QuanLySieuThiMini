@@ -105,7 +105,7 @@ public class MyConnect {
 	public int update(String tableName, HashMap<String, Object> columnValues, String condition) {
 		StringBuilder query = new StringBuilder(" UPDATE "+ tableName+ " SET ");
 		for (String key : columnValues.keySet()) {
-			if(columnValues.get(key) instanceof String)
+			if(columnValues.get(key) instanceof String && !columnValues.get(key).equals("null"))
 				query.append(key+ " = '"+ columnValues.get(key).toString()+ "',");
 			else if(columnValues.get(key) instanceof Date)
 				query.append(key+ " = '"+ columnValues.get(key).toString()+ "',");

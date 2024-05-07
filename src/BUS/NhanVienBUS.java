@@ -59,8 +59,8 @@ public class NhanVienBUS {
 	 * Sửa 1 nhân viên 
 	 */
 	public boolean sua(NhanVienDTO nv) throws SQLException{
-		if(nv.getSoDienThoai().length() != 10 || checkSoDienThoai(nv.getSoDienThoai()) || !(checkMaNV(nv.getMaNV())) )
-			return false;
+//		if(nv.getSoDienThoai().length() != 10 || checkSoDienThoai(nv.getSoDienThoai()) || !(checkMaNV(nv.getMaNV())) )
+//			return false;
 		if(nvDAO.sua(nv) > 0) {
 			for (NhanVienDTO nhanVienDTO : list_NV) {
 				if(nhanVienDTO.getMaNV().equals(nv.getMaNV())) {
