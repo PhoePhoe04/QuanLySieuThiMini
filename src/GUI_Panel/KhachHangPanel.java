@@ -59,8 +59,6 @@ public class KhachHangPanel extends JPanel {
 		}
 		
 	}
-	
-
 	/**
 	 * Create the frame.
 	 */
@@ -127,6 +125,7 @@ public class KhachHangPanel extends JPanel {
 	   tblKhachHang = new JTable(dtmKhachHang);
 	   
 	   JScrollPane scrollPane = new JScrollPane(tblKhachHang);
+	   scrollPane.setBorder(BorderFactory.createLineBorder(Color.black,2));
 	   scrollPane.setBounds(20, 60, 1160, 640);
 	   pnCenter.add(scrollPane);
 	   
@@ -143,22 +142,35 @@ public class KhachHangPanel extends JPanel {
 	 */
 	private void addActionListener() {
 		btnThem.addActionListener(e ->{
-			KhachHangInsert data = new KhachHangInsert();
-			if(data.showDialog(this)) {
-				KhachHangDTO kh = data.getKhachHang();
-				dtmKhachHang.addRow(new Object[] {kh.getMaKH(), kh.getHoKH(), kh.getTenKH(), kh.isGioiTinh() == false ? "Nam":"Nữ", kh.getDiaChi(), kh.getSoDienThoai(), kh.getGmail()});
-				System.out.println(kh.isGioiTinh());
-			}
+			themKhachHang();
 		});
 		
 		btnSua.addActionListener(e -> {
 			suaKhachHang();
+		});
+		
+		btnXoa.addActionListener(e -> {
+			xoaKhachHang();
 		});
 	}
 	
 	/*
 	 * Function
 	 */
+	private void themKhachHang() {
+		KhachHangInsert data = new KhachHangInsert();
+		if(data.showDialog(this)) {
+			KhachHangDTO kh = data.getKhachHang();
+			try {
+				if(khachHangBUS.them(kh)) {
+					dtmKhachHang.addRow(new Object[] {kh.getMaKH(), kh.getHoKH(), kh.getTenKH(), kh.isGioiTinh() == false ? "Nam":"Nữ", kh.getDiaChi(), kh.getSoDienThoai(), kh.getGmail()});
+				}
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+			
+		}
+	}
 	private void suaKhachHang() {
 		int selectedRow = tblKhachHang.getSelectedRow();
         if (selectedRow != -1) {
@@ -183,9 +195,33 @@ public class KhachHangPanel extends JPanel {
         		
         } else {
         	JOptionPane.showMessageDialog(this, 
-					"Bạn chưa chọn hóa đơn muốn sửa!"
+					"Bạn chưa chọn khách hàng muốn sửa!"
 					);
         }
+	}
+	
+	private void xoaKhachHang() {
+		int selectedRow = tblKhachHang.getSelectedRow();
+		if(selectedRow != -1) {
+			int option = JOptionPane.showConfirmDialog(this, 
+					"Bạn có chắc muốn xóa khách hàng này",
+					"Xác nhận xóa khách hàng",
+					JOptionPane.YES_NO_OPTION
+					);
+			if(option == JOptionPane.YES_OPTION) {
+				KhachHangDTO kh = khachHangBUS.getListKH().get(selectedRow);
+				try {
+					if(khachHangBUS.xoa(kh)) 
+						dtmKhachHang.removeRow(selectedRow);
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}else {
+			JOptionPane.showMessageDialog(this, 
+					"Bạn chưa chọn khách hàng muốn xóa"
+					);
+		}
 	}
 	
 	public static void main(String[] args) {

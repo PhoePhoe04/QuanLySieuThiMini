@@ -28,6 +28,7 @@ import java.awt.Font;
 import java.awt.FlowLayout;
 import java.util.ArrayList;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 
 public class NhaCungCapPanel extends JPanel {
@@ -141,7 +142,19 @@ public class NhaCungCapPanel extends JPanel {
                         JOptionPane.YES_NO_OPTION
                 );
                 if (option == JOptionPane.YES_OPTION) {
-                    removeRowFromTblNhaCungCap(selectedRow);
+                	NhaCungCapDTO ncc = new NhaCungCapDTO(
+                			dtmNhaCungCap.getValueAt(selectedRow, 0).toString(),
+                			dtmNhaCungCap.getValueAt(selectedRow, 1).toString(),
+                			dtmNhaCungCap.getValueAt(selectedRow, 2).toString(),
+                			dtmNhaCungCap.getValueAt(selectedRow, 3).toString()
+                			);
+                	try {
+						if(nccBUS.xoa(ncc))
+						removeRowFromTblNhaCungCap(selectedRow);
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
                 }
             } else {
                 JOptionPane.showMessageDialog(this,
@@ -157,7 +170,6 @@ public class NhaCungCapPanel extends JPanel {
      */
 
     private void removeRowFromTblNhaCungCap(int rowIndex) {
-        DefaultTableModel dtmNhaCungCap = (DefaultTableModel) tblNhaCungCap.getModel();
         dtmNhaCungCap.removeRow(rowIndex);
     }
     public static void main(String[] args) {

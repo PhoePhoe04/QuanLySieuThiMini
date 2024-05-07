@@ -194,7 +194,7 @@ public class HoaDonPanel extends JPanel {
 	/*
 	 *  CÁC HẢM HỖ TRỢ
 	 */
-	public void addData(HoaDonDTO hoaDon, ArrayList<ChiTietHoaDonDTO> list_CTHD) {
+	private void addData(HoaDonDTO hoaDon, ArrayList<ChiTietHoaDonDTO> list_CTHD) {
 		if(hoaDon != null) 
 			if(hoaDonBUS.them(hoaDon))
 				dtmHoaDon.addRow(new Object[] {hoaDon.getMaHD(), hoaDon.getMaKH(), hoaDon.getMaNV(), hoaDon.getMaKM() == "null" ? "": hoaDon.getMaKM(), hoaDon.getNgayLap(), hoaDon.getTongTien()});
@@ -207,10 +207,10 @@ public class HoaDonPanel extends JPanel {
 		}
 			
 	}
-	public void addData(HoaDonDTO hoaDon) {
+	private void addData(HoaDonDTO hoaDon) {
 		addData(hoaDon,null);
 	}
-	public void addData(ArrayList<ChiTietHoaDonDTO> list_CTHD) {
+	private void addData(ArrayList<ChiTietHoaDonDTO> list_CTHD) {
 		addData(null,list_CTHD);
 	}
 	
@@ -224,14 +224,48 @@ public class HoaDonPanel extends JPanel {
         			);
         	if(option == JOptionPane.YES_OPTION) {
         		String maHD = (String) tblHoaDon.getValueAt(selectedRow, tblHoaDon.getColumn("Mã hóa đơn").getModelIndex());
-	            removeRowFromTblHoaDon(selectedRow);
-	            removeRowsFromTblCTHD(maHD);
+        		try {
+        			if(xoaData_CTHD(maHD)) {
+        				removeRowsFromTblCTHD(maHD);
+        				removeRowFromTblHoaDon(selectedRow);
+        			}
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
         	}
         } else {
         	JOptionPane.showMessageDialog(this, 
 					"Bạn chưa chọn hóa đơn muốn xóa!"
 					);
         }
+	}
+	
+	private boolean xoaData_CTHD(String maHD) {
+		if(maHD != null) {
+			ArrayList<ChiTietHoaDonDTO> list = cthdBUS.getList_CTHD();
+			for(int i = 0; i < list.size(); i++) {
+				ChiTietHoaDonDTO cthdDTO = list.get(i);
+				if(cthdDTO.getMaHD().equals(maHD)) 
+					if(!cthdBUS.xoa(cthdDTO)) 
+						return false;
+			}
+		}
+		return true;
+	}
+
+	private void removeRowFromTblHoaDon(int rowIndex) {
+		HoaDonDTO hd = hoaDonBUS.getList_hoadon().get(rowIndex);
+		if(hoaDonBUS.xoa(hd))
+			dtmHoaDon.removeRow(rowIndex);
+	}
+	
+	private void removeRowsFromTblCTHD(String maHD) {
+	    for (int i = dtmCTHD.getRowCount() - 1; i >= 0; i--) {
+	        if (maHD.equals(dtmCTHD.getValueAt(i, dtmCTHD.findColumn("Mã hóa đơn")))) {
+	            dtmCTHD.removeRow(i);
+	        }
+	    }
 	}
 	
 	private void filter_tblCTHD(String selectedMaHD) {
@@ -247,22 +281,7 @@ public class HoaDonPanel extends JPanel {
 				 return maHD.equals(selectedMaHD);
 			 }
 		 };
-		 sorter.setRowFilter(filter);
-	}
-	
-
-	private void removeRowFromTblHoaDon(int rowIndex) {
-	    DefaultTableModel dtmHoaDon = (DefaultTableModel) tblHoaDon.getModel();
-	    dtmHoaDon.removeRow(rowIndex);
-	}
-	
-	private void removeRowsFromTblCTHD(String maHD) {
-	    DefaultTableModel dtmCTHD = (DefaultTableModel) tblCTHD.getModel();
-	    for (int i = dtmCTHD.getRowCount() - 1; i >= 0; i--) {
-	        if (maHD.equals(dtmCTHD.getValueAt(i, dtmCTHD.findColumn("Mã hóa đơn")))) {
-	            dtmCTHD.removeRow(i);
-	        }
-	    }
+		 sorter.setRowFilter(filter); 
 	}
 	
 
