@@ -39,6 +39,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.ActionEvent;
+import javax.swing.JComboBox;
+import javax.swing.JTextField;
 
 public class HoaDonPanel extends JPanel {
 	
@@ -52,6 +54,9 @@ public class HoaDonPanel extends JPanel {
 	private JButton btnXoa;
 	private JTable tblHoaDon;
 	private JTable tblCTHD;
+	private JTextField txtTra;
+	private JComboBox cbBoxTra;
+	private JButton btnTra;
 	
 	
 	public HoaDonPanel() {
@@ -103,6 +108,35 @@ public class HoaDonPanel extends JPanel {
 		btnXoa.setPreferredSize(new Dimension(150,50));
 		pnTop.add(btnXoa);
 		
+		JButton btnTKNC = new JButton("Tìm");
+		btnTKNC.setFont(new Font("Tahoma", Font.BOLD, 25));
+		btnTKNC.setBounds(500, 15, 150, 50);
+		pnTop.add(btnTKNC);
+		
+		cbBoxTra = new JComboBox();
+		
+		cbBoxTra.addItem("");
+		cbBoxTra.addItem("Mã hóa đơn");
+		cbBoxTra.addItem("Mã khách hàng");
+		cbBoxTra.addItem("Mã nhân viên");
+		cbBoxTra.addItem("Mã khuyến mãi");
+		cbBoxTra.addItem("Ngày lập");
+		cbBoxTra.addItem("Tổng tiền");
+		
+		cbBoxTra.setBounds(750, 25, 150, 30);
+		pnTop.add(cbBoxTra);
+		
+		txtTra = new JTextField();
+		txtTra.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		txtTra.setBounds(910, 25, 150, 30);
+		pnTop.add(txtTra);
+		txtTra.setColumns(10);
+		
+		btnTra = new JButton("Tra");
+		btnTra.setFont(new Font("Tahoma", Font.BOLD, 18));
+		btnTra.setBounds(1070, 25, 70, 30);
+		pnTop.add(btnTra);
+		
 		
 //		============================ CENTER ============================
 		
@@ -119,12 +153,10 @@ public class HoaDonPanel extends JPanel {
 		dtmHoaDon.addColumn("Ngày lập");
 		dtmHoaDon.addColumn("Tổng tiền");
 		
-		for(int i = 0; i < hoaDonBUS.getList_hoadon().size(); i++) {
-			HoaDonDTO hd = hoaDonBUS.getList_hoadon().get(i);
-			dtmHoaDon.addRow(new Object[] {hd.getMaHD(), hd.getMaKH(), hd.getMaNV(), hd.getMaKM(), hd.getNgayLap(), hd.getTongTien()});
-		}
+		themDataTable_HD(hoaDonBUS.getList_hoadon());
 		
 		tblHoaDon = new JTable(dtmHoaDon);
+		tblHoaDon.setFont(new Font("Tahoma", Font.PLAIN, 18));
 	
 		JScrollPane scrPaneHoaDon = new JScrollPane(tblHoaDon);
 		scrPaneHoaDon.setBorder(BorderFactory.createLineBorder(Color.black,2));
@@ -189,11 +221,16 @@ public class HoaDonPanel extends JPanel {
 				}
 			}
 		});
+		
+		btnTra.addActionListener(e -> {
+			traThongTin();
+		});
 	}
 	
 	/*
-	 *  CÁC HẢM HỖ TRỢ
+	 *  FUNCTION
 	 */
+	
 	private void addData(HoaDonDTO hoaDon, ArrayList<ChiTietHoaDonDTO> list_CTHD) {
 		if(hoaDon != null) 
 			if(hoaDonBUS.them(hoaDon))
@@ -207,13 +244,7 @@ public class HoaDonPanel extends JPanel {
 		}
 			
 	}
-	private void addData(HoaDonDTO hoaDon) {
-		addData(hoaDon,null);
-	}
-	private void addData(ArrayList<ChiTietHoaDonDTO> list_CTHD) {
-		addData(null,list_CTHD);
-	}
-	
+
 	private void xoaHD_CTHD() {
 		int selectedRow = tblHoaDon.getSelectedRow();
         if (selectedRow != -1) {
@@ -243,13 +274,8 @@ public class HoaDonPanel extends JPanel {
 	
 	private boolean xoaData_CTHD(String maHD) {
 		if(maHD != null) {
-			ArrayList<ChiTietHoaDonDTO> list = cthdBUS.getList_CTHD();
-			for(int i = 0; i < list.size(); i++) {
-				ChiTietHoaDonDTO cthdDTO = list.get(i);
-				if(cthdDTO.getMaHD().equals(maHD)) 
-					if(!cthdBUS.xoa(cthdDTO)) 
-						return false;
-			}
+			if(!cthdBUS.xoa(maHD))
+				return false;
 		}
 		return true;
 	}
@@ -284,7 +310,54 @@ public class HoaDonPanel extends JPanel {
 		 sorter.setRowFilter(filter); 
 	}
 	
-
+	private void themDataTable_HD(ArrayList<HoaDonDTO> list) {
+		for(int i = 0; i < list.size(); i++) {
+			HoaDonDTO hd = list.get(i);
+			dtmHoaDon.addRow(new Object[] {hd.getMaHD(), hd.getMaKH(), hd.getMaNV(), hd.getMaKM(), hd.getNgayLap(), hd.getTongTien()});
+		}
+	}
+	
+	private void traThongTin() {
+		String column = cbBoxTra.getSelectedItem().toString();
+		String condition = null;
+		if(column.equals("Mã hóa đơn")) {
+			dtmHoaDon.setRowCount(0);
+			condition = " maHD LIKE '%"+ txtTra.getText() + "%'";
+			ArrayList<HoaDonDTO> list = hoaDonBUS.layDuLieu(condition);
+			themDataTable_HD(list);
+		}else if(column.equals("Mã khách hàng")) {
+			dtmHoaDon.setRowCount(0);
+			condition = " maKH LIKE '%"+ txtTra.getText() + "%'";
+			ArrayList<HoaDonDTO> list = hoaDonBUS.layDuLieu(condition);
+			themDataTable_HD(list);
+		}else if(column.equals("Mã nhân viên")) {
+			dtmHoaDon.setRowCount(0);
+			condition = " maNV LIKE '%"+ txtTra.getText() + "%'";
+			ArrayList<HoaDonDTO> list = hoaDonBUS.layDuLieu(condition);
+			themDataTable_HD(list);
+		}else if(column.equals("Mã khuyến mãi")) {
+			dtmHoaDon.setRowCount(0);
+			condition = " maKM LIKE '%"+ txtTra.getText() + "%'";
+			ArrayList<HoaDonDTO> list = hoaDonBUS.layDuLieu(condition);
+			themDataTable_HD(list);
+		}else if(column.equals("Ngày lập")) {
+			if(!txtTra.getText().toString().equals("")) {
+				dtmHoaDon.setRowCount(0);
+				condition = " ngayLap LIKE '%"+ txtTra.getText() + "%'";
+				ArrayList<HoaDonDTO> list = hoaDonBUS.layDuLieu(condition);
+				themDataTable_HD(list);
+			}
+		}else if(column.equals("Tổng tiền")) {
+			if(txtTra.getText().toString().matches("[0-9]+")) {
+				dtmHoaDon.setRowCount(0);
+				condition = " tongTien = "+ Double.parseDouble(txtTra.getText().toString());
+				ArrayList<HoaDonDTO> list = hoaDonBUS.layDuLieu(condition);
+				themDataTable_HD(list);
+			}
+		}
+	}
+	
+	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
