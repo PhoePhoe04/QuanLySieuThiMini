@@ -45,6 +45,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import javax.swing.JComboBox;
+import javax.swing.ImageIcon;
 
 public class HoaDonInsert extends JDialog {
 	private static final long serialVersionUID = 1L;
@@ -77,6 +78,8 @@ public class HoaDonInsert extends JDialog {
 	private DefaultTableModel dtmCTHD;
 
 	private JTable tblCTHD;
+
+	private JButton btnCalender;
 	
 
 	public HoaDonInsert() {
@@ -95,7 +98,7 @@ public class HoaDonInsert extends JDialog {
 	}
 	
 	private void init() throws SQLException{
-		setBounds(100, 100, 700, 500);
+		setBounds(100, 100, 800, 500);
 		setLocationRelativeTo(null);
 		getContentPane().setLayout(new BorderLayout(0, 10));
 		setResizable(false);
@@ -123,39 +126,39 @@ public class HoaDonInsert extends JDialog {
 		pnThongTinLeft.add(lblHoaDon);
 		
 		JLabel lblMaHD = new JLabel("Mã hóa đơn");
-		lblMaHD.setFont(new Font("Tahoma", Font.BOLD, 15));
-		lblMaHD.setBounds(20, 50, 120, 20);
+		lblMaHD.setFont(new Font("Tahoma", Font.BOLD, 18));
+		lblMaHD.setBounds(20, 50, 150, 25);
 		pnThongTinLeft.add(lblMaHD);
 		
 		txtMaHD = new JTextField();
-		txtMaHD.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		txtMaHD.setBounds(150, 50, 100, 20);
+		txtMaHD.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		txtMaHD.setBounds(180, 50, 80, 25);
 		pnThongTinLeft.add(txtMaHD);
 		txtMaHD.setColumns(10);
 		
 		JLabel lblMaKH = new JLabel("Mã khách hàng");
-		lblMaKH.setFont(new Font("Tahoma", Font.BOLD, 15));
-		lblMaKH.setBounds(20, 80, 120, 20);
+		lblMaKH.setFont(new Font("Tahoma", Font.BOLD, 18));
+		lblMaKH.setBounds(20, 85, 150, 25);
 		pnThongTinLeft.add(lblMaKH);
 		
 		JLabel lblMaNV = new JLabel("Mã nhân viên");
-		lblMaNV.setFont(new Font("Tahoma", Font.BOLD, 15));
-		lblMaNV.setBounds(20, 110, 120, 20);
+		lblMaNV.setFont(new Font("Tahoma", Font.BOLD, 18));
+		lblMaNV.setBounds(20, 120, 150, 25);
 		pnThongTinLeft.add(lblMaNV);
 		
 		JLabel lblMaKM = new JLabel("Mã khuyến mãi");
-		lblMaKM.setFont(new Font("Tahoma", Font.BOLD, 15));
-		lblMaKM.setBounds(20, 140, 120, 20);
+		lblMaKM.setFont(new Font("Tahoma", Font.BOLD, 18));
+		lblMaKM.setBounds(20, 155, 150, 25);
 		pnThongTinLeft.add(lblMaKM);
 		
 		JLabel lblNgayLap = new JLabel("Ngày lập");
-		lblNgayLap.setFont(new Font("Tahoma", Font.BOLD, 15));
-		lblNgayLap.setBounds(20, 170, 120, 20);
+		lblNgayLap.setFont(new Font("Tahoma", Font.BOLD, 18));
+		lblNgayLap.setBounds(20, 190, 150, 25);
 		pnThongTinLeft.add(lblNgayLap);
 		
 		JLabel lblTongTien = new JLabel("Tổng tiền");
-		lblTongTien.setFont(new Font("Tahoma", Font.BOLD, 15));
-		lblTongTien.setBounds(20, 200, 120, 20);
+		lblTongTien.setFont(new Font("Tahoma", Font.BOLD, 18));
+		lblTongTien.setBounds(20, 225, 150, 25);
 		pnThongTinLeft.add(lblTongTien);
 		
 		cbBoxMaKH = new JComboBox();
@@ -164,8 +167,8 @@ public class HoaDonInsert extends JDialog {
 		for(int i = 0; i < khachHangBUS.getListKH().size(); i++) {
 			cbBoxMaKH.addItem(khachHangBUS.getListKH().get(i).getMaKH());
 		}
-		cbBoxMaKH.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		cbBoxMaKH.setBounds(150, 80, 100, 20);
+		cbBoxMaKH.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		cbBoxMaKH.setBounds(180, 85, 80, 25);
 		pnThongTinLeft.add(cbBoxMaKH);
 		
 		cbBoxMaNV = new JComboBox();
@@ -174,13 +177,13 @@ public class HoaDonInsert extends JDialog {
 		for(int i = 0; i < nhanVienBUS.getList_NV().size();i++) {
 			cbBoxMaNV.addItem(nhanVienBUS.getList_NV().get(i).getMaNV());
 		}
-		cbBoxMaNV.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		cbBoxMaNV.setBounds(150, 110, 100, 20);
+		cbBoxMaNV.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		cbBoxMaNV.setBounds(180, 120, 80, 25);
 		pnThongTinLeft.add(cbBoxMaNV);
 		
 		cbBoxMaKM = new JComboBox();
-		cbBoxMaKM.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		cbBoxMaKM.setBounds(150, 140, 100, 20);
+		cbBoxMaKM.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		cbBoxMaKM.setBounds(180, 155, 80, 25);
 		pnThongTinLeft.add(cbBoxMaKM);
 		
 		Date currentDate = new Date(System.currentTimeMillis());
@@ -189,17 +192,22 @@ public class HoaDonInsert extends JDialog {
 		
 		txtNgayLap = new JTextField(formattedDate);
 		txtNgayLap.setEditable(false);
-		txtNgayLap.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		txtNgayLap.setBounds(150, 170, 100, 20);
+		txtNgayLap.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		txtNgayLap.setBounds(180, 189, 120, 25);
 		pnThongTinLeft.add(txtNgayLap);
 		txtNgayLap.setColumns(10);
 		
 		txtTongTien = new JTextField("0");
 		txtTongTien.setEditable(false);
-		txtTongTien.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		txtTongTien.setBounds(150, 200, 100, 20);
+		txtTongTien.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		txtTongTien.setBounds(180, 225, 120, 25);
 		pnThongTinLeft.add(txtTongTien);
 		txtTongTien.setColumns(10);
+		
+		btnCalender = new JButton("");
+		btnCalender.setIcon(new ImageIcon(HoaDonInsert.class.getResource("/Image/calender_icon.png")));
+		btnCalender.setBounds(310, 185, 32, 32);
+		pnThongTinLeft.add(btnCalender);
 		
 		JPanel pnThongTinRight = new JPanel();
 		pnthongTin.add(pnThongTinRight);
@@ -212,20 +220,20 @@ public class HoaDonInsert extends JDialog {
 		pnThongTinRight.add(lblCTHD);
 		
 		JLabel lblMaHD_CTHD = new JLabel("Mã hóa đơn");
-		lblMaHD_CTHD.setFont(new Font("Tahoma", Font.BOLD, 15));
-		lblMaHD_CTHD.setBounds(60, 50, 120, 20);
+		lblMaHD_CTHD.setFont(new Font("Tahoma", Font.BOLD, 18));
+		lblMaHD_CTHD.setBounds(10, 50, 150, 25);
 		pnThongTinRight.add(lblMaHD_CTHD);
 		
 		txtMaHD_CTHD = new JTextField();
 		txtMaHD_CTHD.setEditable(false);
-		txtMaHD_CTHD.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		txtMaHD_CTHD.setBounds(190, 50, 100, 20);
+		txtMaHD_CTHD.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		txtMaHD_CTHD.setBounds(170, 49, 100, 25);
 		pnThongTinRight.add(txtMaHD_CTHD);
 		txtMaHD_CTHD.setColumns(10);
 		
 		JLabel lblMaSP = new JLabel("Mã sản phẩm");
-		lblMaSP.setFont(new Font("Tahoma", Font.BOLD, 15));
-		lblMaSP.setBounds(60, 80, 120, 20);
+		lblMaSP.setFont(new Font("Tahoma", Font.BOLD, 18));
+		lblMaSP.setBounds(10, 85, 150, 25);
 		pnThongTinRight.add(lblMaSP);
 		
 		cbBoxMaSP = new JComboBox();
@@ -234,50 +242,50 @@ public class HoaDonInsert extends JDialog {
 		for(int i = 0; i < sanPhamBUS.getList().size(); i++) {
 			cbBoxMaSP.addItem(sanPhamBUS.getList().get(i).getMaSP());
 		}
-		cbBoxMaSP.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		cbBoxMaSP.setBounds(190, 80, 100, 20);
+		cbBoxMaSP.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		cbBoxMaSP.setBounds(170, 85, 100, 25);
 		pnThongTinRight.add(cbBoxMaSP);
 		
 		JLabel lblMaKM_CTHD = new JLabel("Mã khuyến mãi");
-		lblMaKM_CTHD.setFont(new Font("Tahoma", Font.BOLD, 15));
-		lblMaKM_CTHD.setBounds(60, 110, 120, 20);
+		lblMaKM_CTHD.setFont(new Font("Tahoma", Font.BOLD, 18));
+		lblMaKM_CTHD.setBounds(10, 120, 150, 25);
 		pnThongTinRight.add(lblMaKM_CTHD);
 		
 		cbBoxMaKM_CTHD = new JComboBox();
-		cbBoxMaKM_CTHD.setBounds(190, 110, 100, 20);
+		cbBoxMaKM_CTHD.setBounds(170, 120, 100, 25);
 		pnThongTinRight.add(cbBoxMaKM_CTHD);
 		
 		JLabel lblDonGia = new JLabel("Đơn giá");
-		lblDonGia.setFont(new Font("Tahoma", Font.BOLD, 15));
-		lblDonGia.setBounds(60, 140, 120, 20);
+		lblDonGia.setFont(new Font("Tahoma", Font.BOLD, 18));
+		lblDonGia.setBounds(10, 155, 120, 25);
 		pnThongTinRight.add(lblDonGia);
 		
 		txtDonGia = new JTextField();
 		txtDonGia.setEditable(false);
-		txtDonGia.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		txtDonGia.setBounds(190, 140, 100, 20);
+		txtDonGia.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		txtDonGia.setBounds(170, 155, 100, 25);
 		pnThongTinRight.add(txtDonGia);
 		txtDonGia.setColumns(10);
 		
 		JLabel lblSoLuong = new JLabel("Số lượng");
-		lblSoLuong.setFont(new Font("Tahoma", Font.BOLD, 15));
-		lblSoLuong.setBounds(60, 170, 120, 20);
+		lblSoLuong.setFont(new Font("Tahoma", Font.BOLD, 18));
+		lblSoLuong.setBounds(10, 190, 120, 25);
 		pnThongTinRight.add(lblSoLuong);
 		
 		txtSoLuong = new JTextField();
-		txtSoLuong.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		txtSoLuong.setBounds(190, 170, 100, 20);
+		txtSoLuong.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		txtSoLuong.setBounds(170, 189, 100, 25);
 		pnThongTinRight.add(txtSoLuong);
 		txtSoLuong.setColumns(10);
 		
 		JLabel lblThanhTien = new JLabel("Thành tiền");
-		lblThanhTien.setFont(new Font("Tahoma", Font.BOLD, 15));
-		lblThanhTien.setBounds(60, 200, 120, 20);
+		lblThanhTien.setFont(new Font("Tahoma", Font.BOLD, 18));
+		lblThanhTien.setBounds(10, 225, 120, 25);
 		pnThongTinRight.add(lblThanhTien);
 		
 		txtThanhTien = new JTextField();
 		txtThanhTien.setEditable(false);
-		txtThanhTien.setBounds(190, 200, 100, 20);
+		txtThanhTien.setBounds(170, 224, 100, 25);
 		pnThongTinRight.add(txtThanhTien);
 		txtThanhTien.setColumns(10);
 		
@@ -292,6 +300,7 @@ public class HoaDonInsert extends JDialog {
 		dtmCTHD.addColumn("Thành tiền");
 		
 		tblCTHD = new JTable(dtmCTHD);
+		tblCTHD.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		
 		JScrollPane scrPaneCTHD = new JScrollPane(tblCTHD);
 		scrPaneCTHD.setPreferredSize(new Dimension(0,150));
@@ -425,6 +434,10 @@ public class HoaDonInsert extends JDialog {
 				txtSoLuong.setText("");
 			}
 				
+		});
+		
+		btnCalender.addActionListener(e -> {
+			new MyCalender(this, txtNgayLap);
 		});
 		
 		// Listener btnThem

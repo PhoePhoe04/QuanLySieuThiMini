@@ -44,7 +44,7 @@ public class ChiTietHoaDonBUS {
 			ChiTietHoaDonDTO cthdDTO = list_CTHD.get(i);
 			if(cthdDTO.equals(cthd)) {
 				if(this.cthdDAO.xoa(cthd) > 0) {
-					list_CTHD.set(i, cthd);
+					list_CTHD.remove(i);
 					return true;
 				}
 			}
@@ -52,7 +52,18 @@ public class ChiTietHoaDonBUS {
 		return false;
 	}
 
-	
+	public boolean xoa(String maHD) {
+		if(cthdDAO.xoa(maHD) > 0) {
+			for(int i = 0; i < list_CTHD.size(); i++) {
+				ChiTietHoaDonDTO cthd = list_CTHD.get(i);
+				if(cthd.getMaHD().equals(maHD)) {
+					list_CTHD.remove(i);
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 	
 	// Main
 	public static void main(String[] args) {

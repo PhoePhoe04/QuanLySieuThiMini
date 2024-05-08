@@ -18,12 +18,14 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 
 import BUS.NhanVienBUS;
 import DTO.NhanVienDTO;
 import GUI_Dialog.NhanVienInsert;
 import GUI_Dialog.NhanVienUpdate;
+import javax.swing.ImageIcon;
 
 public class NhanVienPanel extends JPanel {
 
@@ -52,23 +54,32 @@ public class NhanVienPanel extends JPanel {
 //	   ============================================= TOP =============================================
 	   JPanel pnTop = new JPanel();
 	   pnTop.setBorder(BorderFactory.createLineBorder(Color.black,2));
-	   pnTop.setPreferredSize(new Dimension(1200,70));
+	   pnTop.setPreferredSize(new Dimension(1200,80));
 	   add(pnTop, BorderLayout.NORTH);
-	   pnTop.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
+	   pnTop.setLayout(null);
 	   
 	   btnThem = new JButton("Thêm");
-	   btnThem.setFont(new Font("Tahoma", Font.BOLD, 18));
-	   btnThem.setPreferredSize(new Dimension(150,50));
+	   btnThem.setHorizontalAlignment(SwingConstants.LEFT);
+	   btnThem.setHorizontalTextPosition(SwingConstants.RIGHT);
+	   btnThem.setIcon(new ImageIcon(NhanVienPanel.class.getResource("/Image/add_icon.png")));
+	   btnThem.setBounds(20, 15, 150, 50);
+	   btnThem.setFont(new Font("Tahoma", Font.BOLD, 25));
 	   pnTop.add(btnThem);
 	   
 	   btnSua = new JButton("Sửa");
-	   btnSua.setFont(new Font("Tahoma", Font.BOLD, 18));
-	   btnSua.setPreferredSize(new Dimension(150,50));
+	   btnSua.setHorizontalAlignment(SwingConstants.LEFT);
+	   btnSua.setHorizontalTextPosition(SwingConstants.RIGHT);
+	   btnSua.setIcon(new ImageIcon(NhanVienPanel.class.getResource("/Image/edit_icon.png")));
+	   btnSua.setBounds(180, 15, 150, 50);
+	   btnSua.setFont(new Font("Tahoma", Font.BOLD, 25));
 	   pnTop.add(btnSua);
 	   
 	   btnXoa = new JButton("Xóa");
-	   btnXoa.setFont(new Font("Tahoma", Font.BOLD, 18));
-	   btnXoa.setPreferredSize(new Dimension(150,50));
+	   btnXoa.setHorizontalAlignment(SwingConstants.LEFT);
+	   btnXoa.setHorizontalTextPosition(SwingConstants.RIGHT);
+	   btnXoa.setIcon(new ImageIcon(NhanVienPanel.class.getResource("/Image/delete2_icon.png")));
+	   btnXoa.setBounds(340, 15, 150, 50);
+	   btnXoa.setFont(new Font("Tahoma", Font.BOLD, 25));
 	   pnTop.add(btnXoa);
 	   
 //	   ============================================= CENTER =============================================

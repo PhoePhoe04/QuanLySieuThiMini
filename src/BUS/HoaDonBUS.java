@@ -52,6 +52,24 @@ public class HoaDonBUS {
 		return false;
 	}
 	
+	public boolean xoa(String maHD) {
+		if(hoaDonDAO.xoa(maHD) > 0) {
+			for(int i = 0; i < list_hoadon.size(); i++) {
+				HoaDonDTO hoaDonDTO = list_hoadon.get(i);
+				if(hoaDonDTO.getMaHD().equals(maHD)) {
+					list_hoadon.remove(i);
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	// Lấy dữ liệu
+	public ArrayList<HoaDonDTO> layDuLieu(String condition) {
+		return this.hoaDonDAO.docDB(condition);
+	}
+	
 	// Main
 	public static void main(String[] args) {
 		HoaDonBUS hoaDonBUS = new HoaDonBUS();

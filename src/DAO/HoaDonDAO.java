@@ -76,6 +76,23 @@ public class HoaDonDAO {
 		return ketQua;
 	}
 	
+	public int xoa(String maHD) {
+		connect = new MyConnect();
+		int ketQua = 0;
+		
+		try {
+			String condition = " maHD = '"+ maHD+ "'";
+			
+			ketQua = connect.delete("hoadon", condition);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			connect.Close();
+		}
+		
+		return ketQua;
+	}
+	
 	// Đọc dữ liệu
 	public ArrayList<HoaDonDTO> docDB(String condition, String orderBy){
 		connect = new MyConnect();
