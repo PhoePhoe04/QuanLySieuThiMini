@@ -10,85 +10,112 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.JTextField;
+import javax.swing.JRadioButton;
 
 public class HoaDonTimKiemNC extends JDialog {
 	private JTextField txtMaHD;
-	private JTextField textField;
-	private JTextField textField_1;
-	private JTextField textField_2;
-	private JTextField textField_3;
-	private JTextField textField_4;
+	private JTextField txtMaKH;
+	private JTextField txtMaNV;
+	private JTextField txtMaKM;
+	private JTextField txtNgayLap;
+	private JTextField txtTongTien;
 
 	public HoaDonTimKiemNC() {
 		init();
+		addActionListener();
 	}
-	
+
 	/*
 	 * CREATE DIALOG
 	 */
 	
 	private void init() {
-		setSize(700,500);
+		setSize(600,450);
 		getContentPane().setLayout(null);
 		
 		JLabel lblMaHD = new JLabel("Mã hóa đơn");
 		lblMaHD.setFont(new Font("Tahoma", Font.BOLD, 18));
-		lblMaHD.setBounds(10, 10, 150, 30);
+		lblMaHD.setBounds(20, 70, 150, 30);
 		getContentPane().add(lblMaHD);
 		
 		txtMaHD = new JTextField();
-		txtMaHD.setBounds(170, 10, 150, 30);
+		txtMaHD.setBounds(170, 70, 150, 30);
 		getContentPane().add(txtMaHD);
 		txtMaHD.setColumns(10);
 		
-		JLabel lblMaHD_1 = new JLabel("Mã hóa đơn");
-		lblMaHD_1.setFont(new Font("Tahoma", Font.BOLD, 18));
-		lblMaHD_1.setBounds(10, 50, 150, 30);
-		getContentPane().add(lblMaHD_1);
+		JLabel lblMaKH = new JLabel("Mã khách hàng");
+		lblMaKH.setFont(new Font("Tahoma", Font.BOLD, 18));
+		lblMaKH.setBounds(20, 270, 150, 30);
+		getContentPane().add(lblMaKH);
 		
-		textField = new JTextField();
-		textField.setColumns(10);
-		textField.setBounds(170, 50, 150, 30);
-		getContentPane().add(textField);
+		txtMaKH = new JTextField();
+		txtMaKH.setColumns(10);
+		txtMaKH.setBounds(170, 120, 150, 30);
+		getContentPane().add(txtMaKH);
 		
-		JLabel lblMaHD_2 = new JLabel("Mã hóa đơn");
-		lblMaHD_2.setFont(new Font("Tahoma", Font.BOLD, 18));
-		lblMaHD_2.setBounds(10, 90, 150, 30);
-		getContentPane().add(lblMaHD_2);
+		JLabel lblMaNV = new JLabel("Mã nhân viên");
+		lblMaNV.setFont(new Font("Tahoma", Font.BOLD, 18));
+		lblMaNV.setBounds(20, 120, 150, 30);
+		getContentPane().add(lblMaNV);
 		
-		textField_1 = new JTextField();
-		textField_1.setColumns(10);
-		textField_1.setBounds(170, 90, 150, 30);
-		getContentPane().add(textField_1);
+		txtMaNV = new JTextField();
+		txtMaNV.setColumns(10);
+		txtMaNV.setBounds(170, 170, 150, 30);
+		getContentPane().add(txtMaNV);
 		
-		JLabel lblMaHD_3 = new JLabel("Mã hóa đơn");
-		lblMaHD_3.setFont(new Font("Tahoma", Font.BOLD, 18));
-		lblMaHD_3.setBounds(10, 130, 150, 30);
-		getContentPane().add(lblMaHD_3);
+		JLabel lblMaKM = new JLabel("Mã khuyến mãi");
+		lblMaKM.setFont(new Font("Tahoma", Font.BOLD, 18));
+		lblMaKM.setBounds(20, 170, 150, 30);
+		getContentPane().add(lblMaKM);
 		
-		textField_2 = new JTextField();
-		textField_2.setColumns(10);
-		textField_2.setBounds(170, 130, 150, 30);
-		getContentPane().add(textField_2);
+		txtMaKM = new JTextField();
+		txtMaKM.setColumns(10);
+		txtMaKM.setBounds(170, 220, 150, 30);
+		getContentPane().add(txtMaKM);
 		
-		JLabel lblMaHD_4 = new JLabel("Mã hóa đơn");
-		lblMaHD_4.setFont(new Font("Tahoma", Font.BOLD, 18));
-		lblMaHD_4.setBounds(10, 170, 150, 30);
-		getContentPane().add(lblMaHD_4);
+		JLabel lblNgayLap = new JLabel("Ngày lập");
+		lblNgayLap.setFont(new Font("Tahoma", Font.BOLD, 18));
+		lblNgayLap.setBounds(20, 220, 150, 30);
+		getContentPane().add(lblNgayLap);
 		
-		textField_3 = new JTextField();
-		textField_3.setColumns(10);
-		textField_3.setBounds(170, 170, 150, 30);
-		getContentPane().add(textField_3);
+		txtNgayLap = new JTextField();
+		txtNgayLap.setColumns(10);
+		txtNgayLap.setBounds(170, 270, 150, 30);
+		getContentPane().add(txtNgayLap);
 		
-		JLabel lblMaHD_5 = new JLabel("Mã hóa đơn");
-		lblMaHD_5.setFont(new Font("Tahoma", Font.BOLD, 18));
-		lblMaHD_5.setBounds(10, 210, 150, 30);
-		getContentPane().add(lblMaHD_5);
+		JLabel lblTongTien = new JLabel("Tổng tiền");
+		lblTongTien.setFont(new Font("Tahoma", Font.BOLD, 18));
+		lblTongTien.setBounds(20, 320, 150, 30);
+		getContentPane().add(lblTongTien);
 		
-		textField_4 = new JTextField();
-		textField_4.setColumns(10);
-		textField_4.setBounds(170, 210, 150, 30);
-		getContentPane().add(textField_4);
+		txtTongTien = new JTextField();
+		txtTongTien.setColumns(10);
+		txtTongTien.setBounds(170, 320, 150, 30);
+		getContentPane().add(txtTongTien);
+		
+		JRadioButton rdbtnSimple = new JRadioButton("Simple");
+		rdbtnSimple.setFont(new Font("Tahoma", Font.BOLD, 18));
+		rdbtnSimple.setBounds(20, 20, 100, 30);
+		getContentPane().add(rdbtnSimple);
+		
+		JRadioButton rdbtnMerge = new JRadioButton("Merge");
+		rdbtnMerge.setFont(new Font("Tahoma", Font.BOLD, 18));
+		rdbtnMerge.setBounds(125, 20, 100, 30);
+		getContentPane().add(rdbtnMerge);
+		
+		JButton btnHuy = new JButton("Hủy");
+		btnHuy.setFont(new Font("Tahoma", Font.BOLD, 18));
+		btnHuy.setBounds(496, 373, 80, 30);
+		getContentPane().add(btnHuy);
+		
+		JButton btnTra = new JButton("Tra");
+		btnTra.setFont(new Font("Tahoma", Font.BOLD, 18));
+		btnTra.setBounds(406, 373, 80, 30);
+		getContentPane().add(btnTra);
 	}
+	
+	private void addActionListener() {
+		
+	}
+
 }

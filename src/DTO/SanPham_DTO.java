@@ -1,5 +1,7 @@
 package DTO;
 
+import java.util.Objects;
+
 public class SanPham_DTO {
 	private String maSP;
 	private String tenSP;
@@ -66,6 +68,25 @@ public class SanPham_DTO {
 
 	public void setDonViTinh(String donViTinh) {
 		this.donViTinh = donViTinh;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(donGia, donViTinh, maLSP, maSP, soLuong, tenSP);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		SanPham_DTO other = (SanPham_DTO) obj;
+		return Objects.equals(donGia, other.donGia) && Objects.equals(donViTinh, other.donViTinh)
+				&& Objects.equals(maLSP, other.maLSP) && Objects.equals(maSP, other.maSP)
+				&& Objects.equals(soLuong, other.soLuong) && Objects.equals(tenSP, other.tenSP);
 	}
 
 	

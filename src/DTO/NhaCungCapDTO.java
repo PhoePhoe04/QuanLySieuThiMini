@@ -1,5 +1,7 @@
 package DTO;
 
+import java.util.Objects;
+
 public class NhaCungCapDTO {
 	protected  String maNCC,tenNCC,soDienThoaiNCC,diaChiNCC;
 
@@ -47,5 +49,21 @@ public class NhaCungCapDTO {
     public String toString() {
         return maNCC + "," + tenNCC + "," + soDienThoaiNCC + "," + diaChiNCC;
     }
-
+	@Override
+	public int hashCode() {
+		return Objects.hash(diaChiNCC, maNCC, soDienThoaiNCC, tenNCC);
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		NhaCungCapDTO other = (NhaCungCapDTO) obj;
+		return Objects.equals(diaChiNCC, other.diaChiNCC) && Objects.equals(maNCC, other.maNCC)
+				&& Objects.equals(soDienThoaiNCC, other.soDienThoaiNCC) && Objects.equals(tenNCC, other.tenNCC);
+	}
+    
 }
