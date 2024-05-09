@@ -1,5 +1,7 @@
 package DTO;
 
+import java.util.Objects;
+
 public class ChiTietPhieuNhapDTO {
 	 	protected String maPN,maSP;
 	    protected int soLuong;
@@ -48,5 +50,21 @@ public class ChiTietPhieuNhapDTO {
 	    public String toString() {
 	        return maPN + "," + maSP + "," + soLuong + "," + thanhTien;
 	    }
-
+		@Override
+		public int hashCode() {
+			return Objects.hash(maPN, maSP, soLuong, thanhTien);
+		}
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			ChiTietPhieuNhapDTO other = (ChiTietPhieuNhapDTO) obj;
+			return Objects.equals(maPN, other.maPN) && Objects.equals(maSP, other.maSP) && soLuong == other.soLuong
+					&& Float.floatToIntBits(thanhTien) == Float.floatToIntBits(other.thanhTien);
+		}
+	    
 }

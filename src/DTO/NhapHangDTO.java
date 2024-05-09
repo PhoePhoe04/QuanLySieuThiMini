@@ -2,6 +2,7 @@ package DTO;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 public class NhapHangDTO {
 	protected String maPN,maNV,maNCC;
@@ -70,5 +71,23 @@ public class NhapHangDTO {
     public String toString() {
         return maPN + "," + maNV + "," + maNCC + "," + tongTien + "," + ngayNhap ;
     }
-
+	@Override
+	public int hashCode() {
+		return Objects.hash(list, maNCC, maNV, maPN, ngayNhap, tongTien);
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		NhapHangDTO other = (NhapHangDTO) obj;
+		return Objects.equals(list, other.list) && Objects.equals(maNCC, other.maNCC)
+				&& Objects.equals(maNV, other.maNV) && Objects.equals(maPN, other.maPN)
+				&& Objects.equals(ngayNhap, other.ngayNhap)
+				&& Double.doubleToLongBits(tongTien) == Double.doubleToLongBits(other.tongTien);
+	}
+    
 }

@@ -74,6 +74,12 @@ public class NhanVienBUS {
 		return false;
 	}
 	
+	/*
+	 * Lấy dữ liệu theo condition
+	 */
+	public ArrayList<NhanVienDTO> layDuLieu(String condition){
+		return nvDAO.docDB(condition);
+	}
 	
 	public ArrayList<NhanVienDTO> getList_NV(){
 		return this.list_NV;

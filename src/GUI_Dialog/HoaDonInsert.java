@@ -59,7 +59,6 @@ public class HoaDonInsert extends JDialog {
 	private SanPham_BUS sanPhamBUS;
 	
 	int mouseX, mouseY;
-	private JButton btnHuy;
 	private JTextField txtMaHD;
 	private JTextField txtNgayLap;
 	private JTextField txtTongTien;
@@ -67,10 +66,13 @@ public class HoaDonInsert extends JDialog {
 	private JTextField txtDonGia;
 	private JTextField txtSoLuong;
 	private JTextField txtThanhTien;
+	private JTextField txtMaNV;
+	
+	private JButton btnHuy;
 	private JButton btnThem;
 	private JButton btnXacNhan;
+	
 	private JComboBox cbBoxMaKH;
-	private JComboBox cbBoxMaNV;
 	private JComboBox cbBoxMaKM;
 	private JComboBox cbBoxMaSP;
 	private JComboBox cbBoxMaKM_CTHD;
@@ -80,6 +82,8 @@ public class HoaDonInsert extends JDialog {
 	private JTable tblCTHD;
 
 	private JButton btnCalender;
+
+	private JButton btnNV;
 	
 
 	public HoaDonInsert() {
@@ -132,7 +136,7 @@ public class HoaDonInsert extends JDialog {
 		
 		txtMaHD = new JTextField();
 		txtMaHD.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		txtMaHD.setBounds(180, 50, 80, 25);
+		txtMaHD.setBounds(180, 50, 120, 25);
 		pnThongTinLeft.add(txtMaHD);
 		txtMaHD.setColumns(10);
 		
@@ -168,22 +172,17 @@ public class HoaDonInsert extends JDialog {
 			cbBoxMaKH.addItem(khachHangBUS.getListKH().get(i).getMaKH());
 		}
 		cbBoxMaKH.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		cbBoxMaKH.setBounds(180, 85, 80, 25);
+		cbBoxMaKH.setBounds(180, 85, 120, 25);
 		pnThongTinLeft.add(cbBoxMaKH);
 		
-		cbBoxMaNV = new JComboBox();
-		this.nhanVienBUS = new NhanVienBUS();
-		cbBoxMaNV.addItem("");
-		for(int i = 0; i < nhanVienBUS.getList_NV().size();i++) {
-			cbBoxMaNV.addItem(nhanVienBUS.getList_NV().get(i).getMaNV());
-		}
-		cbBoxMaNV.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		cbBoxMaNV.setBounds(180, 120, 80, 25);
-		pnThongTinLeft.add(cbBoxMaNV);
+		txtMaNV = new JTextField();
+		txtMaNV.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		txtMaNV.setBounds(180, 120, 120, 25);
+		pnThongTinLeft.add(txtMaNV);
 		
 		cbBoxMaKM = new JComboBox();
 		cbBoxMaKM.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		cbBoxMaKM.setBounds(180, 155, 80, 25);
+		cbBoxMaKM.setBounds(180, 155, 120, 25);
 		pnThongTinLeft.add(cbBoxMaKM);
 		
 		Date currentDate = new Date(System.currentTimeMillis());
@@ -208,6 +207,16 @@ public class HoaDonInsert extends JDialog {
 		btnCalender.setIcon(new ImageIcon(HoaDonInsert.class.getResource("/Image/calender_icon.png")));
 		btnCalender.setBounds(310, 185, 32, 32);
 		pnThongTinLeft.add(btnCalender);
+		
+		JButton btnKH = new JButton("...");
+		btnKH.setFont(new Font("Tahoma", Font.BOLD, 18));
+		btnKH.setBounds(310, 85, 30, 25);
+		pnThongTinLeft.add(btnKH);
+		
+		btnNV = new JButton("...");
+		btnNV.setFont(new Font("Tahoma", Font.BOLD, 18));
+		btnNV.setBounds(310, 120, 30, 25);
+		pnThongTinLeft.add(btnNV);
 		
 		JPanel pnThongTinRight = new JPanel();
 		pnthongTin.add(pnThongTinRight);
@@ -440,6 +449,10 @@ public class HoaDonInsert extends JDialog {
 			new MyCalender(this, txtNgayLap);
 		});
 		
+		btnNV.addActionListener(e ->{
+			new MyNhanVien(this, txtMaNV);
+		});
+		
 		// Listener btnThem
 		txtMaHD_CTHD.getDocument().addDocumentListener(dcmListenerbtnThem);
 		txtDonGia.getDocument().addDocumentListener(dcmListenerbtnThem);
@@ -449,7 +462,7 @@ public class HoaDonInsert extends JDialog {
 		// Listener btnXacNhan
 		txtMaHD.getDocument().addDocumentListener(dcmListenerbtnXacNhan);
 		cbBoxMaKH.addItemListener(iListenerbtnXacNhan);
-		cbBoxMaNV.addItemListener(iListenerbtnXacNhan);
+//		cbBoxMaNV.addItemListener(iListenerbtnXacNhan);
 		
 	}
 	
@@ -521,7 +534,7 @@ public class HoaDonInsert extends JDialog {
 			updateButtonEnable();
 		}
 		private void updateButtonEnable() {
-			btnXacNhan.setEnabled(!txtMaHD.getText().isEmpty() && cbBoxMaKH.getSelectedIndex() > 0 && cbBoxMaNV.getSelectedIndex() > 0 );
+//			btnXacNhan.setEnabled(!txtMaHD.getText().isEmpty() && cbBoxMaKH.getSelectedIndex() > 0 && cbBoxMaNV.getSelectedIndex() > 0 );
 		}
 	};
 	
@@ -529,10 +542,10 @@ public class HoaDonInsert extends JDialog {
 		
 		@Override
 		public void itemStateChanged(ItemEvent e) {
-			if(cbBoxMaKH.getSelectedIndex() > 0 && cbBoxMaNV.getSelectedIndex() > 0 && !txtMaHD.getText().isEmpty())
-				btnXacNhan.setEnabled(true);
-			else
-				btnXacNhan.setEnabled(false);
+////			if(cbBoxMaKH.getSelectedIndex() > 0 && cbBoxMaNV.getSelectedIndex() > 0 && !txtMaHD.getText().isEmpty())
+//				btnXacNhan.setEnabled(true);
+//			else
+//				btnXacNhan.setEnabled(false);
 		}
 	};
 	
@@ -540,7 +553,7 @@ public class HoaDonInsert extends JDialog {
 		return new HoaDonDTO(
 				txtMaHD.getText(),
 				cbBoxMaKH.getSelectedItem()+"",
-				cbBoxMaNV.getSelectedItem()+"",
+				txtMaNV.getText()+"",
 				cbBoxMaKM.getSelectedItem()+"",
 				Date.valueOf(txtNgayLap.getText()+""),
 				Double.parseDouble(txtTongTien.getText())

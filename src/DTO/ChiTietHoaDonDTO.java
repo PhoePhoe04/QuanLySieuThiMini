@@ -76,5 +76,4 @@ public class ChiTietHoaDonDTO {
 				&& Objects.equals(maSP, other.maSP) && soLuong == other.soLuong
 				&& Double.doubleToLongBits(thanhTien) == Double.doubleToLongBits(other.thanhTien);
 	}
-	
 }

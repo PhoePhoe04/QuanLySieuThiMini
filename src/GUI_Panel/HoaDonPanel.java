@@ -48,7 +48,6 @@ public class HoaDonPanel extends JPanel {
 	private ChiTietHoaDonBUS cthdBUS;
 	
 	private JButton btnThem;
-	private JButton btnSua;
 	private DefaultTableModel dtmHoaDon;
 	private DefaultTableModel dtmCTHD;
 	private JButton btnXoa;
@@ -92,16 +91,8 @@ public class HoaDonPanel extends JPanel {
 		
 		pnTop.add(btnThem);
 		
-		btnSua = new JButton("Sửa");
-		btnSua.setBounds(180, 15, 150, 50);
-		btnSua.setHorizontalAlignment(SwingConstants.LEFT);
-		btnSua.setIcon(new ImageIcon(HoaDonPanel.class.getResource("/Image/edit_icon.png")));
-		btnSua.setFont(new Font("Tahoma", Font.BOLD, 25));
-		btnSua.setPreferredSize(new Dimension(150,50));
-		pnTop.add(btnSua);
-		
 		btnXoa = new JButton("Xóa");
-		btnXoa.setBounds(340, 15, 150, 50);
+		btnXoa.setBounds(180, 15, 150, 50);
 		btnXoa.setHorizontalAlignment(SwingConstants.LEFT);
 		btnXoa.setIcon(new ImageIcon(HoaDonPanel.class.getResource("/Image/delete2_icon.png")));
 		btnXoa.setFont(new Font("Tahoma", Font.BOLD, 25));
@@ -110,7 +101,7 @@ public class HoaDonPanel extends JPanel {
 		
 		JButton btnTKNC = new JButton("Tìm");
 		btnTKNC.setFont(new Font("Tahoma", Font.BOLD, 25));
-		btnTKNC.setBounds(500, 15, 150, 50);
+		btnTKNC.setBounds(340, 15, 150, 50);
 		pnTop.add(btnTKNC);
 		
 		cbBoxTra = new JComboBox();
@@ -321,25 +312,34 @@ public class HoaDonPanel extends JPanel {
 		String column = cbBoxTra.getSelectedItem().toString();
 		String condition = null;
 		if(column.equals("Mã hóa đơn")) {
-			dtmHoaDon.setRowCount(0);
-			condition = " maHD LIKE '%"+ txtTra.getText() + "%'";
-			ArrayList<HoaDonDTO> list = hoaDonBUS.layDuLieu(condition);
-			themDataTable_HD(list);
+			if(!txtTra.getText().toString().equals("")) {
+				dtmHoaDon.setRowCount(0);
+				condition = " maHD LIKE '%"+ txtTra.getText() + "%'";
+				ArrayList<HoaDonDTO> list = hoaDonBUS.layDuLieu(condition);
+				themDataTable_HD(list);
+			}
 		}else if(column.equals("Mã khách hàng")) {
-			dtmHoaDon.setRowCount(0);
-			condition = " maKH LIKE '%"+ txtTra.getText() + "%'";
-			ArrayList<HoaDonDTO> list = hoaDonBUS.layDuLieu(condition);
-			themDataTable_HD(list);
+			if(!txtTra.getText().toString().equals("")) {
+				dtmHoaDon.setRowCount(0);
+				condition = " maKH LIKE '%"+ txtTra.getText() + "%'";
+				ArrayList<HoaDonDTO> list = hoaDonBUS.layDuLieu(condition);
+				themDataTable_HD(list);
+			}
 		}else if(column.equals("Mã nhân viên")) {
-			dtmHoaDon.setRowCount(0);
-			condition = " maNV LIKE '%"+ txtTra.getText() + "%'";
-			ArrayList<HoaDonDTO> list = hoaDonBUS.layDuLieu(condition);
-			themDataTable_HD(list);
+			if(!txtTra.getText().toString().equals("")) {
+				dtmHoaDon.setRowCount(0);
+				condition = " maNV LIKE '%"+ txtTra.getText() + "%'";
+				ArrayList<HoaDonDTO> list = hoaDonBUS.layDuLieu(condition);
+				themDataTable_HD(list);
+			}
 		}else if(column.equals("Mã khuyến mãi")) {
-			dtmHoaDon.setRowCount(0);
-			condition = " maKM LIKE '%"+ txtTra.getText() + "%'";
-			ArrayList<HoaDonDTO> list = hoaDonBUS.layDuLieu(condition);
-			themDataTable_HD(list);
+			if(!txtTra.getText().toString().equals("")) {
+				dtmHoaDon.setRowCount(0);
+				condition = " maKM LIKE '%"+ txtTra.getText() + "%'";
+				ArrayList<HoaDonDTO> list = hoaDonBUS.layDuLieu(condition);
+				themDataTable_HD(list);
+			}
+			
 		}else if(column.equals("Ngày lập")) {
 			if(!txtTra.getText().toString().equals("")) {
 				dtmHoaDon.setRowCount(0);
