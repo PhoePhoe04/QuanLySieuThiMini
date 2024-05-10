@@ -19,8 +19,8 @@ public class SanPham_DAO{
 				sanpham.setMaSP(resultSet.getString("maSP"));
 				sanpham.setTenSP(resultSet.getString("tenSP"));
 				sanpham.setMaLSP(resultSet.getString("maLSP"));
-				sanpham.setDonGia(resultSet.getString("donGia"));
-				sanpham.setSoLuong(resultSet.getString("soluong"));
+				sanpham.setDonGia(resultSet.getDouble("donGia"));
+				sanpham.setSoLuong(resultSet.getInt("soluong"));
 				sanpham.setDonViTinh(resultSet.getString("donViTinh"));
 				sanphams.add(sanpham);
 			}				

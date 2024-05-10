@@ -68,6 +68,15 @@ public class KhachHangBUS {
 		return false;
 	}
 	
+	/*
+	 * Lấy dữ liệu theo condition
+	 */
+	
+	public ArrayList<KhachHangDTO> layDuLieu(String condition){
+		return khDAO.docDB(condition);
+	}
+	
+	
 	public ArrayList<KhachHangDTO> getListKH(){
 		return this.list_KH;
 	}
