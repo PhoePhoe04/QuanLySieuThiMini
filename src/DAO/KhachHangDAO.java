@@ -64,35 +64,39 @@ public class KhachHangDAO {
 	}
 	
 	// Đọc dữ liệu
-	public ArrayList<KhachHangDTO> docDB(String condition, String orderBy) throws SQLException{
+	public ArrayList<KhachHangDTO> docDB(String condition, String orderBy) {
 		connect = new MyConnect();
-		
-		ResultSet rs = connect.select("khachhang", condition, orderBy);
 		ArrayList<KhachHangDTO> list = new ArrayList<KhachHangDTO>();
 		
-		while(rs.next()) {
-			KhachHangDTO kh = new KhachHangDTO(
-					rs.getString("maKH"),
-					rs.getString("hoKH"),
-					rs.getString("tenKH"),
-					rs.getBoolean("gioiTinh"),
-					rs.getString("diaChi"),
-					rs.getString("soDienThoai"),
-					rs.getString("gmail")
-					);
-			
-			list.add(kh);
+		try {
+			ResultSet rs = connect.select("khachhang", condition, orderBy);
+			while(rs.next()) {
+				KhachHangDTO kh = new KhachHangDTO(
+						rs.getString("maKH"),
+						rs.getString("hoKH"),
+						rs.getString("tenKH"),
+						rs.getBoolean("gioiTinh"),
+						rs.getString("diaChi"),
+						rs.getString("soDienThoai"),
+						rs.getString("gmail")
+						);
+				
+				list.add(kh);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			connect.Close();
 		}
 		
-		connect.Close();
 		return list;
 	}
 	
-	public ArrayList<KhachHangDTO> docDB(String condition) throws SQLException{
+	public ArrayList<KhachHangDTO> docDB(String condition){
 		return this.docDB(condition, null);
 	}
 	
-	public ArrayList<KhachHangDTO> docDB() throws SQLException{
+	public ArrayList<KhachHangDTO> docDB() {
 		return this.docDB(null);
 	}
 	

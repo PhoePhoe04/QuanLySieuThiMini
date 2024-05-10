@@ -6,20 +6,25 @@ public class SanPham_DTO {
 	private String maSP;
 	private String tenSP;
 	private String maLSP;
-	private String donGia;
-	private String soLuong;
+	private double donGia;
+	private int soLuong;
 	private String donViTinh;
 	
 	public SanPham_DTO() {
 	}
-
-	public SanPham_DTO(String maSP, String tenSP, String maLSP, String donGia, String soLuong, String donViTinh) {
+	public SanPham_DTO(String maSP, String tenSP, String maLSP, double donGia, int soLuong, String donViTinh) {
 		this.maSP = maSP;
 		this.tenSP = tenSP;
 		this.maLSP = maLSP;
 		this.donGia = donGia;
 		this.soLuong = soLuong;
 		this.donViTinh = donViTinh;
+	}
+
+	@Override
+	public String toString() {
+		return "SanPham_DTO [maSP=" + maSP + ", tenSP=" + tenSP + ", maLSP=" + maLSP + ", donGia=" + donGia
+				+ ", soLuong=" + soLuong + ", donViTinh=" + donViTinh + "]";
 	}
 
 	public String getMaSP() {
@@ -46,19 +51,19 @@ public class SanPham_DTO {
 		this.maLSP = maLSP;
 	}
 
-	public String getDonGia() {
+	public double getDonGia() {
 		return donGia;
 	}
 
-	public void setDonGia(String donGia) {
+	public void setDonGia(double donGia) {
 		this.donGia = donGia;
 	}
 
-	public String getSoLuong() {
+	public int getSoLuong() {
 		return soLuong;
 	}
 
-	public void setSoLuong(String soLuong) {
+	public void setSoLuong(int soLuong) {
 		this.soLuong = soLuong;
 	}
 
@@ -84,9 +89,9 @@ public class SanPham_DTO {
 		if (getClass() != obj.getClass())
 			return false;
 		SanPham_DTO other = (SanPham_DTO) obj;
-		return Objects.equals(donGia, other.donGia) && Objects.equals(donViTinh, other.donViTinh)
-				&& Objects.equals(maLSP, other.maLSP) && Objects.equals(maSP, other.maSP)
-				&& Objects.equals(soLuong, other.soLuong) && Objects.equals(tenSP, other.tenSP);
+		return Double.doubleToLongBits(donGia) == Double.doubleToLongBits(other.donGia)
+				&& Objects.equals(donViTinh, other.donViTinh) && Objects.equals(maLSP, other.maLSP)
+				&& Objects.equals(maSP, other.maSP) && soLuong == other.soLuong && Objects.equals(tenSP, other.tenSP);
 	}
 
 	

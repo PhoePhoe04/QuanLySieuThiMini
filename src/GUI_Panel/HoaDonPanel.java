@@ -17,8 +17,10 @@ import javax.swing.table.TableRowSorter;
 
 import BUS.ChiTietHoaDonBUS;
 import BUS.HoaDonBUS;
+import BUS.SanPham_BUS;
 import DTO.ChiTietHoaDonDTO;
 import DTO.HoaDonDTO;
+import DTO.SanPham_DTO;
 import GUI_Dialog.HoaDonInsert;
 
 import javax.swing.BorderFactory;
@@ -30,6 +32,7 @@ import javax.swing.JOptionPane;
 import java.awt.Font;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.awt.FlowLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -45,6 +48,7 @@ import javax.swing.JTextField;
 public class HoaDonPanel extends JPanel {
 	
 	private HoaDonBUS hoaDonBUS;
+	private SanPham_BUS spBUS;
 	private ChiTietHoaDonBUS cthdBUS;
 	
 	private JButton btnThem;
@@ -59,6 +63,7 @@ public class HoaDonPanel extends JPanel {
 	
 	
 	public HoaDonPanel() {
+		this.spBUS = new SanPham_BUS();
 		this.hoaDonBUS = new HoaDonBUS();
 		this.cthdBUS = new ChiTietHoaDonBUS();
 		init();
@@ -147,7 +152,7 @@ public class HoaDonPanel extends JPanel {
 		themDataTable_HD(hoaDonBUS.getList_hoadon());
 		
 		tblHoaDon = new JTable(dtmHoaDon);
-		tblHoaDon.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		tblHoaDon.setFont(new Font("Tahoma", Font.PLAIN, 15));
 	
 		JScrollPane scrPaneHoaDon = new JScrollPane(tblHoaDon);
 		scrPaneHoaDon.setBorder(BorderFactory.createLineBorder(Color.black,2));
@@ -169,10 +174,11 @@ public class HoaDonPanel extends JPanel {
 		
 		for(int i = 0; i < cthdBUS.getList_CTHD().size(); i++) {
 			ChiTietHoaDonDTO cthd = cthdBUS.getList_CTHD().get(i);
-			dtmCTHD.addRow(new Object[] {cthd.getMaHD(), cthd.getMaSP(), cthd.getMaKM(), cthd.getSoLuong(), cthd.getDonGia(), cthd.getThanhTien()});
+			dtmCTHD.addRow(new Object[] {cthd.getMaHD(), cthd.getMaSP(), cthd.getMaKM(), cthd.getDonGia() ,cthd.getSoLuong(), cthd.getThanhTien()});
 		}
 			
 		tblCTHD = new JTable(dtmCTHD);
+		tblCTHD.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		
 		JScrollPane scrPaneChiTietHoaDon = new JScrollPane(tblCTHD);
 		scrPaneChiTietHoaDon.setBorder(BorderFactory.createLineBorder(Color.black,2));;
@@ -194,7 +200,8 @@ public class HoaDonPanel extends JPanel {
 			if(dialog.showDialog(HoaDonPanel.this)) {
 				HoaDonDTO hoaDon = dialog.getHoaDon();
 				ArrayList<ChiTietHoaDonDTO> list = dialog.getCTHD();
-				addData(hoaDon, list);
+				if(updateDataBase(list))
+					addData(hoaDon, list);
 			}
 			System.out.println(dialog.showDialog(HoaDonPanel.this));
 		});
@@ -230,7 +237,7 @@ public class HoaDonPanel extends JPanel {
 		if(list_CTHD != null) {
 			for (ChiTietHoaDonDTO cthd : list_CTHD) {
 				if(cthdBUS.them(cthd))
-					dtmCTHD.addRow(new Object[] {cthd.getMaHD(), cthd.getMaSP(), cthd.getMaKM() == "null" ? "":cthd.getMaKM(), cthd.getSoLuong(), cthd.getDonGia(), cthd.getThanhTien()});
+					dtmCTHD.addRow(new Object[] {cthd.getMaHD(), cthd.getMaSP(), cthd.getMaKM() == "null" ? "":cthd.getMaKM(), cthd.getDonGia(),cthd.getSoLuong(), cthd.getThanhTien()});
 			}
 		}
 			
@@ -357,6 +364,26 @@ public class HoaDonPanel extends JPanel {
 		}
 	}
 	
+	private boolean updateDataBase(ArrayList<ChiTietHoaDonDTO> list) {
+		ArrayList<SanPham_DTO> list_DataBase = spBUS.getList();
+		HashMap<String, Integer> hm = new HashMap<String, Integer>();
+		for (ChiTietHoaDonDTO cthd : list) {
+			if(hm.containsKey(cthd.getMaHD())) {
+				int after = hm.get(cthd.getMaHD());
+				hm.put(cthd.getMaSP(), cthd.getSoLuong() + after);
+			}else {
+				hm.put(cthd.getMaSP(), cthd.getSoLuong());
+			}
+		}
+		for (SanPham_DTO sp : list_DataBase) {
+			if(hm.containsKey(sp.getMaSP())) {
+				sp.setSoLuong(sp.getSoLuong() - hm.get(sp.getMaSP()));
+				if(!spBUS.sua(sp)) 
+					return false;
+			}
+		}
+		return true;
+	}
 	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {

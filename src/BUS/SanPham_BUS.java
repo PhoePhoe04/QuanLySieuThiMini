@@ -43,6 +43,10 @@ public class SanPham_BUS {
 		return false;
 	}
 	
+	public ArrayList<SanPham_DTO> layDuLieu(String condition){
+		return spDAO.getSanPhams(condition);
+	}
+	
 	public ArrayList<SanPham_DTO> getList(){
 		return this.list_sp;
 	}
