@@ -25,8 +25,11 @@ import javax.swing.border.EmptyBorder;
 
 import GUI_Panel.HoaDonPanel;
 import GUI_Panel.KhachHangPanel;
+import GUI_Panel.LoaiSanPhamPanel;
 import GUI_Panel.NhaCungCapPanel;
+import GUI_Panel.NhanVienPanel;
 import GUI_Panel.PhieuNhapPanel;
+import GUI_Panel.SanPhamPanel;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -62,6 +65,8 @@ public class Home extends JFrame {
 	private JButton btnPhieuNhap;
 	private JButton btnNhaCungCap;
 	private JButton btnKhachHang;
+	private JButton btnSanPham;
+	private JButton btnNhanVien;
 	
 	private void addActionListener() {
 		btnHome.addActionListener(e ->{
@@ -83,6 +88,16 @@ public class Home extends JFrame {
 		btnKhachHang.addActionListener(e ->{
 			cardLayout.show(cardPanel, "khachHang");
 		});
+		
+		btnNhanVien.addActionListener(e ->{
+			cardLayout.show(cardPanel, "nhanvien");
+		});
+		
+		btnSanPham.addActionListener(e ->{
+			cardLayout.show(cardPanel, "sanpham");
+		});
+		
+		
 		
 		btnDangXuat.addActionListener(e ->{
 			dispose();
@@ -164,7 +179,7 @@ public class Home extends JFrame {
 		gbc_btnHoaDon.gridy = 2;
 		pnLeftBottom.add(btnHoaDon, gbc_btnHoaDon);
 		
-		JButton btnNhanVien = new JButton("Nhân viên");
+		btnNhanVien = new JButton("Nhân viên");
 		btnNhanVien.setIcon(new ImageIcon(Home.class.getResource("/Image/iconStaff.png")));
 		btnNhanVien.setHorizontalAlignment(SwingConstants.LEFT);
 		btnNhanVien.setHorizontalTextPosition(SwingConstants.RIGHT);
@@ -188,7 +203,7 @@ public class Home extends JFrame {
 		gbc_btnKhachHang.gridy = 4;
 		pnLeftBottom.add(btnKhachHang, gbc_btnKhachHang);
 		
-		JButton btnSanPham = new JButton("Sản phẩm");
+		btnSanPham = new JButton("Sản phẩm");
 		btnSanPham.setHorizontalAlignment(SwingConstants.LEFT);
 		btnSanPham.setHorizontalTextPosition(SwingConstants.RIGHT);
 		btnSanPham.setIcon(new ImageIcon(Home.class.getResource("/Image/iconProduct.png")));
@@ -262,6 +277,9 @@ public class Home extends JFrame {
 			JPanel nhaCungCap = new NhaCungCapPanel();
 			JPanel phieuNhap = new PhieuNhapPanel();
 			JPanel khachHang = new KhachHangPanel();
+			JPanel sanpham = new SanPhamPanel();
+			JPanel loaisanpham = new LoaiSanPhamPanel();
+			JPanel nhanvien = new NhanVienPanel();
 			
 			
 			cardPanel.add(trangChu, "trangChu");
@@ -269,6 +287,9 @@ public class Home extends JFrame {
 			cardPanel.add(nhaCungCap,"nhaCungCap");
 			cardPanel.add(phieuNhap,"phieuNhap");
 			cardPanel.add(khachHang, "khachHang");
+			cardPanel.add(sanpham, "sanpham");
+			cardPanel.add(loaisanpham, "loaisanpham");
+			cardPanel.add(nhanvien, "nhanvien");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

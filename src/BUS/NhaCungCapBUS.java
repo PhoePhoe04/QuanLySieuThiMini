@@ -20,7 +20,7 @@ public class NhaCungCapBUS {
      * Thêm một nhà cung cấp vào danh sách và cơ sở dữ liệu
      */
     public boolean them(NhaCungCapDTO ncc) throws SQLException{
-        if(!isValidPhoneNumber(ncc.getSoDienThoaiNCC()) || !isUniqueMaNCC(ncc.getMaNCC()))
+        if(!isUniqueMaNCC(ncc.getMaNCC()))
             return false;
         if(nccDAO.them(ncc) > 0) {
             this.list_NCC.add(ncc);
@@ -48,7 +48,7 @@ public class NhaCungCapBUS {
      * Sửa thông tin một nhà cung cấp
      */
     public boolean sua(NhaCungCapDTO ncc) throws SQLException{
-        if(!isValidPhoneNumber(ncc.getSoDienThoaiNCC()) || !isUniqueMaNCC(ncc.getMaNCC()))
+        if(!isUniqueMaNCC(ncc.getMaNCC()))
             return false;
         if(nccDAO.sua(ncc) > 0) {
             for (NhaCungCapDTO nccDTO : list_NCC) {
@@ -62,18 +62,6 @@ public class NhaCungCapBUS {
         return false;
     }
     
-    
-    // Kiểm tra sự hợp lệ của số điện thoại
-    private boolean isValidPhoneNumber(String phoneNumber) {
-        if(phoneNumber.length() != 10)
-            return false;
-        for (char c : phoneNumber.toCharArray()) {
-            if(!Character.isDigit(c))
-                return false;
-        }
-        return true;
-    }
-    
     // Kiểm tra tính duy nhất của mã nhà cung cấp
     private boolean isUniqueMaNCC(String maNCC) {
         for (NhaCungCapDTO nccDTO : list_NCC) {
@@ -82,6 +70,16 @@ public class NhaCungCapBUS {
         }
         return true;
     }
+    
+    // Lấy dữ liệu
+    public ArrayList<NhaCungCapDTO> getList(){
+    	return this.list_NCC;
+    }
+    
+    public ArrayList<NhaCungCapDTO> getList(String condition){
+    	return nccDAO.docDB(condition);
+    }
+    
     public static void main(String[] args) {
         try {
             NhaCungCapBUS nccBus = new NhaCungCapBUS();

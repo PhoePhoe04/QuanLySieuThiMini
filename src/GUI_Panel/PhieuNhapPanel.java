@@ -18,6 +18,8 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
 import DTO.NhapHangDTO;
+import BUS.ChiTietPhieuNhapBUS;
+import BUS.NhapHangBUS;
 import GUI_Dialog.PhieuNhapInsert;
 
 import java.awt.BorderLayout;
@@ -33,18 +35,20 @@ import java.util.ArrayList;
 
 public class PhieuNhapPanel extends JPanel {
 
-    /**
-	 * 
-	 */
+    
 	private static final long serialVersionUID = 1L;
 	private JButton btnThem;
     private JButton btnSua;
-    private DefaultTableModel dtmPhieuNhap;
-    private DefaultTableModel dtmChiTiet;
-    private ArrayList<NhapHangDTO> listPhieuNhap;
     private JButton btnXoa;
+    
     private JTable tblPhieuNhap;
     private JTable tblChiTiet;
+    
+    private DefaultTableModel dtmPhieuNhap;
+    private DefaultTableModel dtmChiTiet;
+    
+    private NhapHangBUS nhBUS;
+    private ChiTietPhieuNhapBUS ctnhBUS;
 
     public PhieuNhapPanel() {
         init();

@@ -19,7 +19,7 @@ public class NhaCungCapDAO {
             HashMap<String, Object> insertValues = new HashMap<>();
             insertValues.put("maNCC", nhaCungCap.getMaNCC());
             insertValues.put("tenNCC", nhaCungCap.getTenNCC());
-            insertValues.put("soDienThoaiNCC", nhaCungCap.getSoDienThoaiNCC());
+            insertValues.put("email", nhaCungCap.getEmail());
             insertValues.put("diaChiNCC", nhaCungCap.getDiaChiNCC());
 
             ketQua = connect.insert("nhacungcap", insertValues);
@@ -40,7 +40,7 @@ public class NhaCungCapDAO {
         try {
             HashMap<String, Object> updateValues = new HashMap<>();
             updateValues.put("tenNCC", nhaCungCap.getTenNCC());
-            updateValues.put("soDienThoaiNCC", nhaCungCap.getSoDienThoaiNCC());
+            updateValues.put("email", nhaCungCap.getEmail());
             updateValues.put("diaChiNCC", nhaCungCap.getDiaChiNCC());
 
             String condition = " maNCC = '" + nhaCungCap.getMaNCC() + "'";
@@ -84,7 +84,7 @@ public class NhaCungCapDAO {
                 NhaCungCapDTO nhaCungCap = new NhaCungCapDTO();
                 nhaCungCap.setMaNCC(rs.getString("maNCC"));
                 nhaCungCap.setTenNCC(rs.getString("tenNCC"));
-                nhaCungCap.setSoDienThoaiNCC(rs.getString("soDienThoaiNCC"));
+                nhaCungCap.setEmail(rs.getString("email"));
                 nhaCungCap.setDiaChiNCC(rs.getString("diaChiNCC"));
 
                 list.add(nhaCungCap);

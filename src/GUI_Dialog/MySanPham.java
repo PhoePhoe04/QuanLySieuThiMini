@@ -20,7 +20,6 @@ import DTO.SanPham_DTO;
 public class MySanPham extends JDialog {
 	
 	private SanPham_BUS spBUS;
-	private SanPham_DTO sp;
 	
 	private boolean dataAccepted = false;
 
@@ -138,7 +137,7 @@ public class MySanPham extends JDialog {
 	public SanPham_DTO getSanPham() {
 		int selectedRow = tbl.getSelectedRow();
 		if(selectedRow != -1) {
-			sp = new SanPham_DTO(
+			return new SanPham_DTO(
 					tbl.getValueAt(selectedRow, tbl.getColumn("Mã sản phẩm").getModelIndex()).toString(),
 					tbl.getValueAt(selectedRow, tbl.getColumn("Tên sản phẩm").getModelIndex()).toString(),
 					tbl.getValueAt(selectedRow, tbl.getColumn("Mã loại sản phẩm").getModelIndex()).toString(),
@@ -147,7 +146,7 @@ public class MySanPham extends JDialog {
 					tbl.getValueAt(selectedRow, tbl.getColumn("Đơn vị tính").getModelIndex()).toString()
 					);
 		}
-		return sp;
+		return null;
 	}
 	
 	private void addRow(ArrayList<SanPham_DTO> list) {

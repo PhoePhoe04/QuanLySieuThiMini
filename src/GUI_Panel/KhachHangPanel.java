@@ -45,6 +45,7 @@ public class KhachHangPanel extends JPanel {
 	
 	private DefaultTableModel dtmKhachHang;
 	private JTable tblKhachHang;
+	
 	private JButton btnThem;
 	private JButton btnSua;
 	private JButton btnXoa;
@@ -168,7 +169,6 @@ public class KhachHangPanel extends JPanel {
 			} catch (SQLException e1) {
 				e1.printStackTrace();
 			}
-			
 		}
 	}
 	private void suaKhachHang() {

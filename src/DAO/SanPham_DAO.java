@@ -82,7 +82,7 @@ public class SanPham_DAO{
 		try {
 			HashMap<String, Object> updateValues = new HashMap<String, Object>();
 			
-			updateValues.put("tenSP", sanpham.getMaSP());
+			updateValues.put("tenSP", sanpham.getTenSP());
 			updateValues.put("maLSP", sanpham.getMaLSP());
 			updateValues.put("donGia", sanpham.getDonGia());
 			updateValues.put("soLuong", sanpham.getSoLuong());
