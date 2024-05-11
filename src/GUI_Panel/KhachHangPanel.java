@@ -64,7 +64,7 @@ public class KhachHangPanel extends JPanel {
 	 * Create the frame.
 	 */
 	private void init(){
-	   setSize(1200,800);
+	   setSize(1100,700);
 	   setLayout(new BorderLayout(5,10));
 	   
 //	   ============================================= TOP =============================================
@@ -75,11 +75,11 @@ public class KhachHangPanel extends JPanel {
 	   pnTop.setLayout(null);
 	   
 	   btnThem = new JButton("Thêm");
-	   btnThem.setBounds(20, 15, 150, 50);
+	   btnThem.setBounds(20, 15, 130, 50);
 	   btnThem.setHorizontalAlignment(SwingConstants.LEFT);
 	   btnThem.setHorizontalTextPosition(SwingConstants.RIGHT);
 	   btnThem.setIcon(new ImageIcon(KhachHangPanel.class.getResource("/Image/add_icon.png")));
-	   btnThem.setFont(new Font("Tahoma", Font.BOLD, 25));
+	   btnThem.setFont(new Font("Tahoma", Font.BOLD, 20));
 	   btnThem.setPreferredSize(new Dimension(150,50));
 	   pnTop.add(btnThem);
 	   
@@ -87,8 +87,8 @@ public class KhachHangPanel extends JPanel {
 	   btnSua.setHorizontalAlignment(SwingConstants.LEFT);
 	   btnSua.setHorizontalTextPosition(SwingConstants.RIGHT);
 	   btnSua.setIcon(new ImageIcon(KhachHangPanel.class.getResource("/Image/edit_icon.png")));
-	   btnSua.setBounds(180, 15, 150, 50);
-	   btnSua.setFont(new Font("Tahoma", Font.BOLD, 25));
+	   btnSua.setBounds(160, 15, 130, 50);
+	   btnSua.setFont(new Font("Tahoma", Font.BOLD, 20));
 	   btnSua.setPreferredSize(new Dimension(150,50));
 	   pnTop.add(btnSua);
 	   
@@ -96,8 +96,8 @@ public class KhachHangPanel extends JPanel {
 	   btnXoa.setHorizontalAlignment(SwingConstants.LEFT);
 	   btnXoa.setHorizontalTextPosition(SwingConstants.RIGHT);
 	   btnXoa.setIcon(new ImageIcon(KhachHangPanel.class.getResource("/Image/delete2_icon.png")));
-	   btnXoa.setBounds(340, 15, 150, 50);
-	   btnXoa.setFont(new Font("Tahoma", Font.BOLD, 25));
+	   btnXoa.setBounds(300, 15, 130, 50);
+	   btnXoa.setFont(new Font("Tahoma", Font.BOLD, 20));
 	   btnXoa.setPreferredSize(new Dimension(150,50));
 	   pnTop.add(btnXoa);
 	   
@@ -124,16 +124,17 @@ public class KhachHangPanel extends JPanel {
 	   }
 	   
 	   tblKhachHang = new JTable(dtmKhachHang);
+	   tblKhachHang.setFont(new Font("Tahoma", Font.PLAIN, 13));
 	   
 	   JScrollPane scrollPane = new JScrollPane(tblKhachHang);
 	   scrollPane.setBorder(BorderFactory.createLineBorder(Color.black,2));
-	   scrollPane.setBounds(20, 60, 1160, 640);
+	   scrollPane.setBounds(20, 50, 1060, 540);
 	   pnCenter.add(scrollPane);
 	   
 	   
 	   JLabel lblKhachHang = new JLabel("KHÁCH HÀNG");
 	   lblKhachHang.setFont(new Font("Tahoma", Font.BOLD, 20));
-	   lblKhachHang.setBounds(20, 20, 200, 30);
+	   lblKhachHang.setBounds(20, 10, 200, 30);
 	   pnCenter.add(lblKhachHang);
 	   
 	}
@@ -229,7 +230,7 @@ public class KhachHangPanel extends JPanel {
 			public void run() {
 				try {
 					JFrame frame = new JFrame();
-					frame.setSize(1200,800);
+					frame.setSize(1100,700);
 					KhachHangPanel kh = new KhachHangPanel();
 					frame.getContentPane().add(kh);
 					frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

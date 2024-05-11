@@ -126,6 +126,7 @@ public class NhaCungCapInsert extends JDialog {
 	        };
 		
 		JComboBox comboBox = new JComboBox(provinces);
+		comboBox.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		comboBox.setBounds(219, 186, 100, 21);
 		pnThongTinLeft.add(comboBox);
 		

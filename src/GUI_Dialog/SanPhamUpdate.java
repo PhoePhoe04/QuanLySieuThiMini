@@ -58,7 +58,7 @@ public class SanPhamUpdate extends JDialog {
 		
 		getContentPane().add(pnTop, BorderLayout.NORTH);
 		
-		JLabel lblTitle = new JLabel("THÊM SẢN PHẨM");
+		JLabel lblTitle = new JLabel("SỬA SẢN PHẨM");
 		lblTitle.setFont(new Font("Tahoma", Font.BOLD, 20));
 		pnTop.add(lblTitle);
 		
