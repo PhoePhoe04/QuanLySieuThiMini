@@ -48,7 +48,7 @@ private boolean dataAccepted = false;
 		getContentPane().add(pnTop, BorderLayout.NORTH);
 		pnTop.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
-		JLabel lblTitle = new JLabel("THÊM LOẠI SẢN PHẨM");
+		JLabel lblTitle = new JLabel("SỬA LOẠI SẢN PHẨM");
 		lblTitle.setFont(new Font("Tahoma", Font.BOLD, 20));
 		pnTop.add(lblTitle);
 		// ------------- CENTER -------------

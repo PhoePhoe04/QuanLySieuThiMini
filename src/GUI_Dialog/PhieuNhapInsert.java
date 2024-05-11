@@ -130,7 +130,7 @@ public class PhieuNhapInsert extends JDialog {
     }
 
     private void init() {
-        setBounds(100, 100, 700, 450);
+        setBounds(100, 100, 750, 500);
         setLocationRelativeTo(null);
         getContentPane().setLayout(new BorderLayout(0, 10));
         setResizable(false);
@@ -163,67 +163,67 @@ public class PhieuNhapInsert extends JDialog {
 
         txtMaPN = new JTextField();
         txtMaPN.setFont(new Font("Tahoma", Font.PLAIN, 15));
-        txtMaPN.setBounds(150, 50, 100, 20);
+        txtMaPN.setBounds(150, 50, 100, 25);
         pnThongTinLeft.add(txtMaPN);
         txtMaPN.setColumns(10);
 
         JLabel lblMaNV = new JLabel("Mã nhân viên");
         lblMaNV.setFont(new Font("Tahoma", Font.BOLD, 15));
-        lblMaNV.setBounds(20, 80, 120, 20);
+        lblMaNV.setBounds(20, 85, 120, 25);
         pnThongTinLeft.add(lblMaNV);
 
         txtMaNV = new JTextField();
         txtMaNV.setFont(new Font("Tahoma", Font.PLAIN, 15));
-        txtMaNV.setBounds(150, 80, 100, 20);
+        txtMaNV.setBounds(150, 85, 100, 25);
         pnThongTinLeft.add(txtMaNV);
 
         JLabel lblMaNCC = new JLabel("Mã nhà cung cấp");
         lblMaNCC.setFont(new Font("Tahoma", Font.BOLD, 15));
-        lblMaNCC.setBounds(20, 110, 130, 20);
+        lblMaNCC.setBounds(20, 120, 130, 25);
         pnThongTinLeft.add(lblMaNCC);
 
         txtMaNCC = new JTextField();
         txtMaNCC.setFont(new Font("Tahoma", Font.PLAIN, 15));
-        txtMaNCC.setBounds(150, 110, 100, 20);
+        txtMaNCC.setBounds(150, 120, 100, 25);
         pnThongTinLeft.add(txtMaNCC);
 
         JLabel lblTongTien = new JLabel("Tổng tiền");
         lblTongTien.setFont(new Font("Tahoma", Font.BOLD, 15));
-        lblTongTien.setBounds(20, 170, 120, 20);
+        lblTongTien.setBounds(20, 190, 120, 25);
         pnThongTinLeft.add(lblTongTien);
 
         txtTongTien = new JTextField();
         txtTongTien.setFont(new Font("Tahoma", Font.PLAIN, 15));
-        txtTongTien.setBounds(150, 170, 100, 20);
+        txtTongTien.setBounds(150, 190, 100, 25);
         txtTongTien.setEditable(false);
         pnThongTinLeft.add(txtTongTien);
         txtTongTien.setColumns(10);
 
         JLabel lblNgayNhap = new JLabel("Ngày nhập");
         lblNgayNhap.setFont(new Font("Tahoma", Font.BOLD, 15));
-        lblNgayNhap.setBounds(20, 140, 120, 20);
+        lblNgayNhap.setBounds(20, 155, 120, 25);
         pnThongTinLeft.add(lblNgayNhap);
 
         txtNgayNhap = new JTextField();
         txtNgayNhap.setFont(new Font("Tahoma", Font.PLAIN, 15));
-        txtNgayNhap.setBounds(150, 140, 100, 20);
+        txtNgayNhap.setBounds(150, 155, 100, 25);
         txtNgayNhap.setEditable(false);
         pnThongTinLeft.add(txtNgayNhap);
         txtNgayNhap.setColumns(10);
         
         btnMaNV = new JButton("...");
         btnMaNV.setFont(new Font("Tahoma", Font.BOLD, 15));
-        btnMaNV.setBounds(260, 80, 30, 20);
+        btnMaNV.setBounds(260, 85, 30, 25);
         pnThongTinLeft.add(btnMaNV);
         
         btnMaNCC = new JButton("...");
         btnMaNCC.setFont(new Font("Tahoma", Font.BOLD, 15));
-        btnMaNCC.setBounds(260, 110, 30, 20);
+        btnMaNCC.setBounds(260, 120, 30, 25);
         pnThongTinLeft.add(btnMaNCC);
         
         btnNgayNhap = new JButton("");
         btnNgayNhap.setIcon(new ImageIcon(PhieuNhapInsert.class.getResource("/Image/calender_icon.png")));
-        btnNgayNhap.setBounds(260, 140, 30, 20);
+        btnNgayNhap.setBounds(260, 155, 30, 30);
         pnThongTinLeft.add(btnNgayNhap);
 
         // Chi tiết phiếu nhập
@@ -239,55 +239,55 @@ public class PhieuNhapInsert extends JDialog {
 
         JLabel lblMaSP = new JLabel("Mã sản phẩm");
         lblMaSP.setFont(new Font("Tahoma", Font.BOLD, 15));
-        lblMaSP.setBounds(20, 80, 120, 20);
+        lblMaSP.setBounds(20, 85, 120, 25);
         pnThongTinRight.add(lblMaSP);
         
         txtMaSP = new JTextField();
         txtMaSP.setFont(new Font("Tahoma", Font.PLAIN, 15));
-        txtMaSP.setBounds(150, 80, 100, 20);
+        txtMaSP.setBounds(150, 85, 100, 25);
         pnThongTinRight.add(txtMaSP);
 
         JLabel lblSoLuong = new JLabel("Số lượng");
         lblSoLuong.setFont(new Font("Tahoma", Font.BOLD, 15));
-        lblSoLuong.setBounds(20, 110, 120, 20);
+        lblSoLuong.setBounds(20, 120, 120, 25);
         pnThongTinRight.add(lblSoLuong);
 
         txtSoLuong = new JTextField();
         txtSoLuong.setFont(new Font("Tahoma", Font.PLAIN, 15));
-        txtSoLuong.setBounds(150, 110, 100, 20);
+        txtSoLuong.setBounds(150, 120, 100, 25);
         pnThongTinRight.add(txtSoLuong);
         txtSoLuong.setColumns(10);
 
         JLabel lblThanhTien = new JLabel("Thành tiền");
         lblThanhTien.setFont(new Font("Tahoma", Font.BOLD, 15));
-        lblThanhTien.setBounds(20, 140, 120, 20);
+        lblThanhTien.setBounds(20, 155, 120, 25);
         pnThongTinRight.add(lblThanhTien);
 
         txtThanhTien = new JTextField();
         txtThanhTien.setFont(new Font("Tahoma", Font.PLAIN, 15));
-        txtThanhTien.setBounds(150, 140, 100, 20);
+        txtThanhTien.setBounds(150, 155, 100, 25);
         txtThanhTien.setEditable(false); // Không thể chỉnh sửa
         pnThongTinRight.add(txtThanhTien);
         txtThanhTien.setColumns(10);
         
         btnMaSP = new JButton("...");
         btnMaSP.setFont(new Font("Tahoma", Font.BOLD, 15));
-        btnMaSP.setBounds(260, 80, 30, 20);
+        btnMaSP.setBounds(260, 85, 30, 25);
         pnThongTinRight.add(btnMaSP);
         
         txtTonKho = new JTextField();
-        txtTonKho.setBounds(260, 110, 50, 20);
+        txtTonKho.setBounds(260, 122, 50, 25);
         pnThongTinRight.add(txtTonKho);
         txtTonKho.setColumns(10);
         
         JLabel lblMaPN_CTHD = new JLabel("Mã phiếu nhập");
         lblMaPN_CTHD.setFont(new Font("Tahoma", Font.BOLD, 15));
-        lblMaPN_CTHD.setBounds(20, 50, 120, 20);
+        lblMaPN_CTHD.setBounds(20, 50, 120, 25);
         pnThongTinRight.add(lblMaPN_CTHD);
         
         txtMaPN_CTHD = new JTextField();
         txtMaPN_CTHD.setEditable(false);
-        txtMaPN_CTHD.setBounds(150, 50, 100, 20);
+        txtMaPN_CTHD.setBounds(150, 50, 100, 25);
         pnThongTinRight.add(txtMaPN_CTHD);
         txtMaPN_CTHD.setColumns(10);
 

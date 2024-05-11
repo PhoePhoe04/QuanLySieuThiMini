@@ -97,7 +97,7 @@ public class PhieuNhapPanel extends JPanel {
      */
 
     private void init() {
-        setSize(1200, 800);
+        setSize(1100, 700);
         setLayout(new BorderLayout(5, 10));
 
         // TOP
@@ -108,17 +108,17 @@ public class PhieuNhapPanel extends JPanel {
         pnTop.setLayout(null);
 
         btnThem = new JButton("Thêm");
-        btnThem.setBounds(20, 15, 150, 50);
+        btnThem.setBounds(20, 15, 130, 50);
         btnThem.setHorizontalAlignment(SwingConstants.LEFT);
         btnThem.setIcon(new ImageIcon(PhieuNhapPanel.class.getResource("/Image/add_icon.png")));
-        btnThem.setFont(new Font("Tahoma", Font.BOLD, 25));
+        btnThem.setFont(new Font("Tahoma", Font.BOLD, 20));
         pnTop.add(btnThem);
 
         btnXoa = new JButton("Xóa");
-        btnXoa.setBounds(180, 15, 150, 50);
+        btnXoa.setBounds(160, 15, 130, 50);
         btnXoa.setHorizontalAlignment(SwingConstants.LEFT);
         btnXoa.setIcon(new ImageIcon(PhieuNhapPanel.class.getResource("/Image/delete2_icon.png")));
-        btnXoa.setFont(new Font("Tahoma", Font.BOLD, 25));
+        btnXoa.setFont(new Font("Tahoma", Font.BOLD, 20));
         pnTop.add(btnXoa);
 
         // CENTER
@@ -129,10 +129,11 @@ public class PhieuNhapPanel extends JPanel {
         addRow();
 
         tblPhieuNhap = new JTable(dtmPhieuNhap);
+        tblPhieuNhap.setFont(new Font("Tahoma", Font.PLAIN, 13));
 
         JScrollPane scrPanePhieuNhap = new JScrollPane(tblPhieuNhap);
         scrPanePhieuNhap.setBorder(BorderFactory.createLineBorder(Color.black, 2));
-        scrPanePhieuNhap.setBounds(20, 50, 650, 640);
+        scrPanePhieuNhap.setBounds(20, 50, 525, 540);
         pnCenter.add(scrPanePhieuNhap);
 
         JLabel lblPhieuNhap = new JLabel("PHIẾU NHẬP");
@@ -141,15 +142,16 @@ public class PhieuNhapPanel extends JPanel {
         pnCenter.add(lblPhieuNhap);
 
         tblChiTiet = new JTable(dtmChiTiet);
+        tblChiTiet.setFont(new Font("Tahoma", Font.PLAIN, 13));
 
         JScrollPane scrPaneChiTiet = new JScrollPane(tblChiTiet);
         scrPaneChiTiet.setBorder(BorderFactory.createLineBorder(Color.black, 2));
-        scrPaneChiTiet.setBounds(680, 50, 500, 640);
+        scrPaneChiTiet.setBounds(555, 50, 525, 540);
         pnCenter.add(scrPaneChiTiet);
 
         JLabel lblChiTiet = new JLabel("CHI TIẾT PHIẾU NHẬP");
         lblChiTiet.setFont(new Font("Tahoma", Font.BOLD, 20));
-        lblChiTiet.setBounds(680, 10, 250, 30);
+        lblChiTiet.setBounds(555, 10, 250, 30);
         pnCenter.add(lblChiTiet);
 
     }
@@ -215,7 +217,7 @@ public class PhieuNhapPanel extends JPanel {
 					JFrame frame = new JFrame();
 					JPanel phieunhap = new PhieuNhapPanel();
 					frame.getContentPane().add(phieunhap);
-					frame.setSize(1200,800);
+					frame.setSize(1100,700);
 					frame.setVisible(true);
 					frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 					frame.setLocationRelativeTo(null);

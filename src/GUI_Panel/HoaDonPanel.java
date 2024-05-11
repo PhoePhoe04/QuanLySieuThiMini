@@ -41,6 +41,7 @@ import javax.swing.ImageIcon;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.awt.event.ActionEvent;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
@@ -75,7 +76,7 @@ public class HoaDonPanel extends JPanel {
 	 */
 	
 	private void init() {
-		setSize(1200,800);
+		setSize(1100,700);
 		setLayout(new BorderLayout(5, 10));
 		
 //		============================ TOP ============================
@@ -88,25 +89,25 @@ public class HoaDonPanel extends JPanel {
 		
 		
 		btnThem = new JButton("Thêm");
-		btnThem.setBounds(20, 15, 150, 50);
+		btnThem.setBounds(20, 15, 130, 50);
 		btnThem.setHorizontalAlignment(SwingConstants.LEFT);
 		btnThem.setIcon(new ImageIcon(HoaDonPanel.class.getResource("/Image/add_icon.png")));
-		btnThem.setFont(new Font("Tahoma", Font.BOLD, 25));
+		btnThem.setFont(new Font("Tahoma", Font.BOLD, 20));
 		btnThem.setPreferredSize(new Dimension(150,50));
 		
 		pnTop.add(btnThem);
 		
 		btnXoa = new JButton("Xóa");
-		btnXoa.setBounds(180, 15, 150, 50);
+		btnXoa.setBounds(160, 15, 130, 50);
 		btnXoa.setHorizontalAlignment(SwingConstants.LEFT);
 		btnXoa.setIcon(new ImageIcon(HoaDonPanel.class.getResource("/Image/delete2_icon.png")));
-		btnXoa.setFont(new Font("Tahoma", Font.BOLD, 25));
+		btnXoa.setFont(new Font("Tahoma", Font.BOLD, 20));
 		btnXoa.setPreferredSize(new Dimension(150,50));
 		pnTop.add(btnXoa);
 		
 		JButton btnTKNC = new JButton("Tìm");
-		btnTKNC.setFont(new Font("Tahoma", Font.BOLD, 25));
-		btnTKNC.setBounds(340, 15, 150, 50);
+		btnTKNC.setFont(new Font("Tahoma", Font.BOLD, 20));
+		btnTKNC.setBounds(300, 15, 130, 50);
 		pnTop.add(btnTKNC);
 		
 		cbBoxTra = new JComboBox();
@@ -119,18 +120,18 @@ public class HoaDonPanel extends JPanel {
 		cbBoxTra.addItem("Ngày lập");
 		cbBoxTra.addItem("Tổng tiền");
 		
-		cbBoxTra.setBounds(750, 25, 150, 30);
+		cbBoxTra.setBounds(540, 25, 150, 30);
 		pnTop.add(cbBoxTra);
 		
 		txtTra = new JTextField();
 		txtTra.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		txtTra.setBounds(910, 25, 150, 30);
+		txtTra.setBounds(700, 25, 150, 30);
 		pnTop.add(txtTra);
 		txtTra.setColumns(10);
 		
 		btnTra = new JButton("Tra");
 		btnTra.setFont(new Font("Tahoma", Font.BOLD, 18));
-		btnTra.setBounds(1070, 25, 70, 30);
+		btnTra.setBounds(860, 25, 70, 30);
 		pnTop.add(btnTra);
 		
 		
@@ -152,11 +153,11 @@ public class HoaDonPanel extends JPanel {
 		themDataTable_HD(hoaDonBUS.getList_hoadon());
 		
 		tblHoaDon = new JTable(dtmHoaDon);
-		tblHoaDon.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		tblHoaDon.setFont(new Font("Tahoma", Font.PLAIN, 13));
 	
 		JScrollPane scrPaneHoaDon = new JScrollPane(tblHoaDon);
 		scrPaneHoaDon.setBorder(BorderFactory.createLineBorder(Color.black,2));
-		scrPaneHoaDon.setBounds(20, 50, 650, 640);
+		scrPaneHoaDon.setBounds(20, 50, 525, 540);
 		pnCenter.add(scrPaneHoaDon);
 		
 		JLabel lblHoaDon = new JLabel("HÓA ĐƠN");
@@ -178,16 +179,16 @@ public class HoaDonPanel extends JPanel {
 		}
 			
 		tblCTHD = new JTable(dtmCTHD);
-		tblCTHD.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		tblCTHD.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		
 		JScrollPane scrPaneChiTietHoaDon = new JScrollPane(tblCTHD);
 		scrPaneChiTietHoaDon.setBorder(BorderFactory.createLineBorder(Color.black,2));;
-		scrPaneChiTietHoaDon.setBounds(680, 50, 500, 640);
+		scrPaneChiTietHoaDon.setBounds(555, 50, 525, 540);
 		pnCenter.add(scrPaneChiTietHoaDon);
 		
 		JLabel lblCTHD = new JLabel("CHI TIẾT HÓA ĐƠN");
 		lblCTHD.setFont(new Font("Tahoma", Font.BOLD, 20));
-		lblCTHD.setBounds(680, 10, 200, 30);
+		lblCTHD.setBounds(555, 10, 200, 30);
 		pnCenter.add(lblCTHD);
 	}
 	
@@ -392,7 +393,7 @@ public class HoaDonPanel extends JPanel {
 					JFrame frame = new JFrame();
 					JPanel hoadon = new HoaDonPanel();
 					frame.getContentPane().add(hoadon);
-					frame.setSize(1200,800);
+					frame.setSize(1100,700);
 					frame.setVisible(true);
 					frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 					frame.setLocationRelativeTo(null);

@@ -37,10 +37,15 @@ public class NhanVienPanel extends JPanel {
 	private JButton btnSua;
 	private JButton btnXoa;
 
-	public NhanVienPanel() throws SQLException{
-			nhanVienBUS = new NhanVienBUS();
-			init();
-			addActionListener();
+	public NhanVienPanel() {
+			try {
+				nhanVienBUS = new NhanVienBUS();
+				init();
+				addActionListener();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	}
 	
 
@@ -48,7 +53,7 @@ public class NhanVienPanel extends JPanel {
 	 * Create the frame.
 	 */
 	private void init(){
-	   setSize(1200,800);
+	   setSize(1100,700);
 	   setLayout(new BorderLayout(5,10));
 	   
 //	   ============================================= TOP =============================================
@@ -62,24 +67,24 @@ public class NhanVienPanel extends JPanel {
 	   btnThem.setHorizontalAlignment(SwingConstants.LEFT);
 	   btnThem.setHorizontalTextPosition(SwingConstants.RIGHT);
 	   btnThem.setIcon(new ImageIcon(NhanVienPanel.class.getResource("/Image/add_icon.png")));
-	   btnThem.setBounds(20, 15, 150, 50);
-	   btnThem.setFont(new Font("Tahoma", Font.BOLD, 25));
+	   btnThem.setBounds(20, 15, 130, 50);
+	   btnThem.setFont(new Font("Tahoma", Font.BOLD, 20));
 	   pnTop.add(btnThem);
 	   
 	   btnSua = new JButton("Sửa");
 	   btnSua.setHorizontalAlignment(SwingConstants.LEFT);
 	   btnSua.setHorizontalTextPosition(SwingConstants.RIGHT);
 	   btnSua.setIcon(new ImageIcon(NhanVienPanel.class.getResource("/Image/edit_icon.png")));
-	   btnSua.setBounds(180, 15, 150, 50);
-	   btnSua.setFont(new Font("Tahoma", Font.BOLD, 25));
+	   btnSua.setBounds(160, 15, 130, 50);
+	   btnSua.setFont(new Font("Tahoma", Font.BOLD, 20));
 	   pnTop.add(btnSua);
 	   
 	   btnXoa = new JButton("Xóa");
 	   btnXoa.setHorizontalAlignment(SwingConstants.LEFT);
 	   btnXoa.setHorizontalTextPosition(SwingConstants.RIGHT);
 	   btnXoa.setIcon(new ImageIcon(NhanVienPanel.class.getResource("/Image/delete2_icon.png")));
-	   btnXoa.setBounds(340, 15, 150, 50);
-	   btnXoa.setFont(new Font("Tahoma", Font.BOLD, 25));
+	   btnXoa.setBounds(300, 15, 130, 50);
+	   btnXoa.setFont(new Font("Tahoma", Font.BOLD, 20));
 	   pnTop.add(btnXoa);
 	   
 //	   ============================================= CENTER =============================================
@@ -96,25 +101,21 @@ public class NhanVienPanel extends JPanel {
 	   dtmNhanVien.addColumn("Địa chỉ");
 	   dtmNhanVien.addColumn("Giới tính");
 	   dtmNhanVien.addColumn("Số điện thoại");
-	
 	   
-	   ArrayList<NhanVienDTO> list = nhanVienBUS.getList_NV();
-	   
-	   for(int i = 0; i < list.size(); i++) {
-		   NhanVienDTO nv = list.get(i);
-		   dtmNhanVien.addRow(new Object[] {nv.getMaNV(), nv.getHoNV(), nv.getTenNV(), Date.valueOf(nv.getNgaySinh()+""), nv.isGioiTinh() == false ? "Nam":"Nữ", nv.getDiaChi(), nv.getSoDienThoai()});
-	   }
+	   addRow(nhanVienBUS.getList_NV());
 	   
 	   tblNhanVien = new JTable(dtmNhanVien);
+	   tblNhanVien.setFont(new Font("Tahoma", Font.PLAIN, 13));
 	   
 	   JScrollPane scrollPane = new JScrollPane(tblNhanVien);
-	   scrollPane.setBounds(20, 60, 1160, 640);
+	   scrollPane.setBorder(BorderFactory.createLineBorder(Color.black,2));
+	   scrollPane.setBounds(20, 50, 1060, 540);
 	   pnCenter.add(scrollPane);
 	   
 	   
 	   JLabel lblNhanVien = new JLabel("NHÂN VIÊN");
 	   lblNhanVien.setFont(new Font("Tahoma", Font.BOLD, 20));
-	   lblNhanVien.setBounds(20, 20, 200, 30);
+	   lblNhanVien.setBounds(20, 10, 200, 30);
 	   pnCenter.add(lblNhanVien);
 	   
 	}
@@ -138,6 +139,22 @@ public class NhanVienPanel extends JPanel {
 	/*
 	 * Function
 	 */
+	private void addRow(ArrayList<NhanVienDTO> list) {
+		if(list != null) {
+			for (NhanVienDTO nv : list) {
+				dtmNhanVien.addRow(new Object[] {
+						nv.getMaNV(),
+						nv.getHoNV(),
+						nv.getTenNV(),
+						nv.getNgaySinh(),
+						nv.isGioiTinh() == false ? "Nam":"Nữ",
+						nv.getDiaChi(),
+						nv.getSoDienThoai()
+				});
+			}
+		}
+	}
+	
 	private void themNhanVien() {
 		NhanVienInsert data = new NhanVienInsert();
 		if(data.showDialog(this)) {
@@ -211,7 +228,7 @@ public class NhanVienPanel extends JPanel {
 					JFrame frame = new JFrame();
 					NhanVienPanel nv = new NhanVienPanel();					
 					frame.getContentPane().add(nv);
-					frame.setSize(1200,800);
+					frame.setSize(1100,700);
 					frame.setVisible(true);;
 					frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 					frame.setLocationRelativeTo(null);

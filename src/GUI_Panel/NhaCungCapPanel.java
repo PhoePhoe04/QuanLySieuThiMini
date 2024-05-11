@@ -45,8 +45,14 @@ public class NhaCungCapPanel extends JPanel {
     private JTable tblNhaCungCap;
 
     public NhaCungCapPanel() {
-        init();
-        addActionListener();
+    	try {
+    		nccBUS = new NhaCungCapBUS();
+    		init();
+    	    addActionListener();
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+       
     }
 
     /*
@@ -54,7 +60,7 @@ public class NhaCungCapPanel extends JPanel {
      */
 
     private void init() {
-        setSize(1200, 800);
+        setSize(1100, 700);
         setLayout(new BorderLayout(5, 10));
 
         // TOP
@@ -64,7 +70,7 @@ public class NhaCungCapPanel extends JPanel {
         add(pnTop, BorderLayout.NORTH);
 
         btnThem = new JButton("Thêm");
-        btnThem.setBounds(20, 15, 150, 50);
+        btnThem.setBounds(20, 15, 130, 50);
         btnThem.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         	}
@@ -72,27 +78,27 @@ public class NhaCungCapPanel extends JPanel {
         pnTop.setLayout(null);
         btnThem.setHorizontalAlignment(SwingConstants.LEFT);
         btnThem.setIcon(new ImageIcon(NhaCungCapPanel.class.getResource("/Image/add_icon.png")));
-        btnThem.setFont(new Font("Tahoma", Font.BOLD, 25));
+        btnThem.setFont(new Font("Tahoma", Font.BOLD, 20));
         btnThem.setPreferredSize(new Dimension(150, 50));
         pnTop.add(btnThem);
 
         btnSua = new JButton("Sửa");
-        btnSua.setBounds(180, 15, 150, 50);
+        btnSua.setBounds(160, 15, 130, 50);
         btnSua.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         	}
         });
         btnSua.setHorizontalAlignment(SwingConstants.LEFT);
         btnSua.setIcon(new ImageIcon(NhaCungCapPanel.class.getResource("/Image/edit_icon.png")));
-        btnSua.setFont(new Font("Tahoma", Font.BOLD, 25));
+        btnSua.setFont(new Font("Tahoma", Font.BOLD, 20));
         btnSua.setPreferredSize(new Dimension(150, 50));
         pnTop.add(btnSua);
 
         btnXoa = new JButton("Xóa");
-        btnXoa.setBounds(340, 15, 150, 50);
+        btnXoa.setBounds(300, 15, 130, 50);
         btnXoa.setHorizontalAlignment(SwingConstants.LEFT);
         btnXoa.setIcon(new ImageIcon(NhaCungCapPanel.class.getResource("/Image/delete2_icon.png")));
-        btnXoa.setFont(new Font("Tahoma", Font.BOLD, 25));
+        btnXoa.setFont(new Font("Tahoma", Font.BOLD, 20));
         btnXoa.setPreferredSize(new Dimension(150, 50));
         pnTop.add(btnXoa);
 
@@ -101,20 +107,20 @@ public class NhaCungCapPanel extends JPanel {
         pnCenter.setBorder(BorderFactory.createLineBorder(Color.black, 2));
         add(pnCenter, BorderLayout.CENTER);
         pnCenter.setLayout(null);
-//        addRow();
-        
         dtmNhaCungCap = new DefaultTableModel();
         dtmNhaCungCap.addColumn("Mã NCC");
         dtmNhaCungCap.addColumn("Tên NCC");
-        dtmNhaCungCap.addColumn("Số điện thoại");
+        dtmNhaCungCap.addColumn("Email");
         dtmNhaCungCap.addColumn("Địa chỉ");
+        
+        addRow(nccBUS.getList());
 
         tblNhaCungCap = new JTable(dtmNhaCungCap);
-        tblNhaCungCap.setFont(new Font("Tahoma", Font.PLAIN, 15));
+        tblNhaCungCap.setFont(new Font("Tahoma", Font.PLAIN, 13));
 
         JScrollPane scrPaneNhaCungCap = new JScrollPane(tblNhaCungCap);
         scrPaneNhaCungCap.setBorder(BorderFactory.createLineBorder(Color.black, 2));
-        scrPaneNhaCungCap.setBounds(20, 50, 1160, 640);
+        scrPaneNhaCungCap.setBounds(20, 50, 1060, 540);
         pnCenter.add(scrPaneNhaCungCap);
 
         JLabel lblNhaCungCap = new JLabel("NHÀ CUNG CẤP");
@@ -168,6 +174,18 @@ public class NhaCungCapPanel extends JPanel {
     /*
      * Function
      */
+    private void addRow(ArrayList<NhaCungCapDTO> list) {
+    	if(list != null) {
+    		for (NhaCungCapDTO ncc : list) {
+				dtmNhaCungCap.addRow(new Object[] {
+					ncc.getMaNCC(),
+					ncc.getTenNCC(),
+					ncc.getEmail(),
+					ncc.getDiaChiNCC()
+				});
+			}
+    	}
+    }
 
     private void removeRowFromTblNhaCungCap(int rowIndex) {
         dtmNhaCungCap.removeRow(rowIndex);
@@ -179,7 +197,7 @@ public class NhaCungCapPanel extends JPanel {
 					JFrame frame = new JFrame();
 					JPanel nhacungcap = new NhaCungCapPanel();
 					frame.getContentPane().add(nhacungcap);
-					frame.setSize(1200,800);
+					frame.setSize(1100,700);
 					frame.setVisible(true);
 					frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 					frame.setLocationRelativeTo(null);

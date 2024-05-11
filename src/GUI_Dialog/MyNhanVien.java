@@ -73,6 +73,7 @@ public class MyNhanVien extends JDialog {
 		addRow(nvBUS.getList_NV());
 		
 		tbl = new JTable(dtm);
+		tbl.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		
 		scrollPane = new JScrollPane(tbl);
 		scrollPane.setBounds(10, 70, 616, 190);
@@ -82,22 +83,23 @@ public class MyNhanVien extends JDialog {
 		btnHuy.addActionListener(e ->{
 			dispose();
 		});
-		btnHuy.setFont(new Font("Tahoma", Font.BOLD, 18));
+		btnHuy.setFont(new Font("Tahoma", Font.BOLD, 15));
 		btnHuy.setBounds(546, 273, 80, 30);
 		getContentPane().add(btnHuy);
 		
 		btnOK = new JButton("OK");
-		btnOK.setFont(new Font("Tahoma", Font.BOLD, 18));
+		btnOK.setFont(new Font("Tahoma", Font.BOLD, 15));
 		btnOK.setBounds(456, 273, 80, 30);
 		getContentPane().add(btnOK);
 		
 		txtTim = new JTextField();
-		txtTim.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		txtTim.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		txtTim.setBounds(170, 20, 150, 30);
 		getContentPane().add(txtTim);
 		txtTim.setColumns(10);
 		
 		comboBox = new JComboBox();
+		comboBox.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		
 		comboBox.addItem("Mã nhân viên");
 		comboBox.addItem("Họ");
@@ -111,7 +113,7 @@ public class MyNhanVien extends JDialog {
 		getContentPane().add(comboBox);
 		
 		btnTim = new JButton("Tìm");
-		btnTim.setFont(new Font("Tahoma", Font.BOLD, 18));
+		btnTim.setFont(new Font("Tahoma", Font.BOLD, 15));
 		btnTim.setBounds(341, 20, 80, 30);
 		getContentPane().add(btnTim);
 	}
