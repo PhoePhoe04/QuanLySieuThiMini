@@ -33,6 +33,14 @@ public class LoaiSP_BUS {
 		}
 	}
 	
+	public boolean them(LoaiSP_DTO lsp) {
+		if(db.addLoaiSP(lsp) > 0) {
+			this.loaisanphams.add(lsp);
+			return true;
+		}
+		return false;
+	}
+	
 	public boolean deleteLoaiSP(LoaiSP_DTO lsp) {
 		if(loaisanphams.removeIf(sanpham -> sanpham.equals(lsp))) {
 			db.deleteLoaiSP(lsp);
@@ -41,14 +49,15 @@ public class LoaiSP_BUS {
 		return false;
 	}
 
-	public void editLoaiSp(LoaiSP_DTO sanpham) {
+	public boolean editLoaiSp(LoaiSP_DTO sanpham) {
 		for(int i = 0; i < loaisanphams.size(); i++) {
 			if(loaisanphams.get(i).getMaLSP().equals(sanpham.getMaLSP())){
 				loaisanphams.set(i, sanpham);
 				db.editLoaiSP(sanpham);
-				break;
+				return true;
 			}
 		}
+		return false;
 	}
 	
 	public ArrayList<LoaiSP_DTO> getList(){

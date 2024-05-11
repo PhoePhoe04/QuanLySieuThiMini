@@ -22,6 +22,7 @@ import BUS.KhachHangBUS;
 import DTO.KhachHangDTO;
 
 public class MyKhachHang extends JDialog {
+	private boolean dataAccepted = false;
 	
 	private KhachHangBUS khBUS;
 	
@@ -35,10 +36,10 @@ public class MyKhachHang extends JDialog {
 	private JComboBox comboBox;
 	private JButton btnTim;
 
-	public MyKhachHang(Component parentComponent, JTextField txt) {
+	public MyKhachHang() {
 		try {
 			khBUS = new KhachHangBUS();
-			init(parentComponent, txt);
+			init();
 			addActionListener();
 			setVisible(true);
 		} catch (SQLException e) {
@@ -49,11 +50,11 @@ public class MyKhachHang extends JDialog {
 	/*
 	 * CREATE DIALOG
 	 */
-	private void init(Component parentComponent, JTextField txt) {
+	private void init() {
 		setResizable(false);
 		setModal(true);
 		setSize(650,350);
-		setLocationRelativeTo(parentComponent);
+		setLocationRelativeTo(null);
 		getContentPane().setLayout(null);
 		
 		dtm = new DefaultTableModel();
@@ -83,22 +84,6 @@ public class MyKhachHang extends JDialog {
 		getContentPane().add(btnHuy);
 		
 		btnOK = new JButton("OK");
-		btnOK.addActionListener(e -> {
-			int secletedRow = tbl.getSelectedRow();
-			if(secletedRow != -1) {
-				KhachHangDTO kh = new KhachHangDTO(
-						tbl.getValueAt(secletedRow, tbl.getColumn("Mã khách hàng").getModelIndex()).toString(),
-						tbl.getValueAt(secletedRow, tbl.getColumn("Họ").getModelIndex()).toString(),
-						tbl.getValueAt(secletedRow, tbl.getColumn("Tên").getModelIndex()).toString(),
-						tbl.getValueAt(secletedRow, tbl.getColumn("Giới tính").getModelIndex()).toString().equals("Nam") ? false:true,
-						tbl.getValueAt(secletedRow, tbl.getColumn("Địa chỉ").getModelIndex()).toString(),
-						tbl.getValueAt(secletedRow, tbl.getColumn("Số điện thoại").getModelIndex()).toString(),
-						tbl.getValueAt(secletedRow, tbl.getColumn("Gmail").getModelIndex()).toString()
-						);
-				txt.setText(kh.getMaKH());
-				dispose();
-			}
-		});
 		btnOK.setFont(new Font("Tahoma", Font.BOLD, 18));
 		btnOK.setBounds(456, 273, 80, 30);
 		getContentPane().add(btnOK);
@@ -129,9 +114,14 @@ public class MyKhachHang extends JDialog {
 	}
 	
 	/*
-	 * FUNCTION
+	 * ADD ACTIONLISTENER
 	 */
 	private void addActionListener() {
+		btnOK.addActionListener(e ->{
+			dataAccepted = true;
+			dispose();
+		});
+		
 		btnTim.addActionListener(e ->{
 			String column = comboBox.getSelectedItem().toString();
 			if(column.equals("Mã khách hàng")) {
@@ -172,6 +162,30 @@ public class MyKhachHang extends JDialog {
 			}
 		});
 	}
+	
+	/*
+	 * FUNCTION
+	 */
+	public boolean showDialog(Component parentComponent) {
+		return dataAccepted;
+	}
+	
+	public KhachHangDTO getKhachHang() {
+		int selectedRow = tbl.getSelectedRow();
+		if(selectedRow != -1) {
+			return new KhachHangDTO(
+					tbl.getValueAt(selectedRow, tbl.getColumn("Mã khách hàng").getModelIndex()).toString(),
+					tbl.getValueAt(selectedRow, tbl.getColumn("Họ").getModelIndex()).toString(),
+					tbl.getValueAt(selectedRow, tbl.getColumn("Tên").getModelIndex()).toString(),
+					tbl.getValueAt(selectedRow, tbl.getColumn("Giới tính").getModelIndex()).toString().equals("Nam") ? false : true,
+					tbl.getValueAt(selectedRow, tbl.getColumn("Địa chỉ").getModelIndex()).toString(),
+					tbl.getValueAt(selectedRow, tbl.getColumn("Số điện thoại").getModelIndex()).toString(),
+					tbl.getValueAt(selectedRow, tbl.getColumn("Gmail").getModelIndex()).toString()
+					);
+		}
+		return null;
+	}
+	
 	
 	private void addRow(ArrayList<KhachHangDTO> list) {
 		for(KhachHangDTO khachHangDTO : list) {

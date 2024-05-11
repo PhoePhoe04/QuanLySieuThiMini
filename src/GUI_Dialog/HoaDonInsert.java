@@ -29,6 +29,8 @@ import BUS.NhanVienBUS;
 import BUS.SanPham_BUS;
 import DTO.ChiTietHoaDonDTO;
 import DTO.HoaDonDTO;
+import DTO.KhachHangDTO;
+import DTO.NhanVienDTO;
 import DTO.SanPham_DTO;
 
 import javax.swing.JLabel;
@@ -445,22 +447,34 @@ public class HoaDonInsert extends JDialog {
 			MySanPham dialog = new MySanPham(this, sanPhamChuaThanhToan);
 			if(dialog.showDialog(this)) {
 				SanPham_DTO sp = dialog.getSanPham();
-				txtMaSP.setText(sp.getMaSP());
-				txtDonGia.setText(sp.getDonGia()+"");
-				txtTonKho.setText(sp.getSoLuong()+"");
+				if(sp != null) {
+					txtMaSP.setText(sp.getMaSP());
+					txtDonGia.setText(sp.getDonGia()+"");
+					txtTonKho.setText(sp.getSoLuong()+"");
+				}
+			}
+		});
+		
+		btnNV.addActionListener(e ->{
+			MyNhanVien myNhanVien = new MyNhanVien();
+			if(myNhanVien.showDialog(this)) {
+				NhanVienDTO nv = myNhanVien.getNhanVien();
+				if(nv != null)
+					txtMaNV.setText(nv.getMaNV());
+			}
+		});
+		
+		btnKH.addActionListener(e ->{
+			MyKhachHang myKhachHang = new MyKhachHang();
+			if(myKhachHang.showDialog(this)) {
+				KhachHangDTO kh = myKhachHang.getKhachHang();
+				if(kh != null)
+					txtMaKH.setText(kh.getMaKH());
 			}
 		});
 		
 		btnCalender.addActionListener(e -> {
 			new MyCalender(this, txtNgayLap);
-		});
-		
-		btnNV.addActionListener(e ->{
-			new MyNhanVien(this, txtMaNV);
-		});
-		
-		btnKH.addActionListener(e ->{
-			new MyKhachHang(this, txtMaKH);
 		});
 		
 		// Listener btnThem
