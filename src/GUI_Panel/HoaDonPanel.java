@@ -10,10 +10,15 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.RowFilter;
 import javax.swing.SwingConstants;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import BUS.ChiTietHoaDonBUS;
 import BUS.HoaDonBUS;
@@ -24,7 +29,6 @@ import DTO.SanPham_DTO;
 import GUI_Dialog.HoaDonInsert;
 
 import javax.swing.BorderFactory;
-import javax.swing.DefaultRowSorter;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -33,16 +37,10 @@ import java.awt.Font;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.awt.FlowLayout;
 import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.ImageIcon;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
-import java.awt.event.ActionEvent;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
 
@@ -61,6 +59,8 @@ public class HoaDonPanel extends JPanel {
 	private JTextField txtTra;
 	private JComboBox cbBoxTra;
 	private JButton btnTra;
+	private JButton btnXuat;
+	private JButton btnNhap;
 	
 	
 	public HoaDonPanel() {
@@ -120,19 +120,29 @@ public class HoaDonPanel extends JPanel {
 		cbBoxTra.addItem("Ngày lập");
 		cbBoxTra.addItem("Tổng tiền");
 		
-		cbBoxTra.setBounds(540, 25, 150, 30);
+		cbBoxTra.setBounds(761, 25, 120, 30);
 		pnTop.add(cbBoxTra);
 		
 		txtTra = new JTextField();
 		txtTra.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		txtTra.setBounds(700, 25, 150, 30);
+		txtTra.setBounds(890, 26, 120, 30);
 		pnTop.add(txtTra);
 		txtTra.setColumns(10);
 		
 		btnTra = new JButton("Tra");
 		btnTra.setFont(new Font("Tahoma", Font.BOLD, 18));
-		btnTra.setBounds(860, 25, 70, 30);
+		btnTra.setBounds(1020, 25, 70, 30);
 		pnTop.add(btnTra);
+		
+		btnXuat = new JButton("Xuất");
+		btnXuat.setFont(new Font("Tahoma", Font.BOLD, 20));
+		btnXuat.setBounds(440, 15, 130, 50);
+		pnTop.add(btnXuat);
+		
+		btnNhap = new JButton("Nhập");
+		btnNhap.setFont(new Font("Tahoma", Font.BOLD, 20));
+		btnNhap.setBounds(580, 15, 130, 50);
+		pnTop.add(btnNhap);
 		
 		
 //		============================ CENTER ============================
@@ -223,6 +233,10 @@ public class HoaDonPanel extends JPanel {
 		
 		btnTra.addActionListener(e -> {
 			traThongTin();
+		});
+		
+		btnXuat.addActionListener(e ->{
+			xuatFileExcel(null);
 		});
 	}
 	
@@ -385,6 +399,143 @@ public class HoaDonPanel extends JPanel {
 		}
 		return true;
 	}
+	
+	private void xuatFileExcel(String path) {
+		String excelFilePath = "";
+		if(path != null) {
+			excelFilePath = path;
+		}else {
+			excelFilePath = "C:\\Users\\Phuc Duy\\eclipse-workspace2\\DoAnJava.xlsx";
+		}
+		try (FileInputStream fis = new FileInputStream(excelFilePath)){
+			 Workbook workbook = WorkbookFactory.create(fis);
+			 
+			 Sheet hoadon = workbook.getSheet("Hóa Đơn");
+			 
+			 hoadon.setColumnWidth(1, 4000);
+			 hoadon.setColumnWidth(2, 4000);
+			 hoadon.setColumnWidth(3, 4000);
+			 hoadon.setColumnWidth(4, 4000);
+			 hoadon.setColumnWidth(5, 4000);
+			 hoadon.setColumnWidth(6, 4000);
+			 
+			 Row tblName = hoadon.createRow(1);
+			 
+			 Cell column_maHD = tblName.createCell(1);
+			 column_maHD.setCellValue("Mã hóa đơn");
+			 Cell column_maKH = tblName.createCell(2);
+			 column_maKH.setCellValue("Mã khách hàng");
+			 Cell column_maNV = tblName.createCell(3);
+			 column_maNV.setCellValue("Mã nhân viên");
+			 Cell column_maKM = tblName.createCell(4);
+			 column_maKM.setCellValue("Mã khuyến mãi");
+			 Cell column_ngayLap = tblName.createCell(5);
+			 column_ngayLap.setCellValue("Ngày lập");
+			 Cell column_tongTien = tblName.createCell(6);
+			 column_tongTien.setCellValue("Tổng tiền");
+			 
+			 for(int i = 0; i < tblHoaDon.getRowCount(); i++) {
+				 HoaDonDTO hd = new HoaDonDTO(
+						 tblHoaDon.getValueAt(i, tblHoaDon.getColumn("Mã hóa đơn").getModelIndex())+"",
+						 tblHoaDon.getValueAt(i, tblHoaDon.getColumn("Mã khách hàng").getModelIndex())+"",
+						 tblHoaDon.getValueAt(i, tblHoaDon.getColumn("Mã nhân viên").getModelIndex())+"",
+						 tblHoaDon.getValueAt(i, tblHoaDon.getColumn("Mã khuyến mãi").getModelIndex())+"",
+						 Date.valueOf(tblHoaDon.getValueAt(i, tblHoaDon.getColumn("Ngày lập").getModelIndex()).toString()),
+						 Double.parseDouble(tblHoaDon.getValueAt(i, tblHoaDon.getColumn("Tổng tiền").getModelIndex())+"")
+						 );
+				 System.out.println(hd.getNgayLap());
+				 Row data = hoadon.createRow(i+2);
+				 
+				 Cell maHD = data.createCell(1);
+				 maHD.setCellValue(hd.getMaHD());
+				 
+				 Cell maKH = data.createCell(2);
+				 maKH.setCellValue(hd.getMaKH());
+
+				 Cell maNV = data.createCell(3);
+				 maNV.setCellValue(hd.getMaNV());
+				 
+				 Cell maKM = data.createCell(4);
+				 maKM.setCellValue(hd.getMaKM());
+				 
+				 Cell ngayLap = data.createCell(5);
+				 ngayLap.setCellValue(hd.getNgayLap().toString());
+				 
+				 Cell tongTien = data.createCell(6);
+				 tongTien.setCellValue(hd.getTongTien());
+				 
+			 }
+			 
+			 Sheet CTHD = workbook.getSheet("CTHD");
+			 
+			 CTHD.setColumnWidth(1, 4000);
+			 CTHD.setColumnWidth(2, 4000);
+			 CTHD.setColumnWidth(3, 4000);
+			 CTHD.setColumnWidth(4, 4000);
+			 CTHD.setColumnWidth(5, 4000);
+			 CTHD.setColumnWidth(6, 4000);
+			 
+			 Row tblName_CTHD = CTHD.createRow(1);
+			 
+			 Cell column_CTHD_maHD = tblName_CTHD.createCell(1);
+			 column_CTHD_maHD.setCellValue("Mã hóa đơn");
+			 Cell column_CTHD_maSP = tblName_CTHD.createCell(2);
+			 column_CTHD_maSP.setCellValue("Mã sản phẩm");
+			 Cell column_CTHD_maKM = tblName_CTHD.createCell(3);
+			 column_CTHD_maKM.setCellValue("Mã khuyến mãi");
+			 Cell column_CTHD_soLuong = tblName_CTHD.createCell(4);
+			 column_CTHD_soLuong.setCellValue("Số lượng");
+			 Cell column_CTHD_donGia = tblName_CTHD.createCell(5);
+			 column_CTHD_donGia.setCellValue("Đơn giá");
+			 Cell column_CTHD_thanhTien = tblName_CTHD.createCell(6);
+			 column_CTHD_thanhTien.setCellValue("Thành tiền");
+			 
+			 for(int i = 0; i < tblCTHD.getRowCount(); i++) {
+				 ChiTietHoaDonDTO cthd = new ChiTietHoaDonDTO(
+						 tblCTHD.getValueAt(i, tblCTHD.getColumn("Mã hóa đơn").getModelIndex())+"",
+						 tblCTHD.getValueAt(i, tblCTHD.getColumn("Mã sản phẩm").getModelIndex())+"",
+						 tblCTHD.getValueAt(i, tblCTHD.getColumn("Mã khuyến mãi").getModelIndex())+"",
+						 Integer.parseInt(tblCTHD.getValueAt(i, tblCTHD.getColumn("Số lượng").getModelIndex())+""),
+						 Double.parseDouble(tblCTHD.getValueAt(i, tblCTHD.getColumn("Đơn giá").getModelIndex())+""),
+						 Double.parseDouble(tblCTHD.getValueAt(i, tblCTHD.getColumn("Thành tiền").getModelIndex())+"")
+						 );
+				 Row data = CTHD.createRow(i+2);
+				 
+				 Cell maHD = data.createCell(1);
+				 maHD.setCellValue(cthd.getMaHD());
+				 
+				 Cell maSP = data.createCell(2);
+				 maSP.setCellValue(cthd.getMaSP());
+
+				 Cell maKM = data.createCell(3);
+				 maKM.setCellValue(cthd.getMaKM());
+				 
+				 Cell soLuong = data.createCell(4);
+				 soLuong.setCellValue(cthd.getSoLuong());
+				 
+				 Cell donGia = data.createCell(5);
+				 donGia.setCellValue(cthd.getDonGia());
+				 
+				 Cell thanhTien = data.createCell(6);
+				 thanhTien.setCellValue(cthd.getThanhTien());
+				 
+			 }
+			 
+			 try(FileOutputStream fos = new FileOutputStream(excelFilePath)) {
+				workbook.write(fos);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	/*
+	 * MAIN
+	 */
 	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
