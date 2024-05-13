@@ -10,6 +10,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.RowFilter;
 import javax.swing.SwingConstants;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
@@ -39,9 +40,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
+
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Path;
+
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JTextField;
 
 public class HoaDonPanel extends JPanel {
@@ -61,6 +68,7 @@ public class HoaDonPanel extends JPanel {
 	private JButton btnTra;
 	private JButton btnXuat;
 	private JButton btnNhap;
+	private JButton btnTKNC;
 	
 	
 	public HoaDonPanel() {
@@ -105,7 +113,9 @@ public class HoaDonPanel extends JPanel {
 		btnXoa.setPreferredSize(new Dimension(150,50));
 		pnTop.add(btnXoa);
 		
-		JButton btnTKNC = new JButton("Tìm");
+		btnTKNC = new JButton("Tìm");
+		btnTKNC.setHorizontalAlignment(SwingConstants.LEFT);
+		btnTKNC.setIcon(new ImageIcon(HoaDonPanel.class.getResource("/Image/32_search.png")));
 		btnTKNC.setFont(new Font("Tahoma", Font.BOLD, 20));
 		btnTKNC.setBounds(300, 15, 130, 50);
 		pnTop.add(btnTKNC);
@@ -120,12 +130,12 @@ public class HoaDonPanel extends JPanel {
 		cbBoxTra.addItem("Ngày lập");
 		cbBoxTra.addItem("Tổng tiền");
 		
-		cbBoxTra.setBounds(761, 25, 120, 30);
+		cbBoxTra.setBounds(840, 25, 80, 30);
 		pnTop.add(cbBoxTra);
 		
 		txtTra = new JTextField();
 		txtTra.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		txtTra.setBounds(890, 26, 120, 30);
+		txtTra.setBounds(930, 26, 80, 30);
 		pnTop.add(txtTra);
 		txtTra.setColumns(10);
 		
@@ -135,11 +145,15 @@ public class HoaDonPanel extends JPanel {
 		pnTop.add(btnTra);
 		
 		btnXuat = new JButton("Xuất");
+		btnXuat.setHorizontalAlignment(SwingConstants.LEFT);
+		btnXuat.setIcon(new ImageIcon(HoaDonPanel.class.getResource("/Image/32_excel.png")));
 		btnXuat.setFont(new Font("Tahoma", Font.BOLD, 20));
 		btnXuat.setBounds(440, 15, 130, 50);
 		pnTop.add(btnXuat);
 		
 		btnNhap = new JButton("Nhập");
+		btnNhap.setHorizontalAlignment(SwingConstants.LEFT);
+		btnNhap.setIcon(new ImageIcon(HoaDonPanel.class.getResource("/Image/32_excel.png")));
 		btnNhap.setFont(new Font("Tahoma", Font.BOLD, 20));
 		btnNhap.setBounds(580, 15, 130, 50);
 		pnTop.add(btnNhap);
@@ -183,10 +197,7 @@ public class HoaDonPanel extends JPanel {
 		dtmCTHD.addColumn("Số lượng");
 		dtmCTHD.addColumn("Thành tiền");
 		
-		for(int i = 0; i < cthdBUS.getList_CTHD().size(); i++) {
-			ChiTietHoaDonDTO cthd = cthdBUS.getList_CTHD().get(i);
-			dtmCTHD.addRow(new Object[] {cthd.getMaHD(), cthd.getMaSP(), cthd.getMaKM(), cthd.getDonGia() ,cthd.getSoLuong(), cthd.getThanhTien()});
-		}
+		themDataTable_CTHD(cthdBUS.getList_CTHD());
 			
 		tblCTHD = new JTable(dtmCTHD);
 		tblCTHD.setFont(new Font("Tahoma", Font.PLAIN, 13));
@@ -236,7 +247,53 @@ public class HoaDonPanel extends JPanel {
 		});
 		
 		btnXuat.addActionListener(e ->{
-			xuatFileExcel(null);
+			JFileChooser fileChooser = new JFileChooser();
+			
+			fileChooser.setCurrentDirectory(new File("C:\\Users\\Phuc Duy\\eclipse-workspace2"));
+			
+			FileNameExtensionFilter filter = new FileNameExtensionFilter("File Excel", "xlsx", "xls");
+			fileChooser.setFileFilter(filter);
+			
+			int result = fileChooser.showOpenDialog(this);
+			
+			if(result == JFileChooser.APPROVE_OPTION) {
+				File selectedFile = fileChooser.getSelectedFile();
+				String fileName  = selectedFile.getName();
+				
+				if (fileName.endsWith(".xlsx") || fileName.endsWith(".xls")) {
+                    // File Excel được chọn, thực hiện các hành động mong muốn ở đây
+                    JOptionPane.showMessageDialog(this, "Đã xuất thông tin của hóa đơn vào file: " + selectedFile.getAbsolutePath());
+                    xuatFileExcel(selectedFile.getAbsolutePath());
+                } else {
+                    // File không phải là file Excel, thông báo cho người dùng
+                    JOptionPane.showMessageDialog(this, "Vui lòng chọn một file Excel.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
+			}
+		});
+		
+		btnNhap.addActionListener(e ->{
+			JFileChooser fileChooser = new JFileChooser();
+			
+			fileChooser.setCurrentDirectory(new File("C:\\Users\\Phuc Duy\\eclipse-workspace2"));
+			
+			FileNameExtensionFilter filter = new FileNameExtensionFilter("File Excel", "xlsx", "xls");
+			fileChooser.setFileFilter(filter);
+			
+			int result = fileChooser.showOpenDialog(this);
+			
+			if(result == JFileChooser.APPROVE_OPTION) {
+				File selectedFile = fileChooser.getSelectedFile();
+				String fileName  = selectedFile.getName();
+				
+				if (fileName.endsWith(".xlsx") || fileName.endsWith(".xls")) {
+                    // File Excel được chọn, thực hiện các hành động mong muốn ở đây
+                    JOptionPane.showMessageDialog(this, "Đã xuất thông tin của hóa đơn vào file: " + selectedFile.getAbsolutePath());
+                    nhapFileExcel(selectedFile.getAbsolutePath());
+                } else {
+                    // File không phải là file Excel, thông báo cho người dùng
+                    JOptionPane.showMessageDialog(this, "Vui lòng chọn một file Excel.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
+			}
 		});
 	}
 	
@@ -247,12 +304,11 @@ public class HoaDonPanel extends JPanel {
 	private void addData(HoaDonDTO hoaDon, ArrayList<ChiTietHoaDonDTO> list_CTHD) {
 		if(hoaDon != null) 
 			if(hoaDonBUS.them(hoaDon))
-				dtmHoaDon.addRow(new Object[] {hoaDon.getMaHD(), hoaDon.getMaKH(), hoaDon.getMaNV(), hoaDon.getMaKM() == "null" ? "": hoaDon.getMaKM(), hoaDon.getNgayLap(), hoaDon.getTongTien()});
-			
+				themDataTable_HD(hoaDon);
 		if(list_CTHD != null) {
 			for (ChiTietHoaDonDTO cthd : list_CTHD) {
 				if(cthdBUS.them(cthd))
-					dtmCTHD.addRow(new Object[] {cthd.getMaHD(), cthd.getMaSP(), cthd.getMaKM() == "null" ? "":cthd.getMaKM(), cthd.getDonGia(),cthd.getSoLuong(), cthd.getThanhTien()});
+					themDataTable_CTHD(cthd);
 			}
 		}
 			
@@ -323,12 +379,28 @@ public class HoaDonPanel extends JPanel {
 		 sorter.setRowFilter(filter); 
 	}
 	
+	private void themDataTable_HD(HoaDonDTO hd) {
+		dtmHoaDon.addRow(new Object[] {hd.getMaHD(), hd.getMaKH(), hd.getMaNV(), hd.getMaKM(), hd.getNgayLap(), hd.getTongTien()});
+	}
+	
 	private void themDataTable_HD(ArrayList<HoaDonDTO> list) {
 		for(int i = 0; i < list.size(); i++) {
 			HoaDonDTO hd = list.get(i);
-			dtmHoaDon.addRow(new Object[] {hd.getMaHD(), hd.getMaKH(), hd.getMaNV(), hd.getMaKM(), hd.getNgayLap(), hd.getTongTien()});
+			themDataTable_HD(hd);
 		}
 	}
+	
+	private void themDataTable_CTHD(ChiTietHoaDonDTO cthd) {
+		dtmCTHD.addRow(new Object[] {cthd.getMaHD(), cthd.getMaSP(), cthd.getMaKM(), cthd.getDonGia() ,cthd.getSoLuong(), cthd.getThanhTien()});
+	}
+	
+	private void themDataTable_CTHD(ArrayList<ChiTietHoaDonDTO> list) {
+		for(int i = 0; i < list.size(); i++) {
+			ChiTietHoaDonDTO cthd = list.get(i);
+			themDataTable_CTHD(cthd);
+		}
+	}
+	
 	
 	private void traThongTin() {
 		String column = cbBoxTra.getSelectedItem().toString();
@@ -401,16 +473,14 @@ public class HoaDonPanel extends JPanel {
 	}
 	
 	private void xuatFileExcel(String path) {
-		String excelFilePath = "";
-		if(path != null) {
-			excelFilePath = path;
-		}else {
-			excelFilePath = "C:\\Users\\Phuc Duy\\eclipse-workspace2\\DoAnJava.xlsx";
-		}
-		try (FileInputStream fis = new FileInputStream(excelFilePath)){
+		String excelFilePath = path;
+		try (FileInputStream fis = new FileInputStream(new File(excelFilePath))){
 			 Workbook workbook = WorkbookFactory.create(fis);
 			 
 			 Sheet hoadon = workbook.getSheet("Hóa Đơn");
+			 
+			 if(hoadon == null)
+				 hoadon = workbook.createSheet("Hóa Đơn");
 			 
 			 hoadon.setColumnWidth(1, 4000);
 			 hoadon.setColumnWidth(2, 4000);
@@ -443,7 +513,6 @@ public class HoaDonPanel extends JPanel {
 						 Date.valueOf(tblHoaDon.getValueAt(i, tblHoaDon.getColumn("Ngày lập").getModelIndex()).toString()),
 						 Double.parseDouble(tblHoaDon.getValueAt(i, tblHoaDon.getColumn("Tổng tiền").getModelIndex())+"")
 						 );
-				 System.out.println(hd.getNgayLap());
 				 Row data = hoadon.createRow(i+2);
 				 
 				 Cell maHD = data.createCell(1);
@@ -467,6 +536,8 @@ public class HoaDonPanel extends JPanel {
 			 }
 			 
 			 Sheet CTHD = workbook.getSheet("CTHD");
+			 if(CTHD == null)
+				 CTHD = workbook.createSheet("CTHD");
 			 
 			 CTHD.setColumnWidth(1, 4000);
 			 CTHD.setColumnWidth(2, 4000);
@@ -527,6 +598,52 @@ public class HoaDonPanel extends JPanel {
 				e.printStackTrace();
 			}
 			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void nhapFileExcel(String path) {
+		
+		String excelFilePath = path;
+		try(FileInputStream fis = new FileInputStream(new File(excelFilePath))) {
+			Workbook workbook = WorkbookFactory.create(fis);
+			
+			Sheet hoaDon = workbook.getSheet("Hóa Đơn");
+			
+			dtmHoaDon.setRowCount(0);
+			for (Row row : hoaDon) {
+				if(row.getRowNum() < 2)
+					continue;
+				String maHD = row.getCell(1).getStringCellValue();
+				String maKH = row.getCell(2).getStringCellValue();
+				String maNV = row.getCell(3).getStringCellValue();
+				String maKM = row.getCell(4).getStringCellValue();
+				Date ngayLap = Date.valueOf(row.getCell(5).getStringCellValue());
+				double tongTien = row.getCell(6).getNumericCellValue();
+				
+				HoaDonDTO hd = new HoaDonDTO(maHD, maKH, maNV, maKM, ngayLap, tongTien);
+				themDataTable_HD(hd);
+			}
+			
+			Sheet CTHD = workbook.getSheet("CTHD");
+			
+			dtmCTHD.setRowCount(0);
+			for(Row row : CTHD) {
+				if(row.getRowNum() < 2)
+					continue;
+				ChiTietHoaDonDTO cthd = new ChiTietHoaDonDTO(
+						row.getCell(1).getStringCellValue(),
+						row.getCell(2).getStringCellValue(),
+						row.getCell(3).getStringCellValue(),
+						(int) row.getCell(4).getNumericCellValue(),
+						row.getCell(5).getNumericCellValue(),
+						row.getCell(6).getNumericCellValue()
+						);
+				themDataTable_CTHD(cthd);
+			}
+			
+			workbook.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

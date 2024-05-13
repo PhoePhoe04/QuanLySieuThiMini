@@ -7,6 +7,9 @@ import java.awt.Font;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +21,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDesktopPane;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -28,7 +32,14 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 import BUS.KhachHangBUS;
 import DAO.KhachHangDAO;
@@ -45,10 +56,14 @@ public class KhachHangPanel extends JPanel {
 	
 	private DefaultTableModel dtmKhachHang;
 	private JTable tblKhachHang;
+	private JTextField textField;
 	
 	private JButton btnThem;
 	private JButton btnSua;
 	private JButton btnXoa;
+	private JButton btnNhap;
+	private JButton btnXuat;
+	private JButton btnTim;
 
 	public KhachHangPanel() throws SQLException{
 		try {
@@ -94,12 +109,46 @@ public class KhachHangPanel extends JPanel {
 	   
 	   btnXoa = new JButton("Xóa");
 	   btnXoa.setHorizontalAlignment(SwingConstants.LEFT);
-	   btnXoa.setHorizontalTextPosition(SwingConstants.RIGHT);
 	   btnXoa.setIcon(new ImageIcon(KhachHangPanel.class.getResource("/Image/delete2_icon.png")));
 	   btnXoa.setBounds(300, 15, 130, 50);
 	   btnXoa.setFont(new Font("Tahoma", Font.BOLD, 20));
 	   btnXoa.setPreferredSize(new Dimension(150,50));
 	   pnTop.add(btnXoa);
+	   
+	   btnTim = new JButton("Tìm");
+	   btnTim.setHorizontalAlignment(SwingConstants.LEFT);
+	   btnTim.setIcon(new ImageIcon(KhachHangPanel.class.getResource("/Image/32_search.png")));
+	   btnTim.setFont(new Font("Tahoma", Font.BOLD, 20));
+	   btnTim.setBounds(440, 15, 130, 50);
+	   pnTop.add(btnTim);
+	   
+	   btnXuat = new JButton("Xuất");
+	   btnXuat.setHorizontalAlignment(SwingConstants.LEFT);
+	   btnXuat.setIcon(new ImageIcon(KhachHangPanel.class.getResource("/Image/32_excel.png")));
+	   btnXuat.setFont(new Font("Tahoma", Font.BOLD, 20));
+	   btnXuat.setBounds(580, 15, 130, 50);
+	   pnTop.add(btnXuat);
+	   
+	   btnNhap = new JButton("Nhập");
+	   btnNhap.setHorizontalAlignment(SwingConstants.LEFT);
+	   btnNhap.setIcon(new ImageIcon(KhachHangPanel.class.getResource("/Image/32_excel.png")));
+	   btnNhap.setFont(new Font("Tahoma", Font.BOLD, 20));
+	   btnNhap.setBounds(720, 15, 130, 50);
+	   pnTop.add(btnNhap);
+	   
+	   JButton btnTra = new JButton("Tra");
+	   btnTra.setFont(new Font("Tahoma", Font.PLAIN, 15));
+	   btnTra.setBounds(1005, 50, 80, 20);
+	   pnTop.add(btnTra);
+	   
+	   textField = new JTextField();
+	   textField.setBounds(985, 10, 100, 30);
+	   pnTop.add(textField);
+	   textField.setColumns(10);
+	   
+	   JComboBox comboBox = new JComboBox();
+	   comboBox.setBounds(875, 10, 100, 30);
+	   pnTop.add(comboBox);
 	   
 //	   ============================================= CENTER =============================================
 	   JPanel pnCenter = new JPanel();
@@ -109,19 +158,14 @@ public class KhachHangPanel extends JPanel {
 	   
 	   dtmKhachHang = new DefaultTableModel();
 	   dtmKhachHang.addColumn("Mã khách hàng");
-	   dtmKhachHang.addColumn("Họ");
-	   dtmKhachHang.addColumn("Tên");
-	   dtmKhachHang.addColumn("Giởi tính");
+	   dtmKhachHang.addColumn("Họ khách hàng");
+	   dtmKhachHang.addColumn("Tên khách hàng");
+	   dtmKhachHang.addColumn("Giới tính");
 	   dtmKhachHang.addColumn("Địa chỉ");
 	   dtmKhachHang.addColumn("Số điện thoại");
 	   dtmKhachHang.addColumn("Gmail");
 	   
-	   ArrayList<KhachHangDTO> list = khachHangBUS.getListKH();
-	   
-	   for(int i = 0; i < list.size(); i++) {
-		   KhachHangDTO kh = list.get(i);
-		   dtmKhachHang.addRow(new Object[] {kh.getMaKH(), kh.getHoKH(), kh.getTenKH(), kh.isGioiTinh() == false ? "Nam":"Nữ", kh.getDiaChi(), kh.getSoDienThoai(), kh.getGmail()});
-	   }
+//	   addDataTable(khachHangBUS.getListKH());
 	   
 	   tblKhachHang = new JTable(dtmKhachHang);
 	   tblKhachHang.setFont(new Font("Tahoma", Font.PLAIN, 13));
@@ -154,18 +198,74 @@ public class KhachHangPanel extends JPanel {
 		btnXoa.addActionListener(e -> {
 			xoaKhachHang();
 		});
+		
+		btnXuat.addActionListener(e ->{
+			JFileChooser fileChooser = new JFileChooser();
+			
+			fileChooser.setCurrentDirectory(new File("C:\\Users\\Phuc Duy\\eclipse-workspace2"));
+			
+			FileNameExtensionFilter filter = new FileNameExtensionFilter("File Excel", "xlsx", "xls");
+			fileChooser.setFileFilter(filter);
+			
+			int result = fileChooser.showOpenDialog(this);
+			
+			if(result == JFileChooser.APPROVE_OPTION) {
+				File selectedFile = fileChooser.getSelectedFile();
+				String fileName = selectedFile.getName();
+				
+				if (fileName.endsWith(".xlsx") || fileName.endsWith(".xls")) {
+                    JOptionPane.showMessageDialog(this, "Đã xuất thông tin của hóa đơn vào file: " + selectedFile.getAbsolutePath());
+                    xuatFileExcel(selectedFile.getAbsolutePath());
+                } else {
+                    JOptionPane.showMessageDialog(this, "Vui lòng chọn một file Excel.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
+			}
+		});
+		
+		btnNhap.addActionListener(e ->{
+			JFileChooser fileChooser = new JFileChooser();
+			
+			fileChooser.setCurrentDirectory(new File("C:\\Users\\Phuc Duy\\eclipse-workspace2"));
+			
+			FileNameExtensionFilter filter = new FileNameExtensionFilter("File Excel", "xlsx", "xls");
+			fileChooser.setFileFilter(filter);
+			
+			int result = fileChooser.showOpenDialog(this);
+			
+			if(result == JFileChooser.APPROVE_OPTION) {
+				File selectedFile = fileChooser.getSelectedFile();
+				String fileName = selectedFile.getName();
+				
+				if (fileName.endsWith(".xlsx") || fileName.endsWith(".xls")) {
+                    JOptionPane.showMessageDialog(this, "Đã lấy dữ liệu từ file: " + selectedFile.getAbsolutePath());
+                    nhapFileExcel(selectedFile.getAbsolutePath());
+                } else {
+                    JOptionPane.showMessageDialog(this, "Vui lòng chọn một file Excel.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
+			}
+		});
 	}
 	
 	/*
 	 * Function
 	 */
+	private void addDataTable(KhachHangDTO kh) {
+		dtmKhachHang.addRow(new Object[] {kh.getMaKH(), kh.getHoKH(), kh.getTenKH(), kh.isGioiTinh() == false ? "Nam":"Nữ", kh.getDiaChi(), kh.getSoDienThoai(), kh.getGmail()});
+	}
+	private void addDataTable(ArrayList<KhachHangDTO> list) {
+		for(int i = 0; i < list.size(); i++) {
+			KhachHangDTO kh = list.get(i);
+			addDataTable(kh);
+		}
+	}
+	
 	private void themKhachHang() {
 		KhachHangInsert data = new KhachHangInsert();
 		if(data.showDialog(this)) {
 			KhachHangDTO kh = data.getKhachHang();
 			try {
 				if(khachHangBUS.them(kh)) {
-					dtmKhachHang.addRow(new Object[] {kh.getMaKH(), kh.getHoKH(), kh.getTenKH(), kh.isGioiTinh() == false ? "Nam":"Nữ", kh.getDiaChi(), kh.getSoDienThoai(), kh.getGmail()});
+					addDataTable(kh);
 				}
 			} catch (SQLException e1) {
 				e1.printStackTrace();
@@ -189,7 +289,6 @@ public class KhachHangPanel extends JPanel {
 						dtmKhachHang.setValueAt(kh.getGmail(), selectedRow, 6);
 					}
 				} catch (SQLException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
         	}
@@ -222,6 +321,111 @@ public class KhachHangPanel extends JPanel {
 			JOptionPane.showMessageDialog(this, 
 					"Bạn chưa chọn khách hàng muốn xóa"
 					);
+		}
+	}
+	
+	private void xuatFileExcel(String path) {
+		String excelFilePath = path;
+		try(FileInputStream fis = new FileInputStream(new File(excelFilePath))) {
+			Workbook workbook = WorkbookFactory.create(fis);
+			
+			Sheet khachHang = workbook.getSheet("Khách Hàng");
+			
+			if(khachHang == null)
+				khachHang = workbook.createSheet("Khách Hàng");
+			
+			khachHang.setColumnWidth(1, 4000);
+			khachHang.setColumnWidth(2, 4000);
+			khachHang.setColumnWidth(3, 4000);
+			khachHang.setColumnWidth(4, 4000);
+			khachHang.setColumnWidth(5, 4000);
+			khachHang.setColumnWidth(6, 4000);
+			khachHang.setColumnWidth(7, 4000);
+			
+			Row tblName = khachHang.createRow(1);
+			
+			Cell column_maKH = tblName.createCell(1);
+			column_maKH.setCellValue("Mã khách hàng");
+			Cell column_hoKH = tblName.createCell(2);
+			column_hoKH.setCellValue("Họ khách hàng");
+			Cell column_tenKH = tblName.createCell(3);
+			column_tenKH.setCellValue("Tên khách hàng");
+			Cell column_gioiTinh = tblName.createCell(4);
+			column_gioiTinh.setCellValue("Giới tính");
+			Cell column_diaChi = tblName.createCell(5);
+			column_diaChi.setCellValue("Địa chỉ");
+			Cell column_sdt = tblName.createCell(6);
+			column_sdt.setCellValue("Số điện thoại");
+			Cell column_gmail = tblName.createCell(7);
+			column_gmail.setCellValue("Gmail");
+			
+			for(int i = 0; i < tblKhachHang.getRowCount(); i++) {
+				KhachHangDTO kh = new KhachHangDTO(
+						tblKhachHang.getValueAt(i, tblKhachHang.getColumn("Mã khách hàng").getModelIndex())+"",
+						tblKhachHang.getValueAt(i, tblKhachHang.getColumn("Họ khách hàng").getModelIndex())+"",
+						tblKhachHang.getValueAt(i, tblKhachHang.getColumn("Tên khách hàng").getModelIndex())+"",
+						tblKhachHang.getValueAt(i, tblKhachHang.getColumn("Giới tính").getModelIndex()).toString().equals("Nam") ? false:true,
+						tblKhachHang.getValueAt(i, tblKhachHang.getColumn("Địa chỉ").getModelIndex())+"",
+						tblKhachHang.getValueAt(i, tblKhachHang.getColumn("Số điện thoại").getModelIndex())+"",
+						tblKhachHang.getValueAt(i, tblKhachHang.getColumn("Gmail").getModelIndex()).toString()
+						);
+				System.out.println(kh.toString());
+				Row data = khachHang.createRow(i+2);
+				
+				Cell maKH = data.createCell(1);
+				maKH.setCellValue(kh.getMaKH());
+				Cell hoKH = data.createCell(2);
+				hoKH.setCellValue(kh.getHoKH());
+				Cell tenKH = data.createCell(3);
+				tenKH.setCellValue(kh.getTenKH());
+				Cell gioiTinh = data.createCell(4);
+				gioiTinh.setCellValue(kh.isGioiTinh() == false ? "Nam":"Nữ");
+				Cell diaChi = data.createCell(5);
+				diaChi.setCellValue(kh.getDiaChi());
+				Cell sdt = data.createCell(6);
+				sdt.setCellValue(kh.getSoDienThoai());
+				Cell gmail = data.createCell(7);
+				gmail.setCellValue(kh.getGmail());
+				
+			}
+			
+			try(FileOutputStream fos = new FileOutputStream(excelFilePath)) {
+				workbook.write(fos);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void nhapFileExcel(String path) {
+		String excelFilePath = path;
+		try(FileInputStream fis = new FileInputStream(new File(excelFilePath))) {
+			Workbook workbook = WorkbookFactory.create(fis);
+			
+			Sheet khachhang = workbook.getSheet("Khách Hàng");
+			
+			dtmKhachHang.setRowCount(0);
+			
+			for(Row row : khachhang) {
+				if(row.getRowNum() < 2) 
+					continue;
+				KhachHangDTO kh = new KhachHangDTO(
+						row.getCell(1).getStringCellValue(),
+						row.getCell(2).getStringCellValue(),
+						row.getCell(3).getStringCellValue(),
+						row.getCell(4).getStringCellValue().equals("Nam") ? false:true,
+						row.getCell(5).getStringCellValue(),
+						row.getCell(6).getStringCellValue(),
+						row.getCell(7).getStringCellValue()
+						);
+				addDataTable(kh);
+			}
+			workbook.close();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 	
