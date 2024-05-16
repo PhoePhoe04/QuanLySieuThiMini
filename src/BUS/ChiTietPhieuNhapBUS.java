@@ -59,17 +59,11 @@ public class ChiTietPhieuNhapBUS {
     }
     
     // Các phương thức khác cần thiết
-    public static void main(String[] args) {
-        try {
-            ChiTietPhieuNhapBUS ctpnBus = new ChiTietPhieuNhapBUS();
-            ChiTietPhieuNhapDTO ctpn = new ChiTietPhieuNhapDTO("PN01", "SP01", 5, 150000);
-            if(ctpnBus.them(ctpn))
-                System.out.println("Thêm thành công");
-            else
-                System.out.println("Thêm thất bại");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public ArrayList<ChiTietPhieuNhapDTO> getList(){
+    	return this.list_CTPN;
+    }
+    public ArrayList<ChiTietPhieuNhapDTO> getList(String condition){
+    	return this.ctpnDAO.docDB(condition);
     }
 
 }

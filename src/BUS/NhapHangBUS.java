@@ -62,20 +62,11 @@ public class NhapHangBUS {
     }
     
     // Các phương thức khác cần thiết
-    
-    public static void main(String[] args) {
-        try {
-            NhapHangBUS nhBus = new NhapHangBUS();
-            List<ChiTietPhieuNhapDTO> chiTietList = new ArrayList<>();
-            ChiTietPhieuNhapDTO chiTiet1 = new ChiTietPhieuNhapDTO("PN01", "SP01", 5, 150000);
-            chiTietList.add(chiTiet1);
-            NhapHangDTO nh = new NhapHangDTO("PN01", "NV01", "NCC01", 1500000, Date.valueOf("2024-04-20"), chiTietList);
-            if(nhBus.them(nh))
-                System.out.println("Thêm thành công");
-            else
-                System.out.println("Thêm thất bại");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public ArrayList<NhapHangDTO> getList(){
+    	return this.list_NhapHang;
     }
+    public ArrayList<NhapHangDTO> getList(String condition){
+    	return nhapHangDAO.docDB(condition);
+    }
+    
 }

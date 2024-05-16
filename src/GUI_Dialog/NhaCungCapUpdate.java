@@ -23,7 +23,7 @@ import javax.swing.border.EmptyBorder;
 
 import DTO.NhaCungCapDTO;
 
-public class NhaCungCapInsert extends JDialog {
+public class NhaCungCapUpdate extends JDialog {
 	
 	private boolean dataAccepted = false;
 
@@ -37,8 +37,9 @@ public class NhaCungCapInsert extends JDialog {
 	private JComboBox comboBox;
 	
 
-	public NhaCungCapInsert() {
+	public NhaCungCapUpdate(NhaCungCapDTO ncc) {
 		init();
+		setUpdateText(ncc);
 		addListener();
 		setVisible(true);
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -188,16 +189,11 @@ public class NhaCungCapInsert extends JDialog {
 				);
 	}
 	
-	/*
-	 * MAIN
-	 */
-	
-	
-	public static void main(String[] args) {
-		try {
-			NhaCungCapInsert dialog = new NhaCungCapInsert();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	private void setUpdateText(NhaCungCapDTO ncc) {
+		txtMaNCC.setText(ncc.getMaNCC());
+		txtTenNCC.setText(ncc.getTenNCC());
+		txtEmail.setText(ncc.getEmail());
+		comboBox.setSelectedItem(ncc.getDiaChiNCC());
 	}
+	
 }

@@ -20,6 +20,7 @@ public class ChiTietPhieuNhapDAO {
             insertValues.put("maPN", chiTietPhieuNhap.getMaPN());
             insertValues.put("maSP", chiTietPhieuNhap.getMaSP());
             insertValues.put("soLuong", chiTietPhieuNhap.getSoLuong());
+            insertValues.put("donGia", chiTietPhieuNhap.getDonGia());
             insertValues.put("thanhTien", chiTietPhieuNhap.getThanhTien());
 
             ketQua = connect.insert("chitietphieunhap", insertValues);
@@ -40,6 +41,7 @@ public class ChiTietPhieuNhapDAO {
         try {
             HashMap<String, Object> updateValues = new HashMap<>();
             updateValues.put("soLuong", chiTietPhieuNhap.getSoLuong());
+            updateValues.put("donGia", chiTietPhieuNhap.getDonGia());
             updateValues.put("thanhTien", chiTietPhieuNhap.getThanhTien());
 
             String condition = " maPN = '" + chiTietPhieuNhap.getMaPN() + "' AND maSP = '" + chiTietPhieuNhap.getMaSP() + "'";
@@ -84,6 +86,7 @@ public class ChiTietPhieuNhapDAO {
                 chiTietPhieuNhap.setMaPN(rs.getString("maPN"));
                 chiTietPhieuNhap.setMaSP(rs.getString("maSP"));
                 chiTietPhieuNhap.setSoLuong(rs.getInt("soLuong"));
+                chiTietPhieuNhap.setDonGia(rs.getFloat("donGia"));
                 chiTietPhieuNhap.setThanhTien(rs.getFloat("thanhTien"));
 
                 list.add(chiTietPhieuNhap);
@@ -104,14 +107,5 @@ public class ChiTietPhieuNhapDAO {
     public ArrayList<ChiTietPhieuNhapDTO> docDB() {
         return this.docDB(null);
     }
-
-    public static void main(String[] args) {
-        ChiTietPhieuNhapDAO chiTietPhieuNhapDAO = new ChiTietPhieuNhapDAO();
-        // Tạo đối tượng chi tiết phiếu nhập
-        ChiTietPhieuNhapDTO chiTietPhieuNhap = new ChiTietPhieuNhapDTO("PN01", "SP01", 10, 100000);
-
-        // Thêm đối tượng chi tiết phiếu nhập vào cơ sở dữ liệu
-        int kq = chiTietPhieuNhapDAO.them(chiTietPhieuNhap);
-        System.out.println(kq);
-    }
+   
 }

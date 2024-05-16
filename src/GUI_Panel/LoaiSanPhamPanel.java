@@ -5,11 +5,16 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 
+import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -17,9 +22,18 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 import BUS.LoaiSP_BUS;
+import DTO.KhachHangDTO;
 import DTO.LoaiSP_DTO;
 import GUI_Dialog.LoaiSanPhamInsert;
 import GUI_Dialog.LoaiSanPhamUpdate;
@@ -35,6 +49,14 @@ public class LoaiSanPhamPanel extends JPanel {
 	private JButton btnThem;
 	private JButton btnSua;
 	private JButton btnXoa;
+
+	private JButton btnTim;
+
+	private AbstractButton btnXuat;
+
+	private AbstractButton btnNhap;
+
+	private JButton btnRefresh;
 
 	public LoaiSanPhamPanel() {
 		try {
@@ -63,7 +85,6 @@ public class LoaiSanPhamPanel extends JPanel {
 		   btnThem = new JButton("Thêm");
 		   btnThem.setBounds(20, 15, 130, 50);
 		   btnThem.setHorizontalAlignment(SwingConstants.LEFT);
-		   btnThem.setHorizontalTextPosition(SwingConstants.RIGHT);
 		   btnThem.setIcon(new ImageIcon(KhachHangPanel.class.getResource("/Image/add_icon.png")));
 		   btnThem.setFont(new Font("Tahoma", Font.BOLD, 20));
 		   btnThem.setPreferredSize(new Dimension(150,50));
@@ -71,7 +92,6 @@ public class LoaiSanPhamPanel extends JPanel {
 		   
 		   btnSua = new JButton("Sửa");
 		   btnSua.setHorizontalAlignment(SwingConstants.LEFT);
-		   btnSua.setHorizontalTextPosition(SwingConstants.RIGHT);
 		   btnSua.setIcon(new ImageIcon(KhachHangPanel.class.getResource("/Image/edit_icon.png")));
 		   btnSua.setBounds(160, 15, 130, 50);
 		   btnSua.setFont(new Font("Tahoma", Font.BOLD, 20));
@@ -80,12 +100,32 @@ public class LoaiSanPhamPanel extends JPanel {
 		   
 		   btnXoa = new JButton("Xóa");
 		   btnXoa.setHorizontalAlignment(SwingConstants.LEFT);
-		   btnXoa.setHorizontalTextPosition(SwingConstants.RIGHT);
 		   btnXoa.setIcon(new ImageIcon(KhachHangPanel.class.getResource("/Image/delete2_icon.png")));
 		   btnXoa.setBounds(300, 15, 130, 50);
 		   btnXoa.setFont(new Font("Tahoma", Font.BOLD, 20));
 		   btnXoa.setPreferredSize(new Dimension(150,50));
 		   pnTop.add(btnXoa);
+		   
+		   btnTim = new JButton("Tìm");
+		   btnTim.setHorizontalAlignment(SwingConstants.LEFT);
+		   btnTim.setIcon(new ImageIcon(LoaiSanPhamPanel.class.getResource("/Image/32_search.png")));
+		   btnTim.setFont(new Font("Tahoma", Font.BOLD, 20));
+		   btnTim.setBounds(440, 15, 130, 50);
+		   pnTop.add(btnTim);
+		   
+		   btnXuat = new JButton("Xuất");
+		   btnXuat.setHorizontalAlignment(SwingConstants.LEFT);
+		   btnXuat.setIcon(new ImageIcon(LoaiSanPhamPanel.class.getResource("/Image/32_excel.png")));
+		   btnXuat.setFont(new Font("Tahoma", Font.BOLD, 20));
+		   btnXuat.setBounds(580, 15, 130, 50);
+		   pnTop.add(btnXuat);
+		   
+		   btnNhap = new JButton("Nhập");
+		   btnNhap.setHorizontalAlignment(SwingConstants.LEFT);
+		   btnNhap.setIcon(new ImageIcon(LoaiSanPhamPanel.class.getResource("/Image/32_excel.png")));
+		   btnNhap.setFont(new Font("Tahoma", Font.BOLD, 20));
+		   btnNhap.setBounds(720, 15, 130, 50);
+		   pnTop.add(btnNhap);
 		   
 //		   ============================================= CENTER =============================================
 		   JPanel pnCenter = new JPanel();
@@ -96,8 +136,8 @@ public class LoaiSanPhamPanel extends JPanel {
 		   dtmLSP = new DefaultTableModel();
 		   dtmLSP.addColumn("Mã loại sản phẩm");
 		   dtmLSP.addColumn("Tên loại sản phẩm");
-		 
-		   addRow(lspBUS.getList());
+
+		   addDataTable(lspBUS.getList());
 		   
 		   tblLSP = new JTable(dtmLSP);
 		   tblLSP.setFont(new Font("Tahoma", Font.PLAIN, 13));
@@ -112,6 +152,12 @@ public class LoaiSanPhamPanel extends JPanel {
 		   lblLSP.setFont(new Font("Tahoma", Font.BOLD, 20));
 		   lblLSP.setBounds(20, 10, 200, 30);
 		   pnCenter.add(lblLSP);
+		   
+		   btnRefresh = new JButton("");
+		   btnRefresh.setToolTipText("Làm mới");
+		   btnRefresh.setIcon(new ImageIcon(LoaiSanPhamPanel.class.getResource("/Image/24_refresh.png")));
+		   btnRefresh.setBounds(1050, 10, 30, 30);
+		   pnCenter.add(btnRefresh);
 	}
 	
 	/*
@@ -163,19 +209,150 @@ public class LoaiSanPhamPanel extends JPanel {
 				JOptionPane.showMessageDialog(this, "Bạn chưa chọn loại sản phẩm muốn sửa!");
 			}
 		});
+		
+		btnNhap.addActionListener(e ->{
+			JFileChooser fileChooser = new JFileChooser();
+			
+			fileChooser.setCurrentDirectory(new File("C:\\Users\\Phuc Duy\\eclipse-workspace2"));
+			
+			FileNameExtensionFilter filter = new FileNameExtensionFilter("File Excel", "xlsx", "xls");
+			fileChooser.setFileFilter(filter);
+			
+			int result = fileChooser.showOpenDialog(this);
+			
+			if(result == JFileChooser.APPROVE_OPTION) {
+				File selectedFile = fileChooser.getSelectedFile();
+				String fileName = selectedFile.getName();
+				
+				if (fileName.endsWith(".xlsx") || fileName.endsWith(".xls")) {
+                    JOptionPane.showMessageDialog(this, "Đã lấy dữ liệu từ file: " + selectedFile.getAbsolutePath());
+                    nhapFileExcel(selectedFile.getAbsolutePath());
+                } else {
+                    JOptionPane.showMessageDialog(this, "Vui lòng chọn một file Excel.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
+			}
+		});
+		
+		btnXuat.addActionListener(e ->{
+			JFileChooser fileChooser = new JFileChooser();
+			
+			fileChooser.setCurrentDirectory(new File("C:\\Users\\Phuc Duy\\eclipse-workspace2"));
+			
+			FileNameExtensionFilter filter = new FileNameExtensionFilter("File Excel", "xlsx", "xls");
+			fileChooser.setFileFilter(filter);
+			
+			int result = fileChooser.showOpenDialog(this);
+			
+			if(result == JFileChooser.APPROVE_OPTION) {
+				File selectedFile = fileChooser.getSelectedFile();
+				String fileName = selectedFile.getName();
+				
+				if (fileName.endsWith(".xlsx") || fileName.endsWith(".xls")) {
+                    JOptionPane.showMessageDialog(this, "Đã xuất thông tin của loại sản phẩm vào file: " + selectedFile.getAbsolutePath());
+                    xuatFileExcel(selectedFile.getAbsolutePath());
+                } else {
+                    JOptionPane.showMessageDialog(this, "Vui lòng chọn một file Excel.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
+			}
+		});
+		
+		btnRefresh.addActionListener(e ->{
+			addDataTable(lspBUS.getList());
+		});
 	}
+	
 	
 	/*
 	 * FUNCTION
 	 */
-	private void addRow(ArrayList<LoaiSP_DTO> list) {
-		for (LoaiSP_DTO lsp : list) {
-			dtmLSP.addRow(new Object[] {
-				lsp.getMaLSP(),
-				lsp.getTenLSP()
-			});
+	private void addDataTable(LoaiSP_DTO lsp) {
+		dtmLSP.addRow(new Object[] {lsp.getMaLSP(), lsp.getTenLSP()});
+	}
+	
+	private void addDataTable(ArrayList<LoaiSP_DTO> list) {
+		for(int i = 0; i < list.size(); i++) {
+			LoaiSP_DTO lsp = list.get(i);
+			addDataTable(lsp);
 		}
 	}
+	
+	private void xuatFileExcel(String path) {
+		Workbook workbook = null;
+		File file = new File(path);
+		
+		try {
+			if(file.exists()) {
+				try(FileInputStream fis = new FileInputStream(file)) {
+					workbook = WorkbookFactory.create(fis);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}else
+				workbook = new XSSFWorkbook();
+			
+			Sheet loaisanpham = workbook.getSheet("Loại Sản Phẩm");
+			
+			if(loaisanpham == null)
+				loaisanpham = workbook.createSheet("Loại Sản Phẩm");
+			
+			loaisanpham.setColumnWidth(1, 4000);
+			loaisanpham.setColumnWidth(2, 4000);
+			
+			Row tblName = loaisanpham.createRow(1);
+			
+			Cell column_maLSP = tblName.createCell(1);
+			column_maLSP.setCellValue("Mã loại sản phẩm");
+			Cell column_tenLSP = tblName.createCell(2);
+			column_tenLSP.setCellValue("Tên loại sản phẩm");
+			
+			for(int i = 0; i < tblLSP.getRowCount(); i++) {
+				LoaiSP_DTO lsp = new LoaiSP_DTO(
+						tblLSP.getValueAt(i, tblLSP.getColumn("Mã loại sản phẩm").getModelIndex()).toString(),
+						tblLSP.getValueAt(i, tblLSP.getColumn("Tên loại sản phẩm").getModelIndex()).toString()
+						);
+				Row data = loaisanpham.createRow(i+2);
+				
+				Cell maLSP = data.createCell(1);
+				maLSP.setCellValue(lsp.getMaLSP());
+				Cell tenLSP = data.createCell(2);
+				tenLSP.setCellValue(lsp.getTenLSP());
+			}
+			
+			try(FileOutputStream fos = new FileOutputStream(path)) {
+				workbook.write(fos);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void nhapFileExcel(String path) {
+		String excelFilePath = path;
+		try(FileInputStream fis = new FileInputStream(new File(excelFilePath))) {
+			Workbook workbook = WorkbookFactory.create(fis);
+			
+			Sheet loaisanpham = workbook.getSheet("Loại Sản Phẩm");
+			
+			dtmLSP.setRowCount(0);
+			
+			for(Row row : loaisanpham) {
+				if(row.getRowNum() < 2) 
+					continue;
+				LoaiSP_DTO lsp = new LoaiSP_DTO(
+						row.getCell(1).getStringCellValue(),
+						row.getCell(2).getStringCellValue()
+						);
+				addDataTable(lsp);
+			}
+			workbook.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	
 	/*
 	 * MAIN
 	 */

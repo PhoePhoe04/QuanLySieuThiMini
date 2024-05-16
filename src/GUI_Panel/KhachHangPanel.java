@@ -40,6 +40,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import BUS.KhachHangBUS;
 import DAO.KhachHangDAO;
@@ -165,7 +166,7 @@ public class KhachHangPanel extends JPanel {
 	   dtmKhachHang.addColumn("Số điện thoại");
 	   dtmKhachHang.addColumn("Gmail");
 	   
-//	   addDataTable(khachHangBUS.getListKH());
+	   addDataTable(khachHangBUS.getListKH());
 	   
 	   tblKhachHang = new JTable(dtmKhachHang);
 	   tblKhachHang.setFont(new Font("Tahoma", Font.PLAIN, 13));
@@ -325,9 +326,19 @@ public class KhachHangPanel extends JPanel {
 	}
 	
 	private void xuatFileExcel(String path) {
-		String excelFilePath = path;
-		try(FileInputStream fis = new FileInputStream(new File(excelFilePath))) {
-			Workbook workbook = WorkbookFactory.create(fis);
+		Workbook workbook = null;
+		File file = new File(path);
+		
+		try {
+			if(file.exists()) {
+				try(FileInputStream fis = new FileInputStream(file)) {
+					workbook = WorkbookFactory.create(fis);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			else
+				workbook = new XSSFWorkbook();
 			
 			Sheet khachHang = workbook.getSheet("Khách Hàng");
 			
@@ -369,7 +380,6 @@ public class KhachHangPanel extends JPanel {
 						tblKhachHang.getValueAt(i, tblKhachHang.getColumn("Số điện thoại").getModelIndex())+"",
 						tblKhachHang.getValueAt(i, tblKhachHang.getColumn("Gmail").getModelIndex()).toString()
 						);
-				System.out.println(kh.toString());
 				Row data = khachHang.createRow(i+2);
 				
 				Cell maKH = data.createCell(1);
@@ -389,7 +399,7 @@ public class KhachHangPanel extends JPanel {
 				
 			}
 			
-			try(FileOutputStream fos = new FileOutputStream(excelFilePath)) {
+			try(FileOutputStream fos = new FileOutputStream(path)) {
 				workbook.write(fos);
 			} catch (Exception e) {
 				e.printStackTrace();

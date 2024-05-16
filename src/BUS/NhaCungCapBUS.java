@@ -48,8 +48,6 @@ public class NhaCungCapBUS {
      * Sửa thông tin một nhà cung cấp
      */
     public boolean sua(NhaCungCapDTO ncc) throws SQLException{
-        if(!isUniqueMaNCC(ncc.getMaNCC()))
-            return false;
         if(nccDAO.sua(ncc) > 0) {
             for (NhaCungCapDTO nccDTO : list_NCC) {
                 if(nccDTO.getMaNCC().equals(ncc.getMaNCC())) {

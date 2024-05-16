@@ -28,6 +28,7 @@ import DTO.ChiTietHoaDonDTO;
 import DTO.HoaDonDTO;
 import DTO.SanPham_DTO;
 import GUI_Dialog.HoaDonInsert;
+import GUI_Dialog.HoaDonSearch;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
@@ -52,6 +53,8 @@ import javax.swing.JFileChooser;
 import javax.swing.JTextField;
 
 public class HoaDonPanel extends JPanel {
+	
+	String query = "";
 	
 	private HoaDonBUS hoaDonBUS;
 	private SanPham_BUS spBUS;
@@ -246,6 +249,7 @@ public class HoaDonPanel extends JPanel {
 			traThongTin();
 		});
 		
+
 		btnXuat.addActionListener(e ->{
 			JFileChooser fileChooser = new JFileChooser();
 			
@@ -287,12 +291,22 @@ public class HoaDonPanel extends JPanel {
 				
 				if (fileName.endsWith(".xlsx") || fileName.endsWith(".xls")) {
                     // File Excel được chọn, thực hiện các hành động mong muốn ở đây
-                    JOptionPane.showMessageDialog(this, "Đã xuất thông tin của hóa đơn vào file: " + selectedFile.getAbsolutePath());
+                    JOptionPane.showMessageDialog(this, "Đã lấy dữ liệu từ file: " + selectedFile.getAbsolutePath());
                     nhapFileExcel(selectedFile.getAbsolutePath());
                 } else {
                     // File không phải là file Excel, thông báo cho người dùng
                     JOptionPane.showMessageDialog(this, "Vui lòng chọn một file Excel.", "Lỗi", JOptionPane.ERROR_MESSAGE);
                 }
+			}
+		});
+		
+		btnTKNC.addActionListener(e ->{
+			HoaDonSearch search = new HoaDonSearch();
+			if(search.showDialog(this)) {
+				String query = search.getQuery();
+				System.out.println(query);
+				dtmHoaDon.setRowCount(0);
+				themDataTable_HD(hoaDonBUS.layDuLieu(query));
 			}
 		});
 	}
@@ -380,7 +394,8 @@ public class HoaDonPanel extends JPanel {
 	}
 	
 	private void themDataTable_HD(HoaDonDTO hd) {
-		dtmHoaDon.addRow(new Object[] {hd.getMaHD(), hd.getMaKH(), hd.getMaNV(), hd.getMaKM(), hd.getNgayLap(), hd.getTongTien()});
+		if(hd !=null)
+			dtmHoaDon.addRow(new Object[] {hd.getMaHD(), hd.getMaKH(), hd.getMaNV(), hd.getMaKM(), hd.getNgayLap(), hd.getTongTien()});
 	}
 	
 	private void themDataTable_HD(ArrayList<HoaDonDTO> list) {
@@ -391,7 +406,8 @@ public class HoaDonPanel extends JPanel {
 	}
 	
 	private void themDataTable_CTHD(ChiTietHoaDonDTO cthd) {
-		dtmCTHD.addRow(new Object[] {cthd.getMaHD(), cthd.getMaSP(), cthd.getMaKM(), cthd.getDonGia() ,cthd.getSoLuong(), cthd.getThanhTien()});
+		if(cthd != null)
+			dtmCTHD.addRow(new Object[] {cthd.getMaHD(), cthd.getMaSP(), cthd.getMaKM(), cthd.getDonGia() ,cthd.getSoLuong(), cthd.getThanhTien()});
 	}
 	
 	private void themDataTable_CTHD(ArrayList<ChiTietHoaDonDTO> list) {
@@ -473,9 +489,19 @@ public class HoaDonPanel extends JPanel {
 	}
 	
 	private void xuatFileExcel(String path) {
-		String excelFilePath = path;
-		try (FileInputStream fis = new FileInputStream(new File(excelFilePath))){
-			 Workbook workbook = WorkbookFactory.create(fis);
+		Workbook workbook = null;
+		File file = new File(path);
+		
+		try {
+			if(file.exists()) {
+				try(FileInputStream fis = new FileInputStream(file)) {
+					workbook = WorkbookFactory.create(fis);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			else
+				workbook = new XSSFWorkbook();
 			 
 			 Sheet hoadon = workbook.getSheet("Hóa Đơn");
 			 
@@ -592,7 +618,7 @@ public class HoaDonPanel extends JPanel {
 				 
 			 }
 			 
-			 try(FileOutputStream fos = new FileOutputStream(excelFilePath)) {
+			 try(FileOutputStream fos = new FileOutputStream(path)) {
 				workbook.write(fos);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -604,7 +630,6 @@ public class HoaDonPanel extends JPanel {
 	}
 	
 	private void nhapFileExcel(String path) {
-		
 		String excelFilePath = path;
 		try(FileInputStream fis = new FileInputStream(new File(excelFilePath))) {
 			Workbook workbook = WorkbookFactory.create(fis);
