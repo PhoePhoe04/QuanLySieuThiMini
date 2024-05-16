@@ -2,6 +2,7 @@ package GUI_Dialog;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -9,6 +10,10 @@ import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -25,12 +30,19 @@ import javax.swing.table.DefaultTableModel;
 
 import BUS.NhanVienBUS;
 import BUS.SanPham_BUS;
+import DTO.ChiTietPhieuNhapDTO;
 import DTO.NhaCungCapDTO;
 import DTO.NhanVienDTO;
+import DTO.NhapHangDTO;
 
 import javax.swing.ImageIcon;
 
 public class PhieuNhapInsert extends JDialog {
+	
+	private boolean dataAccepted = false;
+	
+	private ArrayList<ChiTietPhieuNhapDTO> list_ctpn;
+	
     private JButton btnThem;
     private JButton btnXacNhan;
     private JButton btnHuy;
@@ -54,9 +66,11 @@ public class PhieuNhapInsert extends JDialog {
     private JTable tblCTPN;
     
     int mouseX, mouseY;
+    private JTextField txtDonGia;
 	
 
     public PhieuNhapInsert() {
+    	list_ctpn = new ArrayList<ChiTietPhieuNhapDTO>();
         init();
         addListener();
         setVisible(true);
@@ -65,10 +79,16 @@ public class PhieuNhapInsert extends JDialog {
 
     private void addListener() {
         btnXacNhan.addActionListener(e -> {
+        	dataAccepted = true;
             dispose();
         });
         btnThem.addActionListener(e -> {
-        	
+        	them();
+        	txtMaSP.setText("");
+        	txtSoLuong.setText("");
+        	txtDonGia.setText("");
+        	txtThanhTien.setText("");
+        	txtTonKho.setText("");
         });
         btnHuy.addActionListener(e -> {
             dispose();
@@ -111,6 +131,42 @@ public class PhieuNhapInsert extends JDialog {
 			}
 		});
         
+        txtSoLuong.getDocument().addDocumentListener(new DocumentListener() {
+			
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				setDonGia_setSoLuong();
+			}
+			
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				setDonGia_setSoLuong();
+			}
+			
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				setDonGia_setSoLuong();
+			}
+		});
+        
+        txtDonGia.getDocument().addDocumentListener(new DocumentListener() {
+			
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				setDonGia_setSoLuong();
+			}
+			
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				setDonGia_setSoLuong();
+			}
+			
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				setDonGia_setSoLuong();
+			}
+		});
+        
 
         addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent evt) {
@@ -130,6 +186,7 @@ public class PhieuNhapInsert extends JDialog {
     }
 
     private void init() {
+    	setModal(true);
         setBounds(100, 100, 750, 500);
         setLocationRelativeTo(null);
         getContentPane().setLayout(new BorderLayout(0, 10));
@@ -192,7 +249,7 @@ public class PhieuNhapInsert extends JDialog {
         lblTongTien.setBounds(20, 190, 120, 25);
         pnThongTinLeft.add(lblTongTien);
 
-        txtTongTien = new JTextField();
+        txtTongTien = new JTextField("0");
         txtTongTien.setFont(new Font("Tahoma", Font.PLAIN, 15));
         txtTongTien.setBounds(150, 190, 100, 25);
         txtTongTien.setEditable(false);
@@ -203,8 +260,12 @@ public class PhieuNhapInsert extends JDialog {
         lblNgayNhap.setFont(new Font("Tahoma", Font.BOLD, 15));
         lblNgayNhap.setBounds(20, 155, 120, 25);
         pnThongTinLeft.add(lblNgayNhap);
+        
+        Date currentDate = new Date(System.currentTimeMillis());
+		SimpleDateFormat formatter2 = new SimpleDateFormat("yyyy-MM-dd");
+		String formattedDate = formatter2.format(currentDate);
 
-        txtNgayNhap = new JTextField();
+        txtNgayNhap = new JTextField(formattedDate);
         txtNgayNhap.setFont(new Font("Tahoma", Font.PLAIN, 15));
         txtNgayNhap.setBounds(150, 155, 100, 25);
         txtNgayNhap.setEditable(false);
@@ -260,12 +321,12 @@ public class PhieuNhapInsert extends JDialog {
 
         JLabel lblThanhTien = new JLabel("Thành tiền");
         lblThanhTien.setFont(new Font("Tahoma", Font.BOLD, 15));
-        lblThanhTien.setBounds(20, 155, 120, 25);
+        lblThanhTien.setBounds(20, 190, 120, 25);
         pnThongTinRight.add(lblThanhTien);
 
-        txtThanhTien = new JTextField();
+        txtThanhTien = new JTextField("0");
         txtThanhTien.setFont(new Font("Tahoma", Font.PLAIN, 15));
-        txtThanhTien.setBounds(150, 155, 100, 25);
+        txtThanhTien.setBounds(150, 190, 100, 25);
         txtThanhTien.setEditable(false); // Không thể chỉnh sửa
         pnThongTinRight.add(txtThanhTien);
         txtThanhTien.setColumns(10);
@@ -290,12 +351,24 @@ public class PhieuNhapInsert extends JDialog {
         txtMaPN_CTHD.setBounds(150, 50, 100, 25);
         pnThongTinRight.add(txtMaPN_CTHD);
         txtMaPN_CTHD.setColumns(10);
+        
+        JLabel lblDonGia = new JLabel("Đơn giá");
+        lblDonGia.setFont(new Font("Tahoma", Font.BOLD, 15));
+        lblDonGia.setBounds(20, 155, 120, 25);
+        pnThongTinRight.add(lblDonGia);
+        
+        txtDonGia = new JTextField();
+        txtDonGia.setFont(new Font("Tahoma", Font.PLAIN, 15));
+        txtDonGia.setBounds(150, 155, 100, 25);
+        pnThongTinRight.add(txtDonGia);
+        txtDonGia.setColumns(10);
 
         // Table chi tiết phiếu nhập
         dtmCTPN = new DefaultTableModel();
         dtmCTPN.addColumn("Mã phiếu nhập");
         dtmCTPN.addColumn("Mã sản phẩm");
         dtmCTPN.addColumn("Số lượng");
+        dtmCTPN.addColumn("Đơn giá");
         dtmCTPN.addColumn("Thành tiền");
 
         tblCTPN = new JTable(dtmCTPN);
@@ -327,6 +400,73 @@ public class PhieuNhapInsert extends JDialog {
         btnHuy.setFont(new Font("Tahoma", Font.BOLD, 20));
         pnBottom.add(btnHuy);
     }
+    
+    /*
+     * FUNCTION
+     */
+    public boolean showDialog(Component parentComponent) {
+    	return dataAccepted;
+    }
+    
+    public NhapHangDTO getPN() {
+    	return new NhapHangDTO(
+    			txtMaPN.getText(),
+    			txtMaNV.getText(),
+    			txtMaNCC.getText(),
+    			Double.parseDouble(txtTongTien.getText()),
+    			Date.valueOf(txtNgayNhap.getText().toString())
+    			);
+    }
+    
+    private void addDataTable(ChiTietPhieuNhapDTO ctpn) {
+    	dtmCTPN.addRow(new Object[] {
+    			ctpn.getMaPN(),
+    			ctpn.getMaSP(),
+    			ctpn.getSoLuong(),
+    			ctpn.getDonGia(),
+    			ctpn.getThanhTien()
+    	});
+    }
+    
+    public ArrayList<ChiTietPhieuNhapDTO> getList_CTPN(){
+    	return this.list_ctpn;
+    }
+    
+    private void them() {
+    	ChiTietPhieuNhapDTO ctpn = new ChiTietPhieuNhapDTO(
+    			txtMaPN_CTHD.getText(),
+    			txtMaSP.getText(),
+    			Integer.parseInt(txtSoLuong.getText()),
+    			Float.parseFloat(txtDonGia.getText()),
+    			Float.parseFloat(txtThanhTien.getText())
+    			);
+    	dtmCTPN.addRow(new Object[] {
+    			ctpn.getMaPN(),
+    			ctpn.getMaSP(),
+    			ctpn.getSoLuong(),
+    			ctpn.getDonGia(),
+    			ctpn.getThanhTien()
+    	});
+    	
+    	txtTongTien.setText(
+    			Double.parseDouble(txtTongTien.getText()) + Float.parseFloat(txtThanhTien.getText())+""
+    			);
+    	
+    	this.list_ctpn.add(ctpn);
+    }
+    
+    private void setDonGia_setSoLuong() {
+    	if(!txtSoLuong.getText().isEmpty() && !txtDonGia.getText().isEmpty()) 
+			txtThanhTien.setText(
+					Integer.parseInt(txtSoLuong.getText()) * Float.parseFloat(txtDonGia.getText())+""
+					);
+		else 
+			txtThanhTien.setText("");
+    }
+    
+    /*
+     * MAIN
+     */
 
     public static void main(String[] args) {
         try {

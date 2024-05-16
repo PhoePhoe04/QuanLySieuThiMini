@@ -26,12 +26,6 @@ public class NhapHangDAO {
             insertValues.put("ngayNhap", nhapHang.getNgayNhap());
 
             ketQua = connect.insert("nhaphang", insertValues);
-
-            // Thêm chi tiết phiếu nhập
-            ChiTietPhieuNhapDAO chiTietPhieuNhapDAO = new ChiTietPhieuNhapDAO();
-            for (ChiTietPhieuNhapDTO chiTietPhieuNhap : nhapHang.getList()) {
-                chiTietPhieuNhapDAO.them(chiTietPhieuNhap);
-            }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -98,11 +92,6 @@ public class NhapHangDAO {
                 nhapHang.setTongTien(rs.getDouble("tongTien"));
                 nhapHang.setNgayNhap(rs.getDate("ngayNhap"));
 
-                // Đọc chi tiết phiếu nhập
-                ChiTietPhieuNhapDAO chiTietPhieuNhapDAO = new ChiTietPhieuNhapDAO();
-                ArrayList<ChiTietPhieuNhapDTO> chiTietPhieuNhapList = chiTietPhieuNhapDAO.docDB("maPN = '" + nhapHang.getMaPN() + "'");
-                nhapHang.setList(chiTietPhieuNhapList);
-
                 list.add(nhapHang);
             }
         } catch (SQLException e) {
@@ -121,19 +110,5 @@ public class NhapHangDAO {
     public ArrayList<NhapHangDTO> docDB() {
         return this.docDB(null);
     }
-
-    public static void main(String[] args) {
-        NhapHangDAO nhapHangDAO = new NhapHangDAO();
-        // Tạo danh sách chi tiết phiếu nhập
-        List<ChiTietPhieuNhapDTO> chiTietPhieuNhapList = new ArrayList<>();
-        chiTietPhieuNhapList.add(new ChiTietPhieuNhapDTO("PN01", "SP01", 10, 100000));
-        chiTietPhieuNhapList.add(new ChiTietPhieuNhapDTO("PN01", "SP02", 20, 200000));
-
-        // Tạo đối tượng nhập hàng
-        NhapHangDTO nhapHang = new NhapHangDTO("PN01", "NV01", "NCC01", 5000000, new java.util.Date(), chiTietPhieuNhapList);
-
-        // Thêm đối tượng nhập hàng vào cơ sở dữ liệu
-        int kq = nhapHangDAO.them(nhapHang);
-        System.out.println(kq);
-    }
+ 
 }
