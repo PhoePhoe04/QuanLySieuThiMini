@@ -35,11 +35,13 @@ import com.itextpdf.text.pdf.PdfWriter;
 import BUS.ChiTietHoaDonBUS;
 import BUS.HoaDonBUS;
 import BUS.KhachHangBUS;
+import BUS.KhuyenMaiBUS;
 import BUS.NhanVienBUS;
 import BUS.SanPham_BUS;
 import DTO.ChiTietHoaDonDTO;
 import DTO.HoaDonDTO;
 import DTO.KhachHangDTO;
+import DTO.KhuyenMaiDTO;
 import DTO.NhanVienDTO;
 import DTO.SanPham_DTO;
 import GUI_Dialog.HoaDonInsert;
@@ -245,11 +247,11 @@ public class HoaDonPanel extends JPanel {
 			HoaDonInsert dialog = new HoaDonInsert();
 			if(dialog.showDialog(HoaDonPanel.this)) {
 				HoaDonDTO hoaDon = dialog.getHoaDon();
+				System.out.println(hoaDon.toString());
 				ArrayList<ChiTietHoaDonDTO> list = dialog.getCTHD();
 				if(updateDataBase(list))
 					addData(hoaDon, list);
 			}
-			System.out.println(dialog.showDialog(HoaDonPanel.this));
 		});
 		
 		btnXoa.addActionListener(e ->{
@@ -776,7 +778,7 @@ public class HoaDonPanel extends JPanel {
             }
 
             // Add table rows
-            
+            Double tienCTHD = 0.0;
             for(int i = 0; i < list.size(); i++) {
     			ChiTietHoaDonDTO cthd = list.get(i);
 				SanPham_DTO sp = spBUS.getSP(cthd.getMaSP());
@@ -788,6 +790,8 @@ public class HoaDonPanel extends JPanel {
                 table.addCell(new PdfPCell(new Phrase(sp.getDonGia()+"", font)));
                 table.addCell(new PdfPCell(new Phrase(cthd.getMaKM() == null ?"": cthd.getMaKM()+"", font)));
                 table.addCell(new PdfPCell(new Phrase(cthd.getThanhTien()+"", font)));
+                
+                tienCTHD += cthd.getThanhTien();
 			}
 
             // Add total row
@@ -796,17 +800,20 @@ public class HoaDonPanel extends JPanel {
             congCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
             table.addCell(congCell);
             
-            PdfPCell tienCell = new PdfPCell(new Phrase(hd.getTongTien()+"", font));
+            PdfPCell tienCell = new PdfPCell(new Phrase(tienCTHD+"", font));
             tienCell.setHorizontalAlignment(Element.ALIGN_CENTER);
             table.addCell(tienCell);
 
             document.add(table);
             
-            Paragraph apDungKM = new Paragraph("Áp dụng khuyến mãi: ", font);
+            KhuyenMaiBUS kmBUS = new KhuyenMaiBUS();
+            KhuyenMaiDTO km = kmBUS.getKM(hd.getMaKM());
+            
+            Paragraph apDungKM = new Paragraph(km.getTenKM() == null ? "Áp dụng khuyến mãi: " : "Áp dụng khuyến mãi: "+km.getTenKM(),font);
             apDungKM.setAlignment(Element.ALIGN_LEFT);
             document.add(apDungKM);
             
-            Paragraph tongChiPhiHD = new Paragraph("Tổng chi phí hóa đơn: ", font);
+            Paragraph tongChiPhiHD = new Paragraph("Tổng chi phí hóa đơn: "+ hd.getTongTien(), font);
             tongChiPhiHD.setAlignment(Element.ALIGN_LEFT);
             document.add(tongChiPhiHD);
 

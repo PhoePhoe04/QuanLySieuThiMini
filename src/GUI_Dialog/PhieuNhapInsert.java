@@ -218,7 +218,11 @@ public class PhieuNhapInsert extends JDialog {
         lblMaPN.setBounds(20, 50, 120, 25);
         pnThongTinLeft.add(lblMaPN);
 
-        txtMaPN = new JTextField();
+        Date now = new Date(System.currentTimeMillis());
+		SimpleDateFormat formatter = new SimpleDateFormat("yyMMssmm");
+		String formatted = formatter.format(now);
+        
+        txtMaPN = new JTextField("PN"+formatted);
         txtMaPN.setFont(new Font("Tahoma", Font.PLAIN, 15));
         txtMaPN.setBounds(150, 50, 100, 25);
         pnThongTinLeft.add(txtMaPN);

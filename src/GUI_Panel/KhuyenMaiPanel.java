@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.sql.Date;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
@@ -16,8 +17,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.RowFilter;
 import javax.swing.SwingConstants;
+import javax.swing.RowFilter.Entry;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 
 import BUS.ChiTietKMHDBUS;
 import BUS.ChiTietKMSPBUS;
@@ -43,11 +47,7 @@ public class KhuyenMaiPanel extends JPanel {
 	
 	private JButton btnRefresh;
 	private JButton btnThem;
-	private JButton btnSua;
 	private JButton btnXoa;
-	private JButton btnTim;
-	private JButton btnXuat;
-	private JButton btnNhap;
 	private JScrollPane scrPane_KM;
 	private JScrollPane scrPane_KMSP;
 	private JComponent scrPane_KMHD;
@@ -83,40 +83,12 @@ public class KhuyenMaiPanel extends JPanel {
 		   btnThem.setFont(new Font("Tahoma", Font.BOLD, 20));
 		   pnTop.add(btnThem);
 		   
-		   btnSua = new JButton("Sửa");
-		   btnSua.setHorizontalAlignment(SwingConstants.LEFT);
-		   btnSua.setIcon(new ImageIcon(NhanVienPanel.class.getResource("/Image/edit_icon.png")));
-		   btnSua.setBounds(160, 15, 130, 50);
-		   btnSua.setFont(new Font("Tahoma", Font.BOLD, 20));
-		   pnTop.add(btnSua);
-		   
 		   btnXoa = new JButton("Xóa");
 		   btnXoa.setHorizontalAlignment(SwingConstants.LEFT);
 		   btnXoa.setIcon(new ImageIcon(NhanVienPanel.class.getResource("/Image/delete2_icon.png")));
-		   btnXoa.setBounds(300, 15, 130, 50);
+		   btnXoa.setBounds(160, 15, 130, 50);
 		   btnXoa.setFont(new Font("Tahoma", Font.BOLD, 20));
 		   pnTop.add(btnXoa);
-		   
-		   btnTim = new JButton("Tìm");
-		   btnTim.setHorizontalAlignment(SwingConstants.LEFT);
-		   btnTim.setIcon(new ImageIcon(NhanVienPanel.class.getResource("/Image/32_search.png")));
-		   btnTim.setFont(new Font("Tahoma", Font.BOLD, 20));
-		   btnTim.setBounds(440, 15, 130, 50);
-		   pnTop.add(btnTim);
-		   
-		   btnXuat = new JButton("Xuất");
-		   btnXuat.setHorizontalAlignment(SwingConstants.LEFT);
-		   btnXuat.setIcon(new ImageIcon(NhanVienPanel.class.getResource("/Image/32_excel.png")));
-		   btnXuat.setFont(new Font("Tahoma", Font.BOLD, 20));
-		   btnXuat.setBounds(580, 15, 130, 50);
-		   pnTop.add(btnXuat);
-		   
-		   btnNhap = new JButton("Nhập");
-		   btnNhap.setHorizontalAlignment(SwingConstants.LEFT);
-		   btnNhap.setIcon(new ImageIcon(NhanVienPanel.class.getResource("/Image/32_excel.png")));
-		   btnNhap.setFont(new Font("Tahoma", Font.BOLD, 20));
-		   btnNhap.setBounds(720, 15, 130, 50);
-		   pnTop.add(btnNhap);
 		   
 //		   ============================================= CENTER =============================================
 		   JPanel pnCenter = new JPanel();
@@ -196,20 +168,69 @@ public class KhuyenMaiPanel extends JPanel {
 	 * ADD ACTIONLISTENER
 	 */
 	private void addActionListener() {
+		tblKM.getSelectionModel().addListSelectionListener(e ->{
+			if(!e.getValueIsAdjusting()) {
+				int selectedRow = tblKM.getSelectedRow();
+				if(selectedRow != -1) {
+					String maKM = (String) tblKM.getValueAt(selectedRow, tblKM.getColumn("Mã khuyến mãi").getModelIndex());
+					filter_tblKMHD(maKM);
+					filter_tblKMSP(maKM);
+				}
+			}
+		});
+		
 		btnThem.addActionListener(e ->{
 			KhuyenMaiInsert data = new KhuyenMaiInsert();
 			if(data.showDialog(this)) {
 				KhuyenMaiDTO km = data.getKM();
+				ChiTietKMSPDTO kmsp = data.getKMSP();
+				ChiTietKMHDDTO kmhd = data.getKMHD();
 				if(km != null) {
-					System.out.println(km.toString());
+					if(kmBUS.them(km))
+						addDataTable_KM(km);
+				}else if(kmsp != null) {
+					System.out.println(kmsp.toString());
+					if(ctkmspBUS.them(kmsp))
+						addDataTable_KMSP(kmsp);
+				}else if(kmhd != null) {
+					if(ctkmhdBUS.them(kmhd))
+						addDataTable_KMHD(kmhd);
 				}
 			}
+		});
+		
+		btnXoa.addActionListener(e ->{
+			xoa();
 		});
 	}
 	
 	/*
 	 * FUNCTION
 	 */
+	
+	private void filter_tblKMSP(String selectedMaKM) {
+		TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<DefaultTableModel>(dtmKMSP);
+		tblKMSP.setRowSorter(sorter);
+		RowFilter<Object, Object> filter = new RowFilter<Object, Object>(){
+			public boolean include(Entry<?,?> entry) {
+				String maKM = (String) entry.getValue(0);
+				return maKM.equals(selectedMaKM);
+			}
+		};
+		sorter.setRowFilter(filter);
+	}
+	
+	private void filter_tblKMHD(String selectedMaKM) {
+		TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<DefaultTableModel>(dtmKMHD);
+		tblKMHD.setRowSorter(sorter);
+		RowFilter<Object,  Object> filter = new RowFilter<Object, Object>(){
+			public boolean include(Entry<?,?> entry) {
+				String maKM = (String) entry.getValue(0);
+				return maKM.equals(selectedMaKM);
+			}
+		};
+		sorter.setRowFilter(filter);
+	}
 	
 	private void addDataTable_KM(KhuyenMaiDTO km) {
 		dtmKM.addRow(new Object[] {km.getMaKM(), km.getTenKM(), km.getDieuKien(), km.getNgayBatDau(), km.getNgayKetThuc()});
@@ -244,6 +265,72 @@ public class KhuyenMaiPanel extends JPanel {
 		}
 	}
 	
+	private KhuyenMaiDTO getKM(int selectedRow) {
+		String maKM = dtmKM.getValueAt(selectedRow, dtmKM.findColumn("Mã khuyến mãi")).toString();
+		String tenKM = dtmKM.getValueAt(selectedRow, dtmKM.findColumn("Tên khuyến mãi")).toString();
+		String dieuKien = dtmKM.getValueAt(selectedRow, dtmKM.findColumn("Điều kiện")).toString();
+		Date ngayBD = Date.valueOf(dtmKM.getValueAt(selectedRow, dtmKM.findColumn("Ngày bắt đầu")).toString());
+		Date ngayKT = Date.valueOf(dtmKM.getValueAt(selectedRow, dtmKM.findColumn("Ngày kết thúc")).toString());
+		
+		KhuyenMaiDTO km = new KhuyenMaiDTO(maKM, tenKM, dieuKien, ngayBD, ngayKT);
+		return km;
+	}
+	
+	private ChiTietKMSPDTO getKMSP(int selectedRow) {
+		String maKM = dtmKMSP.getValueAt(selectedRow, dtmKMSP.findColumn("Mã khuyến mãi")).toString();
+		String maSP = dtmKMSP.getValueAt(selectedRow, dtmKMSP.findColumn("Mã sản phẩm")).toString();
+		Double tiLeGiamGia = Double.parseDouble(dtmKMSP.getValueAt(selectedRow, dtmKMSP.findColumn("Tỉ lệ giảm giá")).toString());
+		
+		ChiTietKMSPDTO kmsp = new ChiTietKMSPDTO(maKM, maSP, tiLeGiamGia);
+		return kmsp;
+	}
+	
+	private ChiTietKMHDDTO getKMHD(int selectedRow) {
+		String maKM = dtmKMHD.getValueAt(selectedRow, dtmKMHD.findColumn("Mã khuyến mãi")).toString();
+		Double tienHoaDon = Double.parseDouble(dtmKMHD.getValueAt(selectedRow, dtmKMHD.findColumn("Tiền hóa đơn")).toString());
+		Double tiLeGiamGia = Double.parseDouble(dtmKMHD.getValueAt(selectedRow, dtmKMHD.findColumn("Tỉ lệ giảm giá")).toString());
+		
+		ChiTietKMHDDTO kmhd = new ChiTietKMHDDTO(maKM, tienHoaDon, tiLeGiamGia);
+		return kmhd;
+	}
+	
+	private void removeRow_tblKM(int selectedRow) {
+		KhuyenMaiDTO km = getKM(selectedRow);
+		if(kmBUS.xoa(km))
+			dtmKM.removeRow(selectedRow);
+	}
+	
+	private void removeRow_tblKMSP(String maKM) {
+		for(int i = dtmKMSP.getRowCount()-1; i >= 0; i--) {
+			if(maKM.equals( dtmKMSP.getValueAt(i, dtmKMSP.findColumn("Mã khuyến mãi")).toString() )){
+				ChiTietKMSPDTO kmsp = getKMSP(i);
+				if(ctkmspBUS.xoa(kmsp))
+					dtmKMSP.removeRow(i);
+			}
+		}
+	}
+	
+	private void removeRow_tblKMHD(String maHD) {
+		for(int i = dtmKMHD.getRowCount()-1; i >= 0; i--) {
+			if(maHD.equals( dtmKMHD.getValueAt(i, dtmKMHD.findColumn("Mã khuyến mãi")).toString())) {
+				ChiTietKMHDDTO kmhd = getKMHD(i);
+				if(ctkmhdBUS.xoa(kmhd))
+					dtmKMHD.removeRow(i);
+			}
+		}
+	}
+	
+	private void xoa() {
+		int selectedRow_tblKM = tblKM.getSelectedRow();
+		if(selectedRow_tblKM != -1) {
+			KhuyenMaiDTO km = getKM(selectedRow_tblKM);
+			System.out.println(km.toString());
+			System.out.println("----------------------------");
+			removeRow_tblKMSP(km.getMaKM());
+			removeRow_tblKMHD(km.getMaKM());
+			removeRow_tblKM(selectedRow_tblKM);
+		}
+	}
 	
 	/*
 	 * MAIN

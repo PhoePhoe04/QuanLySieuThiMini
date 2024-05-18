@@ -51,39 +51,21 @@ public class KhuyenMaiBUS {
 			return false;
 		}
 		
-		// Main
-		public static void main(String[] args) {
-			KhuyenMaiBUS kmBUS = new KhuyenMaiBUS();
-			ArrayList<KhuyenMaiDTO> list = kmBUS.getList_KM();
-//			public KhuyenMaiDTO(String maKM, String tenKM, String dieuKien, Date ngayBatDau, Date ngayKetThuc) {
-			KhuyenMaiDTO km = new KhuyenMaiDTO("KM003", "hcc", "hcc", Date.valueOf("2024-04-21"), Date.valueOf("2025-04-21"));
-			
-			System.out.println("============ BEFORE ============");
-			for (KhuyenMaiDTO khuyenMaiDTO : list) {
-				System.out.println(khuyenMaiDTO.toString());
-			}
-			
-			System.out.println("\n");
-			System.out.println(kmBUS.xoa(km) ? "YES\n":"NO\n");
-			
-			System.out.println("============ AFTER ============");
-			for (KhuyenMaiDTO khuyenMaiDTO : list) {
-				System.out.println(khuyenMaiDTO.toString());
-			}
-		}
-		
 		// Function
 		public ArrayList<KhuyenMaiDTO> getList_KM() {
 			return list_KM;
 		}
-		public void setList_KM(ArrayList<KhuyenMaiDTO> list_KM) {
-			this.list_KM = list_KM;
+		
+		public ArrayList<KhuyenMaiDTO> getList_KM(String condition){
+			return this.kmDAO.docDB(condition);
 		}
-		public KhuyenMaiDAO getKmDAO() {
-			return kmDAO;
-		}
-		public void setKmDAO(KhuyenMaiDAO kmDAO) {
-			this.kmDAO = kmDAO;
+		
+		public KhuyenMaiDTO getKM(String maKM) {
+			for(int i = 0; i < list_KM.size(); i++) {
+				KhuyenMaiDTO km = list_KM.get(i);
+				return km;
+			}
+			return null;
 		}
 	
 }

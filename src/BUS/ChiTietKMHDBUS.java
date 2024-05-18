@@ -54,42 +54,14 @@ public class ChiTietKMHDBUS {
 		return false;
 	}
 	
-	// Main
-	public static void main(String[] args) {
-		ChiTietKMHDBUS ctkmhdBUS = new ChiTietKMHDBUS();
-		ArrayList<ChiTietKMHDDTO> list = ctkmhdBUS.getList_ctkmhd();
-		
-		ChiTietKMHDDTO ctkmsp = new ChiTietKMHDDTO("KM002", 800000, 0.05);
-		
-		System.out.println("============ BEFORE ============");
-		for (ChiTietKMHDDTO chiTietKMHDDTO : list) {
-			System.out.println(chiTietKMHDDTO.toString());
-		}
-		
-		System.out.println("\n");
-		System.out.println(ctkmhdBUS.xoa(ctkmsp) ? "YES\n":"NO\n");
-		
-		System.out.println("============ AFTER ============");
-		for (ChiTietKMHDDTO chiTietKMHDDTO : list) {
-			System.out.println(chiTietKMHDDTO.toString());
-		}
-	}
-	
 	
 	// Function
-	public ChiTietKMHDDAO getCtkmhdDAO() {
-		return ctkmhdDAO;
-	}
-
-	public void setCtkmhdDAO(ChiTietKMHDDAO ctkmhdDAO) {
-		this.ctkmhdDAO = ctkmhdDAO;
-	}
 
 	public ArrayList<ChiTietKMHDDTO> getList_ctkmhd() {
 		return list_ctkmhd;
 	}
-
-	public void setList_ctkmhd(ArrayList<ChiTietKMHDDTO> list_ctkmhd) {
-		this.list_ctkmhd = list_ctkmhd;
+	
+	public ArrayList<ChiTietKMHDDTO> getList_ctkmhd(String condition) {
+		return this.ctkmhdDAO.docDB(condition);
 	}
 }

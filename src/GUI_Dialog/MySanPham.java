@@ -139,12 +139,12 @@ public class MySanPham extends JDialog {
 		int selectedRow = tbl.getSelectedRow();
 		if(selectedRow != -1) {
 			return new SanPham_DTO(
-					tbl.getValueAt(selectedRow, tbl.getColumn("Mã sản phẩm").getModelIndex()).toString(),
-					tbl.getValueAt(selectedRow, tbl.getColumn("Tên sản phẩm").getModelIndex()).toString(),
-					tbl.getValueAt(selectedRow, tbl.getColumn("Mã loại sản phẩm").getModelIndex()).toString(),
-					Double.parseDouble(tbl.getValueAt(selectedRow, tbl.getColumn("Đơn giá").getModelIndex()).toString()),
-					Integer.parseInt(tbl.getValueAt(selectedRow, tbl.getColumn("Số lượng").getModelIndex()).toString()),
-					tbl.getValueAt(selectedRow, tbl.getColumn("Đơn vị tính").getModelIndex()).toString()
+					dtm.getValueAt(selectedRow, dtm.findColumn("Mã sản phẩm")).toString(),
+					dtm.getValueAt(selectedRow, dtm.findColumn("Tên sản phẩm")).toString(),
+					dtm.getValueAt(selectedRow, dtm.findColumn("Mã loại sản phẩm")).toString(),
+					Double.parseDouble(dtm.getValueAt(selectedRow, dtm.findColumn("Đơn giá")).toString()),
+					Integer.parseInt(dtm.getValueAt(selectedRow, dtm.findColumn("Số lượng")).toString()),
+					dtm.getValueAt(selectedRow, dtm.findColumn("Đơn vị tính")).toString()
 					);
 		}
 		return null;
