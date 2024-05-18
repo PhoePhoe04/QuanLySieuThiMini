@@ -12,7 +12,10 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import DTO.ChiTietKMHDDTO;
+import DTO.ChiTietKMSPDTO;
 import DTO.KhuyenMaiDTO;
+import DTO.SanPham_DTO;
 
 import java.awt.Font;
 import java.sql.Date;
@@ -63,10 +66,19 @@ public class KhuyenMaiInsert extends JDialog {
 	private JButton btnNgayKT_KM;
 	private CardLayout cardLayout;
 
+	private JButton btnMySanPham;
+	private JButton btnThemKMSP;
+	private JButton btnHuyKMSP;
+
+	private JButton btnMyKM_KMSP;
+
+	private JButton btnMyKM_KMHD;
+
 	public KhuyenMaiInsert() {
 		try {
 			init();
 			addActionListener();
+			setLocationRelativeTo(null);
 			setVisible(true);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -214,6 +226,7 @@ public class KhuyenMaiInsert extends JDialog {
 		CenterKMSP.add(lblMaKM_KMSP);
 		
 		txtMaKM_KMSP = new JTextField();
+		txtMaKM_KMSP.setEditable(false);
 		txtMaKM_KMSP.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		txtMaKM_KMSP.setBounds(180, 20, 150, 25);
 		CenterKMSP.add(txtMaKM_KMSP);
@@ -225,6 +238,7 @@ public class KhuyenMaiInsert extends JDialog {
 		CenterKMSP.add(lblMaSP);
 		
 		txtMaSP = new JTextField();
+		txtMaSP.setEditable(false);
 		txtMaSP.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		txtMaSP.setColumns(10);
 		txtMaSP.setBounds(180, 55, 150, 25);
@@ -241,12 +255,12 @@ public class KhuyenMaiInsert extends JDialog {
 		txtTiLeGiamGia_KMSP.setBounds(180, 90, 150, 25);
 		CenterKMSP.add(txtTiLeGiamGia_KMSP);
 		
-		JButton btnMyKM_KMSP = new JButton("...");
+		btnMyKM_KMSP = new JButton("...");
 		btnMyKM_KMSP.setFont(new Font("Tahoma", Font.BOLD, 20));
 		btnMyKM_KMSP.setBounds(340, 20, 25, 25);
 		CenterKMSP.add(btnMyKM_KMSP);
 		
-		JButton btnMySanPham = new JButton("...");
+		btnMySanPham = new JButton("...");
 		btnMySanPham.setFont(new Font("Tahoma", Font.BOLD, 20));
 		btnMySanPham.setBounds(340, 55, 25, 25);
 		CenterKMSP.add(btnMySanPham);
@@ -256,11 +270,11 @@ public class KhuyenMaiInsert extends JDialog {
 		flowLayout.setAlignment(FlowLayout.RIGHT);
 		pnKMSP.add(ButtonKMSP, BorderLayout.SOUTH);
 		
-		JButton btnThemKMSP = new JButton("Thêm");
+		btnThemKMSP = new JButton("Thêm");
 		btnThemKMSP.setFont(new Font("Tahoma", Font.BOLD, 15));
 		ButtonKMSP.add(btnThemKMSP);
 		
-		JButton btnHuyKMSP = new JButton("Hủy");
+		btnHuyKMSP = new JButton("Hủy");
 		btnHuyKMSP.setFont(new Font("Tahoma", Font.BOLD, 15));
 		btnHuyKMSP.setHorizontalAlignment(SwingConstants.RIGHT);
 		ButtonKMSP.add(btnHuyKMSP);
@@ -284,6 +298,7 @@ public class KhuyenMaiInsert extends JDialog {
 		CenterKMHD.add(lblMaKM_KMHD);
 		
 		txtMaKM_KMHD = new JTextField();
+		txtMaKM_KMHD.setEditable(false);
 		txtMaKM_KMHD.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		txtMaKM_KMHD.setBounds(180, 20, 150, 25);
 		CenterKMHD.add(txtMaKM_KMHD);
@@ -311,7 +326,7 @@ public class KhuyenMaiInsert extends JDialog {
 		lblTiLeGiamGia_KMHD.setBounds(20, 90, 150, 25);
 		CenterKMHD.add(lblTiLeGiamGia_KMHD);
 		
-		JButton btnMyKM_KMHD = new JButton("...");
+		btnMyKM_KMHD = new JButton("...");
 		btnMyKM_KMHD.setFont(new Font("Tahoma", Font.BOLD, 15));
 		btnMyKM_KMHD.setBounds(340, 20, 25, 25);
 		CenterKMHD.add(btnMyKM_KMHD);
@@ -363,6 +378,45 @@ public class KhuyenMaiInsert extends JDialog {
 			dataAccepted = true;
 			dispose();
 		});
+		
+		// KMSP
+		btnMyKM_KMSP.addActionListener(e ->{
+			 MyKhuyenMai myKM = new MyKhuyenMai();
+			 if(myKM.showDialog(this)) {
+				 KhuyenMaiDTO km = myKM.getKM();
+				 txtMaKM_KMSP.setText(km.getMaKM());
+			 }
+		});
+		btnMySanPham.addActionListener(e ->{
+			MySanPham mySP = new MySanPham(this);
+			if(mySP.showDialog(this)) {
+				SanPham_DTO sp = mySP.getSanPham();
+				txtMaSP.setText(sp.getMaSP());
+			}
+		});
+		btnThemKMSP.addActionListener(e ->{
+			dataAccepted = true;
+			dispose();
+		});
+		btnHuyKMSP.addActionListener(e ->{
+			dispose();
+		});
+		
+		// KMHD
+		btnMyKM_KMHD.addActionListener(e ->{
+			MyKhuyenMai myKM = new MyKhuyenMai();
+			if(myKM.showDialog(this)) {
+				KhuyenMaiDTO km = myKM.getKM();
+				txtMaKM_KMHD.setText(km.getMaKM());
+			}
+		});
+		btnThemKMHD.addActionListener(e ->{
+			dataAccepted = true;
+			dispose();
+		});
+		btnHuyKMHD.addActionListener(e ->{
+			dispose();
+		});
 	}
 	
 	/*
@@ -372,12 +426,37 @@ public class KhuyenMaiInsert extends JDialog {
 		return this.dataAccepted;
 	}
 	public KhuyenMaiDTO getKM() {
-		return new KhuyenMaiDTO(
-				txtMaKM.getText(),
-				txtTenKM.getText(),
-				txtDieuKien.getText(),
-				Date.valueOf(txtNgayBD.getText()),
-				Date.valueOf(txtNgayBD.getText())
-				);
+		if(!txtMaKM.getText().isEmpty() && !txtTenKM.getText().isEmpty() &&  !txtDieuKien.getText().isEmpty() && !txtNgayBD.getText().isEmpty() && !txtNgayBD.getText().isEmpty()) {
+			return new KhuyenMaiDTO(
+					txtMaKM.getText(),
+					txtTenKM.getText(),
+					txtDieuKien.getText(),
+					Date.valueOf(txtNgayBD.getText()),
+					Date.valueOf(txtNgayBD.getText())
+					);
+		}
+		return null;
+	}
+	public ChiTietKMSPDTO getKMSP() {
+		if(!txtMaKM_KMSP.getText().isEmpty() && !txtMaSP.getText().isEmpty() && !txtTiLeGiamGia_KMSP.getText().isEmpty()) {
+			return new ChiTietKMSPDTO(
+					txtMaKM_KMSP.getText(),
+					txtMaSP.getText(),
+					Double.parseDouble(txtTiLeGiamGia_KMSP.getText())
+					);
+		}
+		return null;
+	}
+	
+	public ChiTietKMHDDTO getKMHD() {
+		if(!txtMaKM_KMHD.getText().isEmpty() && !txtTongTienHoaDon.getText().isEmpty() && !txtTieLeGiamGia_KMHD.getText().isEmpty()) {
+			return new ChiTietKMHDDTO(
+					txtMaKM_KMHD.getText(),
+					Double.parseDouble(txtTongTienHoaDon.getText()),
+					Double.parseDouble(txtTieLeGiamGia_KMHD.getText())
+					);
+		}
+		return null;
+		
 	}
 }

@@ -28,6 +28,8 @@ import BUS.KhachHangBUS;
 import BUS.NhanVienBUS;
 import BUS.SanPham_BUS;
 import DTO.ChiTietHoaDonDTO;
+import DTO.ChiTietKMHDDTO;
+import DTO.ChiTietKMSPDTO;
 import DTO.HoaDonDTO;
 import DTO.KhachHangDTO;
 import DTO.NhanVienDTO;
@@ -78,22 +80,18 @@ public class HoaDonInsert extends JDialog {
 	private JButton btnHuy;
 	private JButton btnThem;
 	private JButton btnXacNhan;
-	
-	private JComboBox cbBoxMaKM;
-	private JComboBox cbBoxMaKM_CTHD;
-
 	private DefaultTableModel dtmCTHD;
-
 	private JTable tblCTHD;
-
 	private JButton btnCalender;
-
 	private JButton btnNV;
-
 	private JButton btnKH;
-
 	private JButton btnSP;
-	
+	private JButton btnKMSP;
+	private JTextField txtMaKM_CTHD;
+	private JTextField txtMaKM;
+	private JButton btnKMHD;
+	private JTextField txtGiamGia;
+	private JTextField txtGiamGia_HD;
 
 	public HoaDonInsert() {
 		try {
@@ -178,19 +176,16 @@ public class HoaDonInsert extends JDialog {
 		pnThongTinLeft.add(lblTongTien);
 		
 		txtMaKH = new JTextField();
+		txtMaKH.setEditable(false);
 		txtMaKH.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		txtMaKH.setBounds(160, 85, 110, 25);
 		pnThongTinLeft.add(txtMaKH);
 		
 		txtMaNV = new JTextField();
+		txtMaNV.setEditable(false);
 		txtMaNV.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		txtMaNV.setBounds(160, 120, 110, 25);
 		pnThongTinLeft.add(txtMaNV);
-		
-		cbBoxMaKM = new JComboBox();
-		cbBoxMaKM.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		cbBoxMaKM.setBounds(160, 155, 110, 25);
-		pnThongTinLeft.add(cbBoxMaKM);
 		
 		Date currentDate = new Date(System.currentTimeMillis());
 		SimpleDateFormat formatter2 = new SimpleDateFormat("yyyy-MM-dd");
@@ -225,6 +220,26 @@ public class HoaDonInsert extends JDialog {
 		btnNV.setBounds(280, 120, 30, 25);
 		pnThongTinLeft.add(btnNV);
 		
+		txtMaKM = new JTextField();
+		txtMaKM.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		txtMaKM.setEditable(false);
+		txtMaKM.setBounds(160, 155, 110, 25);
+		pnThongTinLeft.add(txtMaKM);
+		txtMaKM.setColumns(10);
+		
+		btnKMHD = new JButton("...");
+		btnKMHD.setFont(new Font("Tahoma", Font.BOLD, 15));
+		btnKMHD.setBounds(280, 155, 30, 25);
+		pnThongTinLeft.add(btnKMHD);
+		
+		txtGiamGia_HD = new JTextField();
+		txtGiamGia_HD.setEditable(false);
+		txtGiamGia_HD.setText("0");
+		txtGiamGia_HD.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		txtGiamGia_HD.setBounds(280, 225, 50, 25);
+		pnThongTinLeft.add(txtGiamGia_HD);
+		txtGiamGia_HD.setColumns(10);
+		
 		JPanel pnThongTinRight = new JPanel();
 		pnthongTin.add(pnThongTinRight);
 		pnThongTinRight.setLayout(null);
@@ -253,6 +268,7 @@ public class HoaDonInsert extends JDialog {
 		pnThongTinRight.add(lblMaSP);
 		
 		txtMaSP = new JTextField();
+		txtMaSP.setEditable(false);
 		txtMaSP.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		txtMaSP.setBounds(150, 85, 110, 25);
 		pnThongTinRight.add(txtMaSP);
@@ -261,10 +277,6 @@ public class HoaDonInsert extends JDialog {
 		lblMaKM_CTHD.setFont(new Font("Tahoma", Font.BOLD, 15));
 		lblMaKM_CTHD.setBounds(10, 120, 130, 25);
 		pnThongTinRight.add(lblMaKM_CTHD);
-		
-		cbBoxMaKM_CTHD = new JComboBox();
-		cbBoxMaKM_CTHD.setBounds(150, 122, 110, 25);
-		pnThongTinRight.add(cbBoxMaKM_CTHD);
 		
 		JLabel lblDonGia = new JLabel("Đơn giá");
 		lblDonGia.setFont(new Font("Tahoma", Font.BOLD, 15));
@@ -296,7 +308,7 @@ public class HoaDonInsert extends JDialog {
 		
 		txtThanhTien = new JTextField();
 		txtThanhTien.setEditable(false);
-		txtThanhTien.setBounds(150, 227, 110, 25);
+		txtThanhTien.setBounds(150, 225, 110, 25);
 		pnThongTinRight.add(txtThanhTien);
 		txtThanhTien.setColumns(10);
 		
@@ -308,9 +320,28 @@ public class HoaDonInsert extends JDialog {
 		txtTonKho = new JTextField();
 		txtTonKho.setEditable(false);
 		txtTonKho.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		txtTonKho.setBounds(270, 190, 70, 25);
+		txtTonKho.setBounds(270, 190, 50, 25);
 		pnThongTinRight.add(txtTonKho);
 		txtTonKho.setColumns(10);
+		
+		btnKMSP = new JButton("...");
+		btnKMSP.setFont(new Font("Tahoma", Font.BOLD, 15));
+		btnKMSP.setBounds(270, 120, 30, 25);
+		pnThongTinRight.add(btnKMSP);
+		
+		txtMaKM_CTHD = new JTextField();
+		txtMaKM_CTHD.setEditable(false);
+		txtMaKM_CTHD.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		txtMaKM_CTHD.setBounds(150, 120, 110, 25);
+		pnThongTinRight.add(txtMaKM_CTHD);
+		txtMaKM_CTHD.setColumns(10);
+		
+		txtGiamGia = new JTextField("0");
+		txtGiamGia.setEditable(false);
+		txtGiamGia.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		txtGiamGia.setBounds(270, 225, 50, 25);
+		pnThongTinRight.add(txtGiamGia);
+		txtGiamGia.setColumns(10);
 		
 		
 		// ============================= SOUTH =============================
@@ -374,6 +405,8 @@ public class HoaDonInsert extends JDialog {
 			txtSoLuong.setText("");
 			txtTonKho.setText("");
 			txtDonGia.setText("");
+			txtGiamGia.setText("0");
+			txtMaKM_CTHD.setText("");
 		});
 		
 		btnHuy.addActionListener(e ->{
@@ -447,6 +480,8 @@ public class HoaDonInsert extends JDialog {
 			MySanPham dialog = new MySanPham(this, sanPhamChuaThanhToan);
 			if(dialog.showDialog(this)) {
 				SanPham_DTO sp = dialog.getSanPham();
+				txtMaKM_CTHD.setText("");
+				txtGiamGia.setText("0");
 				if(sp != null) {
 					txtMaSP.setText(sp.getMaSP());
 					txtDonGia.setText(sp.getDonGia()+"");
@@ -477,6 +512,26 @@ public class HoaDonInsert extends JDialog {
 			new MyCalender(this, txtNgayLap);
 		});
 		
+		btnKMSP.addActionListener(e ->{
+			if(!txtMaSP.getText().isEmpty()) {
+				MyKhuyenMaiSanPham myKSMP = new MyKhuyenMaiSanPham(txtMaSP.getText());
+				if(myKSMP.showDialog(this)) {
+					ChiTietKMSPDTO kmsp = myKSMP.getKMSP();
+					txtMaKM_CTHD.setText(kmsp.getMaKM());
+					txtGiamGia.setText("-"+kmsp.getTileGiamGia());
+				}
+			}
+		});
+		
+		btnKMHD.addActionListener(e ->{
+			MyKhuyenMaiHoaDon myKMHD = new MyKhuyenMaiHoaDon(Double.parseDouble(txtTongTien.getText()));
+			if(myKMHD.showDialog(this)) {
+				ChiTietKMHDDTO kmhd = myKMHD.getKMHD();
+				txtMaKM.setText(kmhd.getMaKM());
+				txtGiamGia_HD.setText("-"+kmhd.getTiLeGiamGia());
+			}
+		});
+		
 		// Listener btnThem
 		txtMaHD_CTHD.getDocument().addDocumentListener(dcmListenerbtnThem);
 		txtDonGia.getDocument().addDocumentListener(dcmListenerbtnThem);
@@ -502,13 +557,13 @@ public class HoaDonInsert extends JDialog {
 	public void themCTHD() {
 		String maHD = txtMaHD_CTHD.getText();
 		String maSP = txtMaSP.getText();
-		String maKM = cbBoxMaKM.getSelectedItem()+"";
+		String maKM = txtMaKM_CTHD.getText();
 		int soLuong = Integer.parseInt(txtSoLuong.getText());
 		double donGia = Double.parseDouble(txtDonGia.getText());
-		double thanhTien = Double.parseDouble(txtThanhTien.getText());
+		double thanhTien = Double.parseDouble(txtThanhTien.getText()) + Double.parseDouble(txtThanhTien.getText())*Double.parseDouble(txtGiamGia.getText());
 		ChiTietHoaDonDTO cthd = new ChiTietHoaDonDTO(maHD, maSP, maKM, soLuong, donGia, thanhTien);
 		Object[] data = new Object[] {maHD, maSP, maKM, soLuong, donGia, thanhTien};		
-		txtTongTien.setText(Double.parseDouble(txtTongTien.getText()) + Double.parseDouble(txtThanhTien.getText())+"");
+		txtTongTien.setText(Double.parseDouble(txtTongTien.getText()) + thanhTien+"");
 		if(sanPhamChuaThanhToan.containsKey(maSP)) {
 			int before = sanPhamChuaThanhToan.get(maSP);
 			int after = before + soLuong;
@@ -566,18 +621,17 @@ public class HoaDonInsert extends JDialog {
 			btnXacNhan.setEnabled(!txtMaHD.getText().isEmpty() && !txtMaKH.getText().isEmpty() && !txtMaNV.getText().isEmpty());
 		}
 	};
-
 	
 	
 	public HoaDonDTO getHoaDon() {
-		return new HoaDonDTO(
-				txtMaHD.getText(),
-				txtMaKH.getText(),
-				txtMaNV.getText(),
-				cbBoxMaKM.getSelectedItem()+"",
-				Date.valueOf(txtNgayLap.getText()+""),
-				Double.parseDouble(txtTongTien.getText())
-				);
+		String maHD = txtMaHD.getText();
+		String maKH = txtMaKH.getText();
+		String maNV = txtMaNV.getText();
+		String maKM = txtMaKM.getText();
+		Date ngayLap = Date.valueOf(txtNgayLap.getText()+"");
+		Double tongTien = Double.parseDouble(txtTongTien.getText()) + Double.parseDouble(txtTongTien.getText())*Double.parseDouble(txtGiamGia_HD.getText());
+		
+		return new HoaDonDTO(maHD, maKH, maNV, maKM, ngayLap, tongTien);
 	}
 	
 	public ArrayList<ChiTietHoaDonDTO> getCTHD(){
