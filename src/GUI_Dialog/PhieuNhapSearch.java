@@ -6,20 +6,12 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 
 import BUS.ChiTietHoaDonBUS;
-import BUS.ChiTietPhieuNhapBUS;
-import BUS.HoaDonBUS;
-import DTO.ChiTietHoaDonDTO;
-import DTO.ChiTietPhieuNhapDTO;
-import DTO.HoaDonDTO;
-import DTO.NhapHangDTO;
 
 import java.awt.Font;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.JTextField;
-import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import java.awt.event.ActionListener;
@@ -32,13 +24,12 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import javax.swing.JRadioButton;
 
-public class HoaDonSearch extends JDialog {
+public class PhieuNhapSearch extends JDialog {
+
 	private boolean dataAccepted = false;
 	
 	private String query = "";
 
-	private HoaDonBUS hdBUS;
-	private List<HoaDonDTO> list;
 	
 	private JButton btnHuy;
 	private JTextField txtTuNgay;
@@ -47,9 +38,6 @@ public class HoaDonSearch extends JDialog {
 	private JTextField txtDenNgay;
 	private JTextField txtMaKH;
 	private JTextField txtMaNV;
-	private JTextField txtMaKM;
-	private ChiTietHoaDonBUS cthdBUS;
-	private List<ChiTietHoaDonDTO> list_CT;
 	private JPanel panel;
 	private JPanel panel_2;
 	private JTextField txtTongTienBe;
@@ -57,8 +45,8 @@ public class HoaDonSearch extends JDialog {
 	private JLabel lblDenNgay;
 
 	private ButtonGroup btnGroup;
-	private JLabel lblMaHD;
-	private JTextField txtMaHD;
+	private JLabel lblMaPN;
+	private JTextField txtMaPN;
 	private JRadioButton rdbtnAND;
 	private JRadioButton rdbtnOR;
 
@@ -67,10 +55,7 @@ public class HoaDonSearch extends JDialog {
 	private JButton btnDenNgay;
 	
 
-	public HoaDonSearch() {
-		hdBUS = new HoaDonBUS();
-		cthdBUS =   new ChiTietHoaDonBUS();
-		list = new ArrayList<HoaDonDTO>();
+	public PhieuNhapSearch() {
 		init();
 		addActionListener();
 		setVisible(true);
@@ -82,7 +67,7 @@ public class HoaDonSearch extends JDialog {
 	private void init() {
 		setResizable(false);
 		setModal(true);
-		setSize(500,449);
+		setSize(500,406);
 		setLocationRelativeTo(null);
 		getContentPane().setLayout(new BorderLayout(0, 0));
 		
@@ -104,13 +89,13 @@ public class HoaDonSearch extends JDialog {
 		txtTuNgay.setEditable(false);
 		txtTuNgay.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		txtTuNgay.setColumns(10);
-		txtTuNgay.setBounds(150, 155, 120, 25);
+		txtTuNgay.setBounds(150, 122, 120, 25);
 		panel_1.add(txtTuNgay);
 		
-		JLabel lblMaKH = new JLabel("Mã khách hàng");
-		lblMaKH.setFont(new Font("Tahoma", Font.BOLD, 15));
-		lblMaKH.setBounds(20, 87, 120, 25);
-		panel_1.add(lblMaKH);
+		JLabel lblMaNCC = new JLabel("Mã NCC");
+		lblMaNCC.setFont(new Font("Tahoma", Font.BOLD, 15));
+		lblMaNCC.setBounds(20, 87, 120, 25);
+		panel_1.add(lblMaNCC);
 		
 		JLabel lblMaNV = new JLabel("Mã nhân viên");
 		lblMaNV.setFont(new Font("Tahoma", Font.BOLD, 15));
@@ -119,14 +104,14 @@ public class HoaDonSearch extends JDialog {
 		
 		JLabel lblTuNgay = new JLabel("Từ ngày");
 		lblTuNgay.setFont(new Font("Tahoma", Font.BOLD, 15));
-		lblTuNgay.setBounds(20, 157, 120, 25);
+		lblTuNgay.setBounds(20, 122, 120, 25);
 		panel_1.add(lblTuNgay);
 		
 		txtDenNgay = new JTextField();
 		txtDenNgay.setEditable(false);
 		txtDenNgay.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		txtDenNgay.setColumns(10);
-		txtDenNgay.setBounds(150, 190, 120, 25);
+		txtDenNgay.setBounds(150, 157, 120, 25);
 		panel_1.add(txtDenNgay);
 		
 		txtMaKH = new JTextField();
@@ -141,60 +126,49 @@ public class HoaDonSearch extends JDialog {
 		txtMaNV.setBounds(150, 52, 120, 25);
 		panel_1.add(txtMaNV);
 		
-		txtMaKM = new JTextField();
-		txtMaKM.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		txtMaKM.setColumns(10);
-		txtMaKM.setBounds(150, 122, 120, 25);
-		panel_1.add(txtMaKM);
-		
-		JLabel lblMaKM = new JLabel("Mã khuyến mãi");
-		lblMaKM.setFont(new Font("Tahoma", Font.BOLD, 15));
-		lblMaKM.setBounds(20, 122, 120, 25);
-		panel_1.add(lblMaKM);
-		
 		JLabel lblTongTien = new JLabel("Tổng tiền");
 		lblTongTien.setFont(new Font("Tahoma", Font.BOLD, 15));
-		lblTongTien.setBounds(20, 227, 120, 25);
+		lblTongTien.setBounds(20, 192, 120, 25);
 		panel_1.add(lblTongTien);
 		
 		txtTongTienBe = new JTextField();
-		txtTongTienBe.setBounds(150, 225, 120, 25);
+		txtTongTienBe.setBounds(150, 192, 120, 25);
 		panel_1.add(txtTongTienBe);
 		txtTongTienBe.setColumns(10);
 		
 		JLabel lblMuiTen2 = new JLabel("--->");
 		lblMuiTen2.setFont(new Font("Tahoma", Font.BOLD, 20));
-		lblMuiTen2.setBounds(280, 225, 45, 25);
+		lblMuiTen2.setBounds(280, 192, 45, 25);
 		panel_1.add(lblMuiTen2);
 		
 		txtTongTienLon = new JTextField();
-		txtTongTienLon.setBounds(335, 229, 120, 25);
+		txtTongTienLon.setBounds(335, 194, 120, 25);
 		panel_1.add(txtTongTienLon);
 		txtTongTienLon.setColumns(10);
 		
 		lblDenNgay = new JLabel("Đến ngày");
 		lblDenNgay.setFont(new Font("Tahoma", Font.BOLD, 15));
-		lblDenNgay.setBounds(20, 192, 120, 25);
+		lblDenNgay.setBounds(20, 157, 120, 25);
 		panel_1.add(lblDenNgay);
 		
 		btnTuNgay = new JButton("");
 		btnTuNgay.setIcon(new ImageIcon(HoaDonSearch.class.getResource("/Image/24_calendar.png")));
-		btnTuNgay.setBounds(280, 155, 25, 25);
+		btnTuNgay.setBounds(280, 122, 25, 25);
 		panel_1.add(btnTuNgay);
 		
 		btnDenNgay = new JButton("");
 		btnDenNgay.setIcon(new ImageIcon(HoaDonSearch.class.getResource("/Image/24_calendar.png")));
-		btnDenNgay.setBounds(280, 190, 25, 25);
+		btnDenNgay.setBounds(280, 157, 25, 25);
 		panel_1.add(btnDenNgay);
 		
 		rdbtnAND = new JRadioButton("AND");
 		rdbtnAND.setFont(new Font("Tahoma", Font.BOLD, 15));
-		rdbtnAND.setBounds(20, 292, 80, 25);
+		rdbtnAND.setBounds(20, 260, 80, 25);
 		panel_1.add(rdbtnAND);
 		
 		rdbtnOR = new JRadioButton("OR");
 		rdbtnOR.setFont(new Font("Tahoma", Font.BOLD, 15));
-		rdbtnOR.setBounds(102, 293, 80, 25);
+		rdbtnOR.setBounds(102, 260, 80, 25);
 		panel_1.add(rdbtnOR);
 		
 		panel_2 = new JPanel();
@@ -222,16 +196,16 @@ public class HoaDonSearch extends JDialog {
 		btnGroup.add(rdbtnOR);
 		btnGroup.add(rdbtnAND);
 		
-		lblMaHD = new JLabel("Mã hóa đơn");
-		lblMaHD.setFont(new Font("Tahoma", Font.BOLD, 15));
-		lblMaHD.setBounds(20, 17, 120, 25);
-		panel_1.add(lblMaHD);
+		lblMaPN = new JLabel("Mã phiếu nhập");
+		lblMaPN.setFont(new Font("Tahoma", Font.BOLD, 15));
+		lblMaPN.setBounds(20, 17, 120, 25);
+		panel_1.add(lblMaPN);
 		
-		txtMaHD = new JTextField();
-		txtMaHD.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		txtMaHD.setBounds(150, 17, 120, 25);
-		panel_1.add(txtMaHD);
-		txtMaHD.setColumns(10);
+		txtMaPN = new JTextField();
+		txtMaPN.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		txtMaPN.setBounds(150, 17, 120, 25);
+		panel_1.add(txtMaPN);
+		txtMaPN.setColumns(10);
 	}
 	/*
 	 * FUNCTION
@@ -243,21 +217,19 @@ public class HoaDonSearch extends JDialog {
 		});
 		btnTimNangCao.addActionListener(e->{
 			HashMap<String, Object> condition = new HashMap<String, Object>();
-			if(!txtMaHD.getText().isEmpty())
-				condition.put(" maHD ", " LIKE '%"+ txtMaHD.getText()+ "%'");
+			if(!txtMaPN.getText().isEmpty())
+				condition.put(" maPN ", " LIKE '%"+ txtMaPN.getText()+ "%'");
 			if(!txtMaNV.getText().isEmpty())
 				condition.put(" maNV ", " LIKE '%"+ txtMaNV.getText()+ "%'");
 			if(!txtMaKH.getText().isEmpty())
 				condition.put(" maKH ", " LIKE '%"+ txtMaKH.getText()+ "%'");
-			if(!txtMaKM.getText().isEmpty())
-				condition.put(" maKM ", " LIKE '%"+ txtMaKM.getText()+ "%'");
 			
 			if(!txtTuNgay.getText().isEmpty() && !txtDenNgay.getText().isEmpty())
-				condition.put(" ngayLap ", " BETWEEN "+ "'"+ Date.valueOf(txtTuNgay.getText())+"'" + " AND "+ "'"+ Date.valueOf(txtDenNgay.getText())+ "'");
+				condition.put(" ngayNhap ", " BETWEEN "+ "'"+ Date.valueOf(txtTuNgay.getText())+"'" + " AND "+ "'"+ Date.valueOf(txtDenNgay.getText())+ "'");
 			if(!txtTuNgay.getText().isEmpty() && txtDenNgay.getText().isEmpty())
-				condition.put(" ngayLap ", " LIKE '%"+ Date.valueOf(txtTuNgay.getText())+ "%'");
+				condition.put(" ngayNhap ", " LIKE '%"+ Date.valueOf(txtTuNgay.getText())+ "%'");
 			if(txtTuNgay.getText().isEmpty() && !txtDenNgay.getText().isEmpty())
-				condition.put(" ngayLap ", " LIKE '%"+ Date.valueOf(txtDenNgay.getText())+ "%'");
+				condition.put(" ngayNhap ", " LIKE '%"+ Date.valueOf(txtDenNgay.getText())+ "%'");
 			
 			if(!txtTongTienBe.getText().isEmpty() && !txtTongTienLon.getText().isEmpty())
 				condition.put(" tongTien ", " BETWEEN "+ txtTongTienBe.getText()+ " AND "+ txtTongTienLon.getText());

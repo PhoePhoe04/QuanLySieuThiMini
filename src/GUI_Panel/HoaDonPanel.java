@@ -21,11 +21,26 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import java.io.FileOutputStream;
+
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.BaseFont;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+
 import BUS.ChiTietHoaDonBUS;
 import BUS.HoaDonBUS;
+import BUS.KhachHangBUS;
+import BUS.NhanVienBUS;
 import BUS.SanPham_BUS;
 import DTO.ChiTietHoaDonDTO;
 import DTO.HoaDonDTO;
+import DTO.KhachHangDTO;
+import DTO.NhanVienDTO;
 import DTO.SanPham_DTO;
 import GUI_Dialog.HoaDonInsert;
 import GUI_Dialog.HoaDonSearch;
@@ -37,6 +52,7 @@ import javax.swing.JOptionPane;
 
 import java.awt.Font;
 import java.sql.Date;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javax.swing.JButton;
@@ -57,8 +73,10 @@ public class HoaDonPanel extends JPanel {
 	String query = "";
 	
 	private HoaDonBUS hoaDonBUS;
+	private KhachHangBUS khachHangBus;
 	private SanPham_BUS spBUS;
 	private ChiTietHoaDonBUS cthdBUS;
+	private NhanVienBUS nvBUS;
 	
 	private JButton btnThem;
 	private DefaultTableModel dtmHoaDon;
@@ -66,20 +84,28 @@ public class HoaDonPanel extends JPanel {
 	private JButton btnXoa;
 	private JTable tblHoaDon;
 	private JTable tblCTHD;
-	private JTextField txtTra;
-	private JComboBox cbBoxTra;
-	private JButton btnTra;
 	private JButton btnXuat;
 	private JButton btnNhap;
 	private JButton btnTKNC;
+	private JButton btnRefresh;
+	private JButton btnClear;
+
+	private JButton btnPDF;
 	
 	
 	public HoaDonPanel() {
-		this.spBUS = new SanPham_BUS();
-		this.hoaDonBUS = new HoaDonBUS();
-		this.cthdBUS = new ChiTietHoaDonBUS();
-		init();
-		addActionListener();
+		try {
+			this.nvBUS = new NhanVienBUS();
+			this.khachHangBus = new KhachHangBUS();
+			this.spBUS = new SanPham_BUS();
+			this.hoaDonBUS = new HoaDonBUS();
+			this.cthdBUS = new ChiTietHoaDonBUS();
+			init();
+			addActionListener();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/*
@@ -123,30 +149,6 @@ public class HoaDonPanel extends JPanel {
 		btnTKNC.setBounds(300, 15, 130, 50);
 		pnTop.add(btnTKNC);
 		
-		cbBoxTra = new JComboBox();
-		
-		cbBoxTra.addItem("");
-		cbBoxTra.addItem("Mã hóa đơn");
-		cbBoxTra.addItem("Mã khách hàng");
-		cbBoxTra.addItem("Mã nhân viên");
-		cbBoxTra.addItem("Mã khuyến mãi");
-		cbBoxTra.addItem("Ngày lập");
-		cbBoxTra.addItem("Tổng tiền");
-		
-		cbBoxTra.setBounds(840, 25, 80, 30);
-		pnTop.add(cbBoxTra);
-		
-		txtTra = new JTextField();
-		txtTra.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		txtTra.setBounds(930, 26, 80, 30);
-		pnTop.add(txtTra);
-		txtTra.setColumns(10);
-		
-		btnTra = new JButton("Tra");
-		btnTra.setFont(new Font("Tahoma", Font.BOLD, 18));
-		btnTra.setBounds(1020, 25, 70, 30);
-		pnTop.add(btnTra);
-		
 		btnXuat = new JButton("Xuất");
 		btnXuat.setHorizontalAlignment(SwingConstants.LEFT);
 		btnXuat.setIcon(new ImageIcon(HoaDonPanel.class.getResource("/Image/32_excel.png")));
@@ -160,6 +162,13 @@ public class HoaDonPanel extends JPanel {
 		btnNhap.setFont(new Font("Tahoma", Font.BOLD, 20));
 		btnNhap.setBounds(580, 15, 130, 50);
 		pnTop.add(btnNhap);
+		
+		btnPDF = new JButton("PDF");
+		btnPDF.setHorizontalAlignment(SwingConstants.LEFT);
+		btnPDF.setIcon(new ImageIcon(HoaDonPanel.class.getResource("/Image/32_pdf.png")));
+		btnPDF.setFont(new Font("Tahoma", Font.BOLD, 20));
+		btnPDF.setBounds(720, 15, 130, 50);
+		pnTop.add(btnPDF);
 		
 		
 //		============================ CENTER ============================
@@ -214,6 +223,18 @@ public class HoaDonPanel extends JPanel {
 		lblCTHD.setFont(new Font("Tahoma", Font.BOLD, 20));
 		lblCTHD.setBounds(555, 10, 200, 30);
 		pnCenter.add(lblCTHD);
+		
+		btnRefresh = new JButton("");
+		btnRefresh.setToolTipText("Refresh");
+		btnRefresh.setIcon(new ImageIcon(HoaDonPanel.class.getResource("/Image/24_refresh.png")));
+		btnRefresh.setBounds(1055, 10, 30, 30);
+		pnCenter.add(btnRefresh);
+		
+		btnClear = new JButton("");
+		btnClear.setToolTipText("Clear");
+		btnClear.setIcon(new ImageIcon(HoaDonPanel.class.getResource("/Image/24_clear.png")));
+		btnClear.setBounds(1015, 10, 30, 30);
+		pnCenter.add(btnClear);
 	}
 	
 	/*
@@ -245,10 +266,17 @@ public class HoaDonPanel extends JPanel {
 			}
 		});
 		
-		btnTra.addActionListener(e -> {
-			traThongTin();
+		btnClear.addActionListener(e ->{
+			dtmCTHD.setRowCount(0);
+			dtmHoaDon.setRowCount(0);
 		});
 		
+		btnRefresh.addActionListener(e ->{
+			dtmCTHD.setRowCount(0);
+			dtmHoaDon.setRowCount(0);
+			themDataTable_HD(hoaDonBUS.getList_hoadon());
+			themDataTable_CTHD(cthdBUS.getList_CTHD());
+		});
 
 		btnXuat.addActionListener(e ->{
 			JFileChooser fileChooser = new JFileChooser();
@@ -309,6 +337,49 @@ public class HoaDonPanel extends JPanel {
 				themDataTable_HD(hoaDonBUS.layDuLieu(query));
 			}
 		});
+		
+		btnPDF.addActionListener(e ->{
+			JFileChooser fileChooser = new JFileChooser();
+			
+			fileChooser.setCurrentDirectory(new File("D:\\Hoc"));
+			
+			FileNameExtensionFilter filter = new FileNameExtensionFilter("File PDF", "pdf");
+			fileChooser.setFileFilter(filter);
+			
+			int selectedRow = tblHoaDon.getSelectedRow();
+			if(selectedRow != -1) {
+				HoaDonDTO hd = getData_HD(selectedRow);
+				ArrayList<ChiTietHoaDonDTO> list = new ArrayList<ChiTietHoaDonDTO>();
+				for(int i = dtmCTHD.getRowCount() - 1; i >= 0; i--) {
+					if(hd.getMaHD().equals(dtmCTHD.getValueAt(i, dtmCTHD.findColumn("Mã hóa đơn")))) {
+						ChiTietHoaDonDTO cthd = getData_CTHD(i);
+						list.add(cthd);
+					}
+					
+				}
+				int result = fileChooser.showOpenDialog(this);
+				
+				if(result == JFileChooser.APPROVE_OPTION) {
+					File selectedFile = fileChooser.getSelectedFile();
+					String fileName  = selectedFile.getName();
+					
+					if (fileName.endsWith(".pdf")) {
+	                    // File Excel được chọn, thực hiện các hành động mong muốn ở đây
+	                    JOptionPane.showMessageDialog(this, "Đã in dữ liệu được chọn ra file: " + selectedFile.getAbsolutePath());
+	                    xuatPDF(selectedFile.getAbsolutePath(),hd,list);
+	                } else {
+	                    // File không phải là file Excel, thông báo cho người dùng
+	                    JOptionPane.showMessageDialog(this, "Vui lòng chọn một file PDF.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+	                }
+				}
+				;
+			}else {
+				JOptionPane.showMessageDialog(this, "Vui lòng chọn một hóa đơn.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+			}
+			
+			
+			
+		});
 	}
 	
 	/*
@@ -339,12 +410,9 @@ public class HoaDonPanel extends JPanel {
         	if(option == JOptionPane.YES_OPTION) {
         		String maHD = (String) tblHoaDon.getValueAt(selectedRow, tblHoaDon.getColumn("Mã hóa đơn").getModelIndex());
         		try {
-        			if(xoaData_CTHD(maHD)) {
-        				removeRowsFromTblCTHD(maHD);
-        				removeRowFromTblHoaDon(selectedRow);
-        			}
+    				removeRowsFromTblCTHD(maHD);
+    				removeRowFromTblHoaDon(selectedRow);
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
         	}
@@ -354,27 +422,48 @@ public class HoaDonPanel extends JPanel {
 					);
         }
 	}
-	
-	private boolean xoaData_CTHD(String maHD) {
-		if(maHD != null) {
-			if(!cthdBUS.xoa(maHD))
-				return false;
-		}
-		return true;
-	}
 
 	private void removeRowFromTblHoaDon(int rowIndex) {
-		HoaDonDTO hd = hoaDonBUS.getList_hoadon().get(rowIndex);
+		HoaDonDTO hd = getData_HD(rowIndex);
+		System.out.println(hd.toString());
 		if(hoaDonBUS.xoa(hd))
 			dtmHoaDon.removeRow(rowIndex);
 	}
 	
 	private void removeRowsFromTblCTHD(String maHD) {
-	    for (int i = dtmCTHD.getRowCount() - 1; i >= 0; i--) {
-	        if (maHD.equals(dtmCTHD.getValueAt(i, dtmCTHD.findColumn("Mã hóa đơn")))) {
-	            dtmCTHD.removeRow(i);
-	        }
-	    }
+		for(int i = dtmCTHD.getRowCount() - 1; i >= 0; i--) {
+			if(maHD.equals(dtmCTHD.getValueAt(i, dtmCTHD.findColumn("Mã hóa đơn")))) {
+				ChiTietHoaDonDTO cthd = getData_CTHD(i);
+				System.out.println(cthd.toString());
+				if(cthdBUS.xoa(cthd))
+					dtmCTHD.removeRow(i);
+			}
+		}
+	}
+	
+	private HoaDonDTO getData_HD(int selectedRow) {
+		String maHoaDon = dtmHoaDon.getValueAt(selectedRow, dtmHoaDon.findColumn("Mã hóa đơn"))+"";
+		String maKhachHang = dtmHoaDon.getValueAt(selectedRow, dtmHoaDon.findColumn("Mã khách hàng"))+"";
+		String maNhanVien = dtmHoaDon.getValueAt(selectedRow, dtmHoaDon.findColumn("Mã nhân viên"))+"";
+		String maKhuyenMai = dtmHoaDon.getValueAt(selectedRow, dtmHoaDon.findColumn("Mã khuyến mãi")) == null ? null : dtmHoaDon.getValueAt(selectedRow, dtmHoaDon.findColumn("Mã khuyến mãi"))+"";
+		Date ngayLap = Date.valueOf(dtmHoaDon.getValueAt(selectedRow, dtmHoaDon.findColumn("Ngày lập"))+"");
+		Double tongTien = Double.parseDouble(dtmHoaDon.getValueAt(selectedRow, dtmHoaDon.findColumn("Tổng tiền"))+"");
+		
+		HoaDonDTO hd = new HoaDonDTO(maHoaDon, maKhachHang, maNhanVien, maKhuyenMai, ngayLap, tongTien);
+		
+		return hd;
+	}
+	
+	private ChiTietHoaDonDTO getData_CTHD(int selectedRow) {
+		String maHoaDon = dtmCTHD.getValueAt(selectedRow, dtmCTHD.findColumn("Mã hóa đơn"))+ "";
+		String maSanPham = dtmCTHD.getValueAt(selectedRow, dtmCTHD.findColumn("Mã sản phẩm"))+"";
+		String maKhuyenMai = dtmCTHD.getValueAt(selectedRow, dtmCTHD.findColumn("Mã khuyến mãi")) == null ? null : dtmCTHD.getValueAt(selectedRow, dtmCTHD.findColumn("Mã khuyến mãi"))+ "";
+		int soLuong = Integer.parseInt(dtmCTHD.getValueAt(selectedRow, dtmCTHD.findColumn("Số lượng"))+"");
+		double donGia = Double.parseDouble(dtmCTHD.getValueAt(selectedRow, dtmCTHD.findColumn("Đơn giá"))+"");
+		double thanhTien = Double.parseDouble(dtmCTHD.getValueAt(selectedRow, dtmCTHD.findColumn("Thành tiền"))+"");
+				
+		ChiTietHoaDonDTO cthd = new ChiTietHoaDonDTO(maHoaDon, maSanPham, maKhuyenMai, soLuong, donGia, thanhTien);
+		return cthd;
 	}
 	
 	private void filter_tblCTHD(String selectedMaHD) {
@@ -414,56 +503,6 @@ public class HoaDonPanel extends JPanel {
 		for(int i = 0; i < list.size(); i++) {
 			ChiTietHoaDonDTO cthd = list.get(i);
 			themDataTable_CTHD(cthd);
-		}
-	}
-	
-	
-	private void traThongTin() {
-		String column = cbBoxTra.getSelectedItem().toString();
-		String condition = null;
-		if(column.equals("Mã hóa đơn")) {
-			if(!txtTra.getText().toString().equals("")) {
-				dtmHoaDon.setRowCount(0);
-				condition = " maHD LIKE '%"+ txtTra.getText() + "%'";
-				ArrayList<HoaDonDTO> list = hoaDonBUS.layDuLieu(condition);
-				themDataTable_HD(list);
-			}
-		}else if(column.equals("Mã khách hàng")) {
-			if(!txtTra.getText().toString().equals("")) {
-				dtmHoaDon.setRowCount(0);
-				condition = " maKH LIKE '%"+ txtTra.getText() + "%'";
-				ArrayList<HoaDonDTO> list = hoaDonBUS.layDuLieu(condition);
-				themDataTable_HD(list);
-			}
-		}else if(column.equals("Mã nhân viên")) {
-			if(!txtTra.getText().toString().equals("")) {
-				dtmHoaDon.setRowCount(0);
-				condition = " maNV LIKE '%"+ txtTra.getText() + "%'";
-				ArrayList<HoaDonDTO> list = hoaDonBUS.layDuLieu(condition);
-				themDataTable_HD(list);
-			}
-		}else if(column.equals("Mã khuyến mãi")) {
-			if(!txtTra.getText().toString().equals("")) {
-				dtmHoaDon.setRowCount(0);
-				condition = " maKM LIKE '%"+ txtTra.getText() + "%'";
-				ArrayList<HoaDonDTO> list = hoaDonBUS.layDuLieu(condition);
-				themDataTable_HD(list);
-			}
-			
-		}else if(column.equals("Ngày lập")) {
-			if(!txtTra.getText().toString().equals("")) {
-				dtmHoaDon.setRowCount(0);
-				condition = " ngayLap LIKE '%"+ txtTra.getText() + "%'";
-				ArrayList<HoaDonDTO> list = hoaDonBUS.layDuLieu(condition);
-				themDataTable_HD(list);
-			}
-		}else if(column.equals("Tổng tiền")) {
-			if(txtTra.getText().toString().matches("[0-9]+")) {
-				dtmHoaDon.setRowCount(0);
-				condition = " tongTien = "+ Double.parseDouble(txtTra.getText().toString());
-				ArrayList<HoaDonDTO> list = hoaDonBUS.layDuLieu(condition);
-				themDataTable_HD(list);
-			}
 		}
 	}
 	
@@ -531,14 +570,16 @@ public class HoaDonPanel extends JPanel {
 			 column_tongTien.setCellValue("Tổng tiền");
 			 
 			 for(int i = 0; i < tblHoaDon.getRowCount(); i++) {
-				 HoaDonDTO hd = new HoaDonDTO(
-						 tblHoaDon.getValueAt(i, tblHoaDon.getColumn("Mã hóa đơn").getModelIndex())+"",
-						 tblHoaDon.getValueAt(i, tblHoaDon.getColumn("Mã khách hàng").getModelIndex())+"",
-						 tblHoaDon.getValueAt(i, tblHoaDon.getColumn("Mã nhân viên").getModelIndex())+"",
-						 tblHoaDon.getValueAt(i, tblHoaDon.getColumn("Mã khuyến mãi").getModelIndex())+"",
-						 Date.valueOf(tblHoaDon.getValueAt(i, tblHoaDon.getColumn("Ngày lập").getModelIndex()).toString()),
-						 Double.parseDouble(tblHoaDon.getValueAt(i, tblHoaDon.getColumn("Tổng tiền").getModelIndex())+"")
-						 );
+//				 HoaDonDTO hd = new HoaDonDTO(
+//						 tblHoaDon.getValueAt(i, tblHoaDon.getColumn("Mã hóa đơn").getModelIndex())+"",
+//						 tblHoaDon.getValueAt(i, tblHoaDon.getColumn("Mã khách hàng").getModelIndex())+"",
+//						 tblHoaDon.getValueAt(i, tblHoaDon.getColumn("Mã nhân viên").getModelIndex())+"",
+//						 tblHoaDon.getValueAt(i, tblHoaDon.getColumn("Mã khuyến mãi").getModelIndex())+"",
+//						 Date.valueOf(tblHoaDon.getValueAt(i, tblHoaDon.getColumn("Ngày lập").getModelIndex()).toString()),
+//						 Double.parseDouble(tblHoaDon.getValueAt(i, tblHoaDon.getColumn("Tổng tiền").getModelIndex())+"")
+//						 );
+				 HoaDonDTO hd = getData_HD(i);
+				 
 				 Row data = hoadon.createRow(i+2);
 				 
 				 Cell maHD = data.createCell(1);
@@ -588,14 +629,16 @@ public class HoaDonPanel extends JPanel {
 			 column_CTHD_thanhTien.setCellValue("Thành tiền");
 			 
 			 for(int i = 0; i < tblCTHD.getRowCount(); i++) {
-				 ChiTietHoaDonDTO cthd = new ChiTietHoaDonDTO(
-						 tblCTHD.getValueAt(i, tblCTHD.getColumn("Mã hóa đơn").getModelIndex())+"",
-						 tblCTHD.getValueAt(i, tblCTHD.getColumn("Mã sản phẩm").getModelIndex())+"",
-						 tblCTHD.getValueAt(i, tblCTHD.getColumn("Mã khuyến mãi").getModelIndex())+"",
-						 Integer.parseInt(tblCTHD.getValueAt(i, tblCTHD.getColumn("Số lượng").getModelIndex())+""),
-						 Double.parseDouble(tblCTHD.getValueAt(i, tblCTHD.getColumn("Đơn giá").getModelIndex())+""),
-						 Double.parseDouble(tblCTHD.getValueAt(i, tblCTHD.getColumn("Thành tiền").getModelIndex())+"")
-						 );
+//				 ChiTietHoaDonDTO cthd = new ChiTietHoaDonDTO(
+//						 tblCTHD.getValueAt(i, tblCTHD.getColumn("Mã hóa đơn").getModelIndex())+"",
+//						 tblCTHD.getValueAt(i, tblCTHD.getColumn("Mã sản phẩm").getModelIndex())+"",
+//						 tblCTHD.getValueAt(i, tblCTHD.getColumn("Mã khuyến mãi").getModelIndex())+"",
+//						 Integer.parseInt(tblCTHD.getValueAt(i, tblCTHD.getColumn("Số lượng").getModelIndex())+""),
+//						 Double.parseDouble(tblCTHD.getValueAt(i, tblCTHD.getColumn("Đơn giá").getModelIndex())+""),
+//						 Double.parseDouble(tblCTHD.getValueAt(i, tblCTHD.getColumn("Thành tiền").getModelIndex())+"")
+//						 );
+				 ChiTietHoaDonDTO cthd = getData_CTHD(i);
+				 
 				 Row data = CTHD.createRow(i+2);
 				 
 				 Cell maHD = data.createCell(1);
@@ -673,6 +716,115 @@ public class HoaDonPanel extends JPanel {
 			e.printStackTrace();
 		}
 	}
+	
+	private void xuatPDF(String path, HoaDonDTO hd, ArrayList<ChiTietHoaDonDTO> list) {
+		String dest = path;
+		
+		KhachHangDTO kh = khachHangBus.getKH(hd.getMaKH());
+		NhanVienDTO nv = nvBUS.getNV(hd.getMaNV());
+		
+        try {
+            Document document = new Document();
+            PdfWriter.getInstance(document, new FileOutputStream(dest));
+            document.open();
+        	
+            // Add header
+            String fontPath = "C:\\Windows\\Fonts\\times.ttf";
+            BaseFont baseFont = BaseFont.createFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            
+            com.itextpdf.text.Font font = new com.itextpdf.text.Font(baseFont, 12, com.itextpdf.text.Font.NORMAL);
+            com.itextpdf.text.Font fontBold = new com.itextpdf.text.Font(baseFont, 12, com.itextpdf.text.Font.BOLD);
+
+            Paragraph header = new Paragraph("ĐỒ ÁN NHÓM 11", fontBold);
+            header.setAlignment(Element.ALIGN_CENTER);
+            document.add(header);
+
+            Paragraph subHeader = new Paragraph("Ngày lập: "+ hd.getNgayLap().toString(), font);
+            subHeader.setAlignment(Element.ALIGN_CENTER);
+            document.add(subHeader);
+
+            Paragraph maHoaDon = new Paragraph("Mã: "+ hd.getMaHD(), fontBold);
+            maHoaDon.setAlignment(Element.ALIGN_LEFT);
+            maHoaDon.setFont(font);
+            document.add(maHoaDon);
+
+            Paragraph title = new Paragraph("HOÁ ĐƠN", fontBold);
+            title.setAlignment(Element.ALIGN_CENTER);
+            document.add(title);
+
+            Paragraph customerInfo = new Paragraph("Họ tên khách hàng: "+ kh.getHoKH()+" "+kh.getTenKH()
+            		+ "\nSố điện thoại: "+ kh.getSoDienThoai()
+            		+ "\nĐịa Chỉ: "+ kh.getDiaChi()
+            		, font);
+            document.add(customerInfo);
+
+            // Create table
+            PdfPTable table = new PdfPTable(7);
+            table.setWidthPercentage(100);
+            table.setSpacingBefore(10f);
+            table.setSpacingAfter(10f);
+            
+            float[] columnWidths = {1f, 3f, 2f, 2f, 2f, 2f,3f};
+            table.setWidths(columnWidths);
+
+            // Add table header
+            String[] headers = {"TT", "Sản phẩm", "Đơn Vị Tính", "Số Lượng", "Đơn Giá", "Khuyến mãi", "Thành Tiền"};
+            for (String headerTitle : headers) {
+                PdfPCell headerCell = new PdfPCell(new Phrase(headerTitle, fontBold));
+                headerCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                table.addCell(headerCell);
+            }
+
+            // Add table rows
+            
+            for(int i = 0; i < list.size(); i++) {
+    			ChiTietHoaDonDTO cthd = list.get(i);
+				SanPham_DTO sp = spBUS.getSP(cthd.getMaSP());
+				System.out.println(cthd.getMaSP());
+				table.addCell(new PdfPCell(new Phrase(String.valueOf(i+1), font)));
+                table.addCell(new PdfPCell(new Phrase(sp.getTenSP()+"", font)));
+                table.addCell(new PdfPCell(new Phrase(sp.getDonViTinh()+"", font)));
+                table.addCell(new PdfPCell(new Phrase(cthd.getSoLuong()+"", font)));
+                table.addCell(new PdfPCell(new Phrase(sp.getDonGia()+"", font)));
+                table.addCell(new PdfPCell(new Phrase(cthd.getMaKM() == null ?"": cthd.getMaKM()+"", font)));
+                table.addCell(new PdfPCell(new Phrase(cthd.getThanhTien()+"", font)));
+			}
+
+            // Add total row
+            PdfPCell congCell = new PdfPCell(new Phrase("CỘNG:", fontBold));
+            congCell.setColspan(6);
+            congCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+            table.addCell(congCell);
+            
+            PdfPCell tienCell = new PdfPCell(new Phrase(hd.getTongTien()+"", font));
+            tienCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            table.addCell(tienCell);
+
+            document.add(table);
+            
+            Paragraph apDungKM = new Paragraph("Áp dụng khuyến mãi: ", font);
+            apDungKM.setAlignment(Element.ALIGN_LEFT);
+            document.add(apDungKM);
+            
+            Paragraph tongChiPhiHD = new Paragraph("Tổng chi phí hóa đơn: ", font);
+            tongChiPhiHD.setAlignment(Element.ALIGN_LEFT);
+            document.add(tongChiPhiHD);
+
+            Paragraph nhanVienBanHang = new Paragraph("\nNhân viên bán hàng: "+nv.getHoNV()+" "+nv.getTenNV(),font);
+            nhanVienBanHang.setAlignment(Element.ALIGN_LEFT);
+            document.add(nhanVienBanHang);
+            
+            Paragraph camOn = new Paragraph("\n\nCẢM ƠN QUÝ KHÁCH ĐÃ MUA SẢN PHẨM CỦA CHÚNG TÔI",font);
+            camOn.setAlignment(Element.ALIGN_CENTER);
+            document.add(camOn);
+            
+            document.close();
+            System.out.println("PDF created successfully.");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 	
 	
 	/*

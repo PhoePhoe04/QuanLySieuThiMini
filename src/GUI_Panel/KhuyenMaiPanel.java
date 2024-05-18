@@ -3,12 +3,15 @@ package GUI_Panel;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.Font;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -19,6 +22,11 @@ import javax.swing.table.DefaultTableModel;
 import BUS.ChiTietKMHDBUS;
 import BUS.ChiTietKMSPBUS;
 import BUS.KhuyenMaiBUS;
+import DTO.ChiTietKMHDDTO;
+import DTO.ChiTietKMSPDTO;
+import DTO.KhuyenMaiDTO;
+import GUI_Dialog.KhachHangInsert;
+import GUI_Dialog.KhuyenMaiInsert;
 
 public class KhuyenMaiPanel extends JPanel {
 	private KhuyenMaiBUS kmBUS;
@@ -47,7 +55,11 @@ public class KhuyenMaiPanel extends JPanel {
 	
 	public KhuyenMaiPanel() {
 		try {
+			kmBUS = new KhuyenMaiBUS();
+			ctkmhdBUS = new ChiTietKMHDBUS();
+			ctkmspBUS = new ChiTietKMSPBUS();
 			init();
+			addActionListener();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -125,6 +137,8 @@ public class KhuyenMaiPanel extends JPanel {
 		   dtmKM.addColumn("Ngày bắt đầu");
 		   dtmKM.addColumn("Ngày kết thúc");
 		   
+		   addDataTable_KM(kmBUS.getList_KM());
+		   
 		   tblKM = new JTable(dtmKM);
 		   
 		   scrPane_KM = new JScrollPane(tblKM);
@@ -142,6 +156,8 @@ public class KhuyenMaiPanel extends JPanel {
 		   dtmKMSP.addColumn("Mã sản phẩm");
 		   dtmKMSP.addColumn("Tỉ lệ giảm giá");
 		   
+		   addDataTable_KMSP(ctkmspBUS.getList_CTKMSP());
+		   
 		   tblKMSP = new JTable(dtmKMSP);
 		   
 		   scrPane_KMSP = new JScrollPane(tblKMSP);
@@ -158,6 +174,8 @@ public class KhuyenMaiPanel extends JPanel {
 		   dtmKMHD.addColumn("Mã khuyến mãi");
 		   dtmKMHD.addColumn("Tiền hóa đơn");
 		   dtmKMHD.addColumn("Tỉ lệ giảm giá");
+		   
+		   addDataTable_KMHD(ctkmhdBUS.getList_ctkmhd());
 		   
 		   tblKMHD = new JTable(dtmKMHD);
 		   
@@ -177,9 +195,74 @@ public class KhuyenMaiPanel extends JPanel {
 	/*
 	 * ADD ACTIONLISTENER
 	 */
+	private void addActionListener() {
+		btnThem.addActionListener(e ->{
+			KhuyenMaiInsert data = new KhuyenMaiInsert();
+			if(data.showDialog(this)) {
+				KhuyenMaiDTO km = data.getKM();
+				if(km != null) {
+					System.out.println(km.toString());
+				}
+			}
+		});
+	}
 	
 	/*
 	 * FUNCTION
 	 */
 	
+	private void addDataTable_KM(KhuyenMaiDTO km) {
+		dtmKM.addRow(new Object[] {km.getMaKM(), km.getTenKM(), km.getDieuKien(), km.getNgayBatDau(), km.getNgayKetThuc()});
+	}
+	
+	private void addDataTable_KM(ArrayList<KhuyenMaiDTO> list) {
+		for(int i = 0; i < list.size(); i++) {
+			KhuyenMaiDTO km = list.get(i);
+			addDataTable_KM(km);
+		}
+	}
+	
+	private void addDataTable_KMSP(ChiTietKMSPDTO kmsp) {
+		dtmKMSP.addRow(new Object[] {kmsp.getMaKM(), kmsp.getMaSP(), kmsp.getTileGiamGia()});
+	}
+	
+	private void addDataTable_KMSP(ArrayList<ChiTietKMSPDTO> list) {
+		for(int i = 0; i < list.size(); i++) {
+			ChiTietKMSPDTO kmsp = list.get(i);
+			addDataTable_KMSP(kmsp);
+		}
+	}
+	
+	private void addDataTable_KMHD(ChiTietKMHDDTO kmhd) {
+		dtmKMHD.addRow(new Object[] {kmhd.getMaKM(), kmhd.getTienHoaDon(), kmhd.getTiLeGiamGia()});
+	}
+	
+	private void addDataTable_KMHD(ArrayList<ChiTietKMHDDTO> list) {
+		for(int i = 0; i < list.size() ;i++) {
+			ChiTietKMHDDTO kmhd = list.get(i);
+			addDataTable_KMHD(kmhd);
+		}
+	}
+	
+	
+	/*
+	 * MAIN
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					JFrame frame = new JFrame();
+					JPanel km = new KhuyenMaiPanel();
+					frame.getContentPane().add(km);
+					frame.setSize(1100,700);
+					frame.setVisible(true);
+					frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+					frame.setLocationRelativeTo(null);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
 }

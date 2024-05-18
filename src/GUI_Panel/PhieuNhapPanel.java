@@ -34,6 +34,7 @@ import DTO.NhapHangDTO;
 import BUS.ChiTietPhieuNhapBUS;
 import BUS.NhapHangBUS;
 import GUI_Dialog.PhieuNhapInsert;
+import GUI_Dialog.PhieuNhapSearch;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -69,6 +70,7 @@ public class PhieuNhapPanel extends JPanel {
 	private JButton btnXuat;
 	private JButton btnNhap;
 	private JButton btnRefresh;
+	private JButton btnClear;
 
     public PhieuNhapPanel() {
     	try {
@@ -106,6 +108,16 @@ public class PhieuNhapPanel extends JPanel {
         		
         	}
         });
+        
+        btnTim.addActionListener(e ->{
+        	PhieuNhapSearch pnSeach = new PhieuNhapSearch();
+        	if(pnSeach.showDialog(this)) {
+        		String query = pnSeach.getQuery();
+        		System.out.println(query);
+        		dtmPhieuNhap.setRowCount(0);
+        		addDataTable_PN(nhBUS.getList(query));
+        	}
+        });
 
         btnXoa.addActionListener(e -> {
             int selectedRow = tblPhieuNhap.getSelectedRow();
@@ -126,6 +138,18 @@ public class PhieuNhapPanel extends JPanel {
                 );
             }
 
+        });
+        
+        btnRefresh.addActionListener(e ->{
+        	dtmChiTiet.setRowCount(0);
+        	dtmPhieuNhap.setRowCount(0);
+        	addDataTable_PN(nhBUS.getList());
+        	addDataTable_CTPN(ctnhBUS.getList());
+        });
+        
+        btnClear.addActionListener(e ->{
+        	dtmChiTiet.setRowCount(0);
+        	dtmPhieuNhap.setRowCount(0);
         });
 
         tblPhieuNhap.getSelectionModel().addListSelectionListener(e -> {
@@ -293,6 +317,12 @@ public class PhieuNhapPanel extends JPanel {
         btnRefresh.setIcon(new ImageIcon(PhieuNhapPanel.class.getResource("/Image/24_refresh.png")));
         btnRefresh.setBounds(1050, 10, 30, 30);
         pnCenter.add(btnRefresh);
+        
+        btnClear = new JButton("");
+        btnClear.setToolTipText("Clear");
+        btnClear.setIcon(new ImageIcon(PhieuNhapPanel.class.getResource("/Image/24_clear.png")));
+        btnClear.setBounds(1015, 10, 30, 30);
+        pnCenter.add(btnClear);
 
     }
     
@@ -351,11 +381,11 @@ public class PhieuNhapPanel extends JPanel {
 
     private void removeRowFromTblPhieuNhap(int rowIndex) {
     	NhapHangDTO nh = new NhapHangDTO(
-    			tblPhieuNhap.getValueAt(rowIndex, tblPhieuNhap.getColumn("Mã phiếu nhập").getModelIndex()).toString(),
-    			tblPhieuNhap.getValueAt(rowIndex, tblPhieuNhap.getColumn("Mã nhân viên").getModelIndex()).toString(),
-    			tblPhieuNhap.getValueAt(rowIndex, tblPhieuNhap.getColumn("Mã nhà cung cấp").getModelIndex()).toString(),
-    			Double.parseDouble(tblPhieuNhap.getValueAt(rowIndex, tblPhieuNhap.getColumn("Tổng tiền").getModelIndex()).toString()),
-    			Date.valueOf(tblPhieuNhap.getValueAt(rowIndex, tblPhieuNhap.getColumn("Ngày nhập").getModelIndex()).toString())
+    			dtmPhieuNhap.getValueAt(rowIndex, dtmPhieuNhap.findColumn("Mã phiếu nhập"))+"",
+    			dtmPhieuNhap.getValueAt(rowIndex, dtmPhieuNhap.findColumn("Mã nhân viên"))+"",
+    			dtmPhieuNhap.getValueAt(rowIndex, dtmPhieuNhap.findColumn("Mã nhà cung cấp"))+"",
+    			Double.parseDouble(dtmPhieuNhap.getValueAt(rowIndex, dtmPhieuNhap.findColumn("Tổng tiền"))+""),
+    			Date.valueOf(dtmPhieuNhap.getValueAt(rowIndex, dtmPhieuNhap.findColumn("Ngày nhập"))+"")
     			);
     	try {
 			if(nhBUS.xoa(nh))
@@ -371,11 +401,11 @@ public class PhieuNhapPanel extends JPanel {
         for (int i = dtmChiTiet.getRowCount() - 1; i >= 0; i--) {
             if (maPN.equals(dtmChiTiet.getValueAt(i, dtmChiTiet.findColumn("Mã phiếu nhập")))) {
             	ChiTietPhieuNhapDTO ctpn = new ChiTietPhieuNhapDTO(
-            			tblChiTiet.getValueAt(i, tblChiTiet.getColumn("Mã phiếu nhập").getModelIndex()).toString(),
-            			tblChiTiet.getValueAt(i, tblChiTiet.getColumn("Mã sản phẩm").getModelIndex()).toString(),
-            			Integer.parseInt(tblChiTiet.getValueAt(i, tblChiTiet.getColumn("Số lượng").getModelIndex()).toString()),
-            			Float.parseFloat(tblChiTiet.getValueAt(i, tblChiTiet.getColumn("Đơn giá").getModelIndex()).toString()),
-            			Float.parseFloat(tblChiTiet.getValueAt(i, tblChiTiet.getColumn("Thành tiền").getModelIndex()).toString())
+            			dtmChiTiet.getValueAt(i, dtmChiTiet.findColumn("Mã phiếu nhập")).toString(),
+            			dtmChiTiet.getValueAt(i, dtmChiTiet.findColumn("Mã sản phẩm")).toString(),
+            			Integer.parseInt(dtmChiTiet.getValueAt(i, dtmChiTiet.findColumn("Số lượng")).toString()),
+            			Float.parseFloat(dtmChiTiet.getValueAt(i, dtmChiTiet.findColumn("Đơn giá")).toString()),
+            			Float.parseFloat(dtmChiTiet.getValueAt(i, dtmChiTiet.findColumn("Thành tiền")).toString())
             			);
             	try {
 					if(ctnhBUS.xoa(ctpn))
@@ -576,5 +606,4 @@ public class PhieuNhapPanel extends JPanel {
 			}
 		});
 	}
-
 }

@@ -81,6 +81,15 @@ public class KhachHangBUS {
 		return this.list_KH;
 	}
 	
+	public KhachHangDTO getKH(String maKH) {
+		for(int i = 0; i < list_KH.size(); i++) {
+			KhachHangDTO kh = list_KH.get(i);
+			if(kh.getMaKH().equals(maKH))
+				return kh;
+		}
+		return null;
+	}
+	
 	
 //	=============================== CÁC HÀM XỬ LÝ LOGIC ===============================
 	private boolean check(KhachHangDTO kh) {
