@@ -52,19 +52,7 @@ public class HoaDonBUS {
 		return false;
 	}
 	
-	public boolean xoa(String maHD) {
-		if(hoaDonDAO.xoa(maHD) > 0) {
-			for(int i = 0; i < list_hoadon.size(); i++) {
-				HoaDonDTO hoaDonDTO = list_hoadon.get(i);
-				if(hoaDonDTO.getMaHD().equals(maHD)) {
-					list_hoadon.remove(i);
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-	
+
 	// Lấy dữ liệu
 	public ArrayList<HoaDonDTO> layDuLieu(String condition) {
 		return this.hoaDonDAO.docDB(condition);
@@ -76,7 +64,7 @@ public class HoaDonBUS {
 		ArrayList<HoaDonDTO> list = hoaDonBUS.getList_hoadon();
 		
 //		public HoaDonDTO(String maHD, String maKH, String maNV, String maKM, Date ngayLap, double tongTien) {
-		HoaDonDTO hoaDon = new HoaDonDTO("HD001", "KH002", "NV002", null, Date.valueOf("2024-4-22"), 0);
+		HoaDonDTO hoaDon = new HoaDonDTO("SD001", "KH002", "NV002", null, Date.valueOf("2024-05-08"), 40000.0);
 		
 		System.out.println("BEFORE");
 		for (HoaDonDTO hoaDonDTO : list) {
@@ -84,7 +72,7 @@ public class HoaDonBUS {
 		}
 		System.out.println();
 		
-		System.out.println(hoaDonBUS.them(hoaDon) ? "YES\n":"NO\n");
+		System.out.println(hoaDonBUS.xoa(hoaDon) ? "YES\n":"NO\n");
 		
 		System.out.println("AFTER");
 		for (HoaDonDTO hoaDonDTO : list) {

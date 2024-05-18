@@ -50,4 +50,13 @@ public class SanPham_BUS {
 	public ArrayList<SanPham_DTO> getList(){
 		return this.list_sp;
 	}
+	
+	public SanPham_DTO getSP(String maSP) {
+		for(int i = 0; i < list_sp.size(); i++) {
+			SanPham_DTO sp = list_sp.get(i);
+			if(sp.getMaSP().equals(maSP))
+				return sp;
+		}
+		return null;
+	}
 }

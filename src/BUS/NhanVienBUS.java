@@ -85,6 +85,15 @@ public class NhanVienBUS {
 		return this.list_NV;
 	}
 	
+	public NhanVienDTO getNV(String maNV) {
+		for(int i = 0; i < list_NV.size(); i++) {
+			NhanVienDTO nv2 = list_NV.get(i);
+			if(nv2.getMaNV().equals(maNV))
+				return nv2;
+		}
+		return null;
+	}
+	
 	// ----------------- Các hàm hỗ trợ xử lý -----------------
 	private boolean checkSoDienThoai(String sdt) {
 		for (int i = 0; i < sdt.length(); i++) {
