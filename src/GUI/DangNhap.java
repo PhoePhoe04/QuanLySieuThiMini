@@ -21,17 +21,50 @@ import java.sql.SQLException;
 import java.awt.FlowLayout;
 
 public class DangNhap extends JFrame {
-	
+	private TaiKhoanBUS tkBUS;
 
 	
 	private JPanel contentPane;
 	private JTextField txtTaiKhoan;
 	private JPasswordField pfPassword;
+
+
+	private JButton btnThoat;
+
+
+	private JButton btnDangNhap;
 	
 	public DangNhap() throws SQLException{
-		this.init();
-		this.setLocationRelativeTo(null);
-		this.setVisible(true);
+		try {
+			tkBUS = new TaiKhoanBUS();
+			this.init();
+			addActionListener();
+			this.setVisible(true);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	private void addActionListener() {
+		btnThoat.addActionListener(e ->{
+			dispose();
+		});
+		btnDangNhap.addActionListener(e ->{
+			try {
+				String tenDangNhap = txtTaiKhoan.getText();
+				char[] matKhau = pfPassword.getPassword();
+				String password = new String(matKhau);
+				if(tkBUS.checkLogin(txtTaiKhoan.getText(), password)) {
+					System.out.println("Login thành công");
+					new Home();
+					dispose();
+				}
+					
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		});
 	}
 
 	private void init() {
@@ -60,12 +93,12 @@ public class DangNhap extends JFrame {
 		contentPane.add(pfPassword);
 		pfPassword.setColumns(10);
 		
-		JButton btnDangNhap = new JButton("Đăng nhập");
+		btnDangNhap = new JButton("Đăng nhập");
 		btnDangNhap.setFont(new Font("Tahoma", Font.BOLD, 15));
 		btnDangNhap.setBounds(400, 230, 120, 50);
 		contentPane.add(btnDangNhap);
 		
-		JButton btnThoat = new JButton("Thoát");
+		btnThoat = new JButton("Thoát");
 		btnThoat.setFont(new Font("Tahoma", Font.BOLD, 15));
 		btnThoat.setBounds(570, 230, 80, 50);
 		contentPane.add(btnThoat);

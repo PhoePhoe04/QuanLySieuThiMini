@@ -15,9 +15,11 @@ public class SanPham_BUS {
 	}
 	
 	public boolean them(SanPham_DTO sanPham) {
-		if(spDAO.addSanPham(sanPham) > 0) {
-			list_sp.add(sanPham);
-			return true;
+		if(unique(sanPham)) {
+			if(spDAO.addSanPham(sanPham) > 0) {
+				list_sp.add(sanPham);
+				return true;
+			}
 		}
 		return false;
 	}
@@ -58,5 +60,14 @@ public class SanPham_BUS {
 				return sp;
 		}
 		return null;
+	}
+	
+	private boolean unique(SanPham_DTO sp) {
+		for(int i = 0; i < list_sp.size(); i++) {
+			if(sp.getMaSP().equals(list_sp.get(i).getMaSP()))
+				return false;
+		}
+		
+		return true;
 	}
 }

@@ -32,7 +32,7 @@ public class KhachHangBUS {
 	
 	// Thêm
 	public boolean them(KhachHangDTO kh) throws SQLException{
-		if(check(kh)) {
+		if(check(kh) && unique(kh)) {
 			if(khDAO.them(kh) > 0) {
 				this.list_KH.add(kh);
 				return true;
@@ -43,12 +43,14 @@ public class KhachHangBUS {
 	
 	// Sửa
 	public boolean sua(KhachHangDTO kh) throws SQLException{
-		if(khDAO.sua(kh) > 0) {
-			for (KhachHangDTO khachHangDTO : list_KH) {
-				if(khachHangDTO.getMaKH().equals(kh.getMaKH())) {
-					int index = list_KH.indexOf(khachHangDTO);
-					list_KH.set(index, kh);
-					return true;
+		if(check(kh)){
+			if(khDAO.sua(kh) > 0) {
+				for (KhachHangDTO khachHangDTO : list_KH) {
+					if(khachHangDTO.getMaKH().equals(kh.getMaKH())) {
+						int index = list_KH.indexOf(khachHangDTO);
+						list_KH.set(index, kh);
+						return true;
+					}
 				}
 			}
 		}
@@ -92,27 +94,22 @@ public class KhachHangBUS {
 	
 	
 //	=============================== CÁC HÀM XỬ LÝ LOGIC ===============================
-	private boolean check(KhachHangDTO kh) {
-		// Kiểm tra mã khách hàng
+	private boolean unique(KhachHangDTO kh) {
 		for (KhachHangDTO khDTO : list_KH) {
 			if(khDTO.getMaKH().equals(kh.getMaKH())) {
 				System.out.println("Mã khách hàng đã tồn tại");
 				return false;
 			}
 		}
+		return true;
+	}
+	
+	private boolean check(KhachHangDTO kh) {
 		// Kiểm tra số điện thoại
-		if(kh.getSoDienThoai().length() != 10) {
-			System.out.println("Số điện thoại phải có 10 chữ số");
+		if(kh.getSoDienThoai().length() != 10 || !kh.getSoDienThoai().matches("[0-9]+")) {
 			return false;
 		}
-			
-		for(int i = 0; i < kh.getSoDienThoai().length(); i++) {
-			if(Character.isLetter(kh.getSoDienThoai().charAt(i))) {
-				System.out.println("Số điện thoại chỉ có số");
-				return false;
-			}
-				
-		}
+
 		// Kiểm tra gmail
 		String regex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
 		Pattern pattern = Pattern.compile(regex);
@@ -120,6 +117,11 @@ public class KhachHangBUS {
 		if(!matcher.matches()) {
 			System.out.println("Email không hợp lệ");
 			return false;
+		}
+		
+		// Kiểm tra tên
+		if(kh.getTenKH().matches("[\\p{L}\\s]+") && kh.getTenKH().matches("[\\p{L}\\s]+")) {
+			return true;
 		}
 			
 		return true;

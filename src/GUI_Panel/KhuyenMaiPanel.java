@@ -51,6 +51,7 @@ public class KhuyenMaiPanel extends JPanel {
 	private JScrollPane scrPane_KM;
 	private JScrollPane scrPane_KMSP;
 	private JComponent scrPane_KMHD;
+	private JButton btnClear;
 
 	
 	public KhuyenMaiPanel() {
@@ -162,6 +163,11 @@ public class KhuyenMaiPanel extends JPanel {
 		   btnRefresh.setBounds(1050, 10, 30, 30);
 		   pnCenter.add(btnRefresh);
 		   
+		   btnClear = new JButton("");
+		   btnClear.setIcon(new ImageIcon(KhuyenMaiPanel.class.getResource("/Image/24_clear.png")));
+		   btnClear.setBounds(1010, 10, 30, 30);
+		   pnCenter.add(btnClear);
+		   
 	}
 	
 	/*
@@ -178,6 +184,23 @@ public class KhuyenMaiPanel extends JPanel {
 				}
 			}
 		});
+		
+		btnRefresh.addActionListener(e ->{
+			dtmKM.setRowCount(0);
+			dtmKMHD.setRowCount(0);
+			dtmKMSP.setRowCount(0);
+			
+			addDataTable_KM(kmBUS.getList_KM());
+			addDataTable_KMHD(ctkmhdBUS.getList_ctkmhd());
+			addDataTable_KMSP(ctkmspBUS.getList_CTKMSP());
+		});
+		
+		btnClear.addActionListener(e ->{
+			dtmKM.setRowCount(0);
+			dtmKMHD.setRowCount(0);
+			dtmKMSP.setRowCount(0);
+		});
+		
 		
 		btnThem.addActionListener(e ->{
 			KhuyenMaiInsert data = new KhuyenMaiInsert();

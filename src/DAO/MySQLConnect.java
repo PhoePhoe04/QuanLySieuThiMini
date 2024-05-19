@@ -81,7 +81,6 @@ public class MySQLConnect {
 	// Hàm thực thi insert, update, delete
 	public int excuteUpdate(String query) {
 		int res = 0;
-		
 		try {
 			res = getStatement().executeUpdate(query);
 		} catch (Exception e) {

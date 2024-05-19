@@ -33,6 +33,7 @@ import DTO.HoaDonDTO;
 import DTO.NhapHangDTO;
 import BUS.ChiTietPhieuNhapBUS;
 import BUS.NhapHangBUS;
+import GUI_Dialog.HoaDonSearch;
 import GUI_Dialog.PhieuNhapInsert;
 import GUI_Dialog.PhieuNhapSearch;
 
@@ -50,6 +51,8 @@ import java.io.FileOutputStream;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import javax.swing.JComboBox;
+import javax.swing.JTextField;
 
 public class PhieuNhapPanel extends JPanel {
 
@@ -61,16 +64,18 @@ public class PhieuNhapPanel extends JPanel {
     private JTable tblPhieuNhap;
     private JTable tblChiTiet;
     
+    private JComboBox<String> cbBoxTra ;
     private DefaultTableModel dtmPhieuNhap;
     private DefaultTableModel dtmChiTiet;
     
     private NhapHangBUS nhBUS;
     private ChiTietPhieuNhapBUS ctnhBUS;
-	private JButton btnTim;
+	private JButton btnTKNC;
 	private JButton btnXuat;
 	private JButton btnNhap;
 	private JButton btnRefresh;
-	private JButton btnClear;
+	private JTextField txtTim;
+	private JButton  btnTra;
 
     public PhieuNhapPanel() {
     	try {
@@ -108,16 +113,6 @@ public class PhieuNhapPanel extends JPanel {
         		
         	}
         });
-        
-        btnTim.addActionListener(e ->{
-        	PhieuNhapSearch pnSeach = new PhieuNhapSearch();
-        	if(pnSeach.showDialog(this)) {
-        		String query = pnSeach.getQuery();
-        		System.out.println(query);
-        		dtmPhieuNhap.setRowCount(0);
-        		addDataTable_PN(nhBUS.getList(query));
-        	}
-        });
 
         btnXoa.addActionListener(e -> {
             int selectedRow = tblPhieuNhap.getSelectedRow();
@@ -138,18 +133,6 @@ public class PhieuNhapPanel extends JPanel {
                 );
             }
 
-        });
-        
-        btnRefresh.addActionListener(e ->{
-        	dtmChiTiet.setRowCount(0);
-        	dtmPhieuNhap.setRowCount(0);
-        	addDataTable_PN(nhBUS.getList());
-        	addDataTable_CTPN(ctnhBUS.getList());
-        });
-        
-        btnClear.addActionListener(e ->{
-        	dtmChiTiet.setRowCount(0);
-        	dtmPhieuNhap.setRowCount(0);
         });
 
         tblPhieuNhap.getSelectionModel().addListSelectionListener(e -> {
@@ -210,7 +193,24 @@ public class PhieuNhapPanel extends JPanel {
                 }
 			}
         });
-    }
+		btnTKNC.addActionListener(e ->{
+			PhieuNhapSearch search = new PhieuNhapSearch();
+			if(search.showDialog(this)) {
+				String query = search.getQuery();
+				System.out.println(query);
+				dtmPhieuNhap.setRowCount(0);
+				addDataTable_PN(nhBUS.getList(query));
+			}
+		});
+		btnTra.addActionListener(e->{
+			traThongTin();
+		});
+		btnRefresh.addActionListener(e->{
+			dtmPhieuNhap.setRowCount(0);
+			addDataTable_PN(nhBUS.getList());
+		});
+	}
+    
 
     /*
      *  KHỞI TẠO PANEL
@@ -241,12 +241,12 @@ public class PhieuNhapPanel extends JPanel {
         btnXoa.setFont(new Font("Tahoma", Font.BOLD, 20));
         pnTop.add(btnXoa);
         
-        btnTim = new JButton("Tìm");
-        btnTim.setHorizontalAlignment(SwingConstants.LEFT);
-        btnTim.setIcon(new ImageIcon(PhieuNhapPanel.class.getResource("/Image/32_search.png")));
-        btnTim.setFont(new Font("Tahoma", Font.BOLD, 20));
-        btnTim.setBounds(300, 15, 130, 50);
-        pnTop.add(btnTim);
+        btnTKNC = new JButton("Tìm");
+        btnTKNC.setHorizontalAlignment(SwingConstants.LEFT);
+        btnTKNC.setIcon(new ImageIcon(PhieuNhapPanel.class.getResource("/Image/32_search.png")));
+        btnTKNC.setFont(new Font("Tahoma", Font.BOLD, 20));
+        btnTKNC.setBounds(300, 15, 130, 50);
+        pnTop.add(btnTKNC);
         
         btnXuat = new JButton("Xuất");
         btnXuat.setHorizontalAlignment(SwingConstants.LEFT);
@@ -261,6 +261,29 @@ public class PhieuNhapPanel extends JPanel {
         btnNhap.setFont(new Font("Tahoma", Font.BOLD, 20));
         btnNhap.setBounds(580, 15, 130, 50);
         pnTop.add(btnNhap);
+        
+        cbBoxTra = new JComboBox<String>();
+
+        cbBoxTra.addItem("");
+		cbBoxTra.addItem("Mã phiếu nhập");
+		cbBoxTra.addItem("Mã nhà cung cấp");
+		cbBoxTra.addItem("Mã nhân viên");
+		cbBoxTra.addItem("Ngày lập");
+		cbBoxTra.addItem("Tổng tiền");
+		
+        cbBoxTra.setBounds(834, 29, 80, 30);
+        pnTop.add(cbBoxTra);
+        
+        txtTim = new JTextField();
+        txtTim.setFont(new Font("Tahoma", Font.PLAIN, 18));
+        txtTim.setColumns(10);
+        txtTim.setBounds(924, 29, 80, 30);
+        pnTop.add(txtTim);
+        
+        btnTra = new JButton("Tra");
+        btnTra.setFont(new Font("Tahoma", Font.BOLD, 18));
+        btnTra.setBounds(1014, 29, 70, 30);
+        pnTop.add(btnTra);
 
         // CENTER
         JPanel pnCenter = new JPanel();
@@ -317,12 +340,6 @@ public class PhieuNhapPanel extends JPanel {
         btnRefresh.setIcon(new ImageIcon(PhieuNhapPanel.class.getResource("/Image/24_refresh.png")));
         btnRefresh.setBounds(1050, 10, 30, 30);
         pnCenter.add(btnRefresh);
-        
-        btnClear = new JButton("");
-        btnClear.setToolTipText("Clear");
-        btnClear.setIcon(new ImageIcon(PhieuNhapPanel.class.getResource("/Image/24_clear.png")));
-        btnClear.setBounds(1015, 10, 30, 30);
-        pnCenter.add(btnClear);
 
     }
     
@@ -381,11 +398,11 @@ public class PhieuNhapPanel extends JPanel {
 
     private void removeRowFromTblPhieuNhap(int rowIndex) {
     	NhapHangDTO nh = new NhapHangDTO(
-    			dtmPhieuNhap.getValueAt(rowIndex, dtmPhieuNhap.findColumn("Mã phiếu nhập"))+"",
-    			dtmPhieuNhap.getValueAt(rowIndex, dtmPhieuNhap.findColumn("Mã nhân viên"))+"",
-    			dtmPhieuNhap.getValueAt(rowIndex, dtmPhieuNhap.findColumn("Mã nhà cung cấp"))+"",
-    			Double.parseDouble(dtmPhieuNhap.getValueAt(rowIndex, dtmPhieuNhap.findColumn("Tổng tiền"))+""),
-    			Date.valueOf(dtmPhieuNhap.getValueAt(rowIndex, dtmPhieuNhap.findColumn("Ngày nhập"))+"")
+    			tblPhieuNhap.getValueAt(rowIndex, tblPhieuNhap.getColumn("Mã phiếu nhập").getModelIndex()).toString(),
+    			tblPhieuNhap.getValueAt(rowIndex, tblPhieuNhap.getColumn("Mã nhân viên").getModelIndex()).toString(),
+    			tblPhieuNhap.getValueAt(rowIndex, tblPhieuNhap.getColumn("Mã nhà cung cấp").getModelIndex()).toString(),
+    			Double.parseDouble(tblPhieuNhap.getValueAt(rowIndex, tblPhieuNhap.getColumn("Tổng tiền").getModelIndex()).toString()),
+    			Date.valueOf(tblPhieuNhap.getValueAt(rowIndex, tblPhieuNhap.getColumn("Ngày nhập").getModelIndex()).toString())
     			);
     	try {
 			if(nhBUS.xoa(nh))
@@ -401,11 +418,11 @@ public class PhieuNhapPanel extends JPanel {
         for (int i = dtmChiTiet.getRowCount() - 1; i >= 0; i--) {
             if (maPN.equals(dtmChiTiet.getValueAt(i, dtmChiTiet.findColumn("Mã phiếu nhập")))) {
             	ChiTietPhieuNhapDTO ctpn = new ChiTietPhieuNhapDTO(
-            			dtmChiTiet.getValueAt(i, dtmChiTiet.findColumn("Mã phiếu nhập")).toString(),
-            			dtmChiTiet.getValueAt(i, dtmChiTiet.findColumn("Mã sản phẩm")).toString(),
-            			Integer.parseInt(dtmChiTiet.getValueAt(i, dtmChiTiet.findColumn("Số lượng")).toString()),
-            			Float.parseFloat(dtmChiTiet.getValueAt(i, dtmChiTiet.findColumn("Đơn giá")).toString()),
-            			Float.parseFloat(dtmChiTiet.getValueAt(i, dtmChiTiet.findColumn("Thành tiền")).toString())
+            			tblChiTiet.getValueAt(i, tblChiTiet.getColumn("Mã phiếu nhập").getModelIndex()).toString(),
+            			tblChiTiet.getValueAt(i, tblChiTiet.getColumn("Mã sản phẩm").getModelIndex()).toString(),
+            			Integer.parseInt(tblChiTiet.getValueAt(i, tblChiTiet.getColumn("Số lượng").getModelIndex()).toString()),
+            			Float.parseFloat(tblChiTiet.getValueAt(i, tblChiTiet.getColumn("Đơn giá").getModelIndex()).toString()),
+            			Float.parseFloat(tblChiTiet.getValueAt(i, tblChiTiet.getColumn("Thành tiền").getModelIndex()).toString())
             			);
             	try {
 					if(ctnhBUS.xoa(ctpn))
@@ -583,6 +600,43 @@ public class PhieuNhapPanel extends JPanel {
 			e.printStackTrace();
 		}
     }
+    // tra 
+    private void traThongTin() {
+		String column = cbBoxTra.getSelectedItem().toString();
+		String condition = null;
+		if(column.equals("Mã phiếu nhập")) {
+			if(!txtTim.getText().toString().equals("")) {
+				dtmPhieuNhap.setRowCount(0);
+				condition = " maHD LIKE '%"+ txtTim.getText() + "%'";
+				addDataTable_PN(nhBUS.getList(condition));
+			}
+		}else if(column.equals("Mã nhà cung cấp")) {
+			if(!txtTim.getText().toString().equals("")) {
+				dtmPhieuNhap.setRowCount(0);
+				condition = " maKH LIKE '%"+ txtTim.getText() + "%'";
+				addDataTable_PN(nhBUS.getList(condition));
+			}
+		}else if(column.equals("Mã nhân viên")) {
+			if(!txtTim.getText().toString().equals("")) {
+				dtmPhieuNhap.setRowCount(0);
+				condition = " maNV LIKE '%"+ txtTim.getText() + "%'";
+				addDataTable_PN(nhBUS.getList(condition));
+			}
+			
+		}else if(column.equals("Ngày nhập")) {
+			if(!txtTim.getText().toString().equals("")) {
+				dtmPhieuNhap.setRowCount(0);
+				condition = " ngaNhap LIKE '%"+ txtTim.getText() + "%'";
+				addDataTable_PN(nhBUS.getList(condition));
+			}
+		}else if(column.equals("Tổng tiền")) {
+			if(txtTim.getText().toString().matches("[0-9]+")) {
+				dtmPhieuNhap.setRowCount(0);
+				condition = " tongTien = "+ Double.parseDouble(txtTim.getText().toString());
+				addDataTable_PN(nhBUS.getList(condition));
+			}
+		}
+	}
     
     
     /*

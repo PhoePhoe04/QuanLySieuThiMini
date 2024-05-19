@@ -389,15 +389,19 @@ public class HoaDonPanel extends JPanel {
 	 */
 	
 	private void addData(HoaDonDTO hoaDon, ArrayList<ChiTietHoaDonDTO> list_CTHD) {
-		if(hoaDon != null) 
-			if(hoaDonBUS.them(hoaDon))
+		if(hoaDon != null) {
+			if(hoaDonBUS.them(hoaDon)) {
 				themDataTable_HD(hoaDon);
-		if(list_CTHD != null) {
-			for (ChiTietHoaDonDTO cthd : list_CTHD) {
-				if(cthdBUS.them(cthd))
-					themDataTable_CTHD(cthd);
+				if(list_CTHD != null) {
+					for (ChiTietHoaDonDTO cthd : list_CTHD) {
+						if(cthdBUS.them(cthd))
+							themDataTable_CTHD(cthd);
+					}
+				}
 			}
 		}
+			
+		
 			
 	}
 

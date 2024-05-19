@@ -4,6 +4,7 @@ import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -12,6 +13,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -57,12 +59,17 @@ public class NhaCungCapPanel extends JPanel {
     private DefaultTableModel dtmNhaCungCap;
     private JButton btnXoa;
     private JTable tblNhaCungCap;
-	private JButton btnTim;
 	private JButton btnXuat;
 	private JButton btnNhap;
 
 
 	private JButton btnRefresh;
+	private JButton btnClear;
+
+
+	private JButton btnTra;
+	private JTextField txtTra;
+	private JComboBox comboBox;
 
     public NhaCungCapPanel() {
     	try {
@@ -70,7 +77,7 @@ public class NhaCungCapPanel extends JPanel {
     		init();
     	    addActionListener();
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
 		}
        
     }
@@ -122,27 +129,36 @@ public class NhaCungCapPanel extends JPanel {
         btnXoa.setPreferredSize(new Dimension(150, 50));
         pnTop.add(btnXoa);
         
-        btnTim = new JButton("Tìm");
-        btnTim.setHorizontalAlignment(SwingConstants.LEFT);
-        btnTim.setIcon(new ImageIcon(NhaCungCapPanel.class.getResource("/Image/32_search.png")));
-        btnTim.setFont(new Font("Tahoma", Font.BOLD, 20));
-        btnTim.setBounds(440, 15, 130, 50);
-        pnTop.add(btnTim);
-        
         btnXuat = new JButton("Xuất");
         btnXuat.setHorizontalAlignment(SwingConstants.LEFT);
         btnXuat.setIcon(new ImageIcon(NhaCungCapPanel.class.getResource("/Image/32_excel.png")));
         btnXuat.setFont(new Font("Tahoma", Font.BOLD, 20));
-        btnXuat.setBounds(580, 15, 130, 50);
+        btnXuat.setBounds(440, 15, 130, 50);
         pnTop.add(btnXuat);
         
         btnNhap = new JButton("Nhập");
         btnNhap.setHorizontalAlignment(SwingConstants.LEFT);
         btnNhap.setIcon(new ImageIcon(NhaCungCapPanel.class.getResource("/Image/32_excel.png")));
         btnNhap.setFont(new Font("Tahoma", Font.BOLD, 20));
-        btnNhap.setBounds(720, 15, 130, 50);
+        btnNhap.setBounds(580, 15, 130, 50);
         pnTop.add(btnNhap);
-
+        
+        btnTra = new JButton("Tra");
+        btnTra.setFont(new Font("Tahoma", Font.PLAIN, 15));
+ 	   	btnTra.setBounds(1000, 30, 80, 30);
+ 	   	pnTop.add(btnTra);
+ 	   
+ 	   	txtTra = new JTextField();
+ 	   	txtTra.setBounds(870, 30, 120, 30);
+ 	   	pnTop.add(txtTra);
+ 	   	txtTra.setColumns(10);
+ 	   
+ 	   
+ 	   	String[] columnDB = new String[] {"", "Mã NCC", "Tên NCC", "Email", "Địa chỉ"};
+ 	   	comboBox = new JComboBox(columnDB);
+ 	   	comboBox.setBounds(760, 30, 100, 30);
+ 	   	pnTop.add(comboBox);
+        
         // CENTER
         JPanel pnCenter = new JPanel();
         pnCenter.setBorder(BorderFactory.createLineBorder(Color.black, 2));
@@ -173,6 +189,11 @@ public class NhaCungCapPanel extends JPanel {
         btnRefresh.setIcon(new ImageIcon(NhaCungCapPanel.class.getResource("/Image/24_refresh.png")));
         btnRefresh.setBounds(1050, 10, 30, 30);
         pnCenter.add(btnRefresh);
+        
+        btnClear = new JButton("");
+        btnClear.setIcon(new ImageIcon(NhaCungCapPanel.class.getResource("/Image/24_clear.png")));
+        btnClear.setBounds(1010, 10, 30, 30);
+        pnCenter.add(btnClear);
 
     }
 
@@ -193,8 +214,17 @@ public class NhaCungCapPanel extends JPanel {
         	sua();
         });
         
+        btnTra.addActionListener(e ->{
+        	tra();
+        });
+        
         btnRefresh.addActionListener(e ->{
+        	dtmNhaCungCap.setRowCount(0);
         	addDataTable(nccBUS.getList());
+        });
+        
+        btnClear.addActionListener(e ->{
+        	dtmNhaCungCap.setRowCount(0);
         });
         
         btnXuat.addActionListener(e ->{
@@ -221,7 +251,7 @@ public class NhaCungCapPanel extends JPanel {
         });
         
         btnNhap.addActionListener(e ->{
-JFileChooser fileChooser = new JFileChooser();
+        	JFileChooser fileChooser = new JFileChooser();
 			
 			fileChooser.setCurrentDirectory(new File("C:\\Users\\Phuc Duy\\eclipse-workspace2"));
 			
@@ -419,6 +449,30 @@ JFileChooser fileChooser = new JFileChooser();
 			workbook.close();
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+    }
+    
+    private void tra() {
+    	String query = "";
+		if(comboBox.getSelectedIndex() != 0 && !txtTra.getText().isEmpty()) {
+			switch (comboBox.getSelectedIndex()) {
+				case 1: 
+					query += " maNCC LIKE '%"+ txtTra.getText()+ "%'";
+					break;
+				case 2: 
+					query += " tenNCC LIKE '%"+ txtTra.getText()+ "%'";
+					break;
+				case 3: 
+					query += " email LIKE '%"+ txtTra.getText()+ "%'";
+					break;
+				case 4: 
+					query += " diaChi LIKE '%"+ txtTra.getText()+ "%'";
+					break;
+			}
+		}
+		if(query.length() > 0) {
+			dtmNhaCungCap.setRowCount(0);
+			addDataTable(nccBUS.getList(query));
 		}
     }
     

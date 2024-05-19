@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+import DTO.LoaiSP_DTO;
 import DTO.SanPham_DTO;
 
 import javax.swing.JLabel;
@@ -50,6 +51,7 @@ public class SanPhamInsert extends JDialog {
 	private void init() {
 		setModal(true);
 		setSize(310,300);
+		setLocationRelativeTo(null);
 		getContentPane().setLayout(new BorderLayout(0, 10));
 		
 		// ---------------- TOP ----------------
@@ -169,6 +171,13 @@ public class SanPhamInsert extends JDialog {
 		btnThem.addActionListener(e ->{
 			dataAccepted = true;
 			dispose();
+		});
+		btnMaLSP.addActionListener(e ->{
+			MyLoaiSanPham myLSP = new MyLoaiSanPham();
+			if(myLSP.showDialog(this)) {
+				LoaiSP_DTO lsp = myLSP.getLSP();
+				txtMaLSP.setText(lsp.getMaLSP());
+			}
 		});
 	}
 	
