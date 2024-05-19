@@ -57,45 +57,9 @@ public class HoaDonBUS {
 	public ArrayList<HoaDonDTO> layDuLieu(String condition) {
 		return this.hoaDonDAO.docDB(condition);
 	}
-	
-	// Main
-	public static void main(String[] args) {
-		HoaDonBUS hoaDonBUS = new HoaDonBUS();
-		ArrayList<HoaDonDTO> list = hoaDonBUS.getList_hoadon();
-		
-//		public HoaDonDTO(String maHD, String maKH, String maNV, String maKM, Date ngayLap, double tongTien) {
-		HoaDonDTO hoaDon = new HoaDonDTO("SD001", "KH002", "NV002", null, Date.valueOf("2024-05-08"), 40000.0);
-		
-		System.out.println("BEFORE");
-		for (HoaDonDTO hoaDonDTO : list) {
-			System.out.println(hoaDonDTO.toString());
-		}
-		System.out.println();
-		
-		System.out.println(hoaDonBUS.xoa(hoaDon) ? "YES\n":"NO\n");
-		
-		System.out.println("AFTER");
-		for (HoaDonDTO hoaDonDTO : list) {
-			System.out.println(hoaDonDTO.toString());
-		}
-		
-	}
-	
 	// Function
-
-	public HoaDonDAO getHoaDonDAO() {
-		return hoaDonDAO;
-	}
-
-	public void setHoaDonDAO(HoaDonDAO hoaDonDAO) {
-		this.hoaDonDAO = hoaDonDAO;
-	}
-
 	public ArrayList<HoaDonDTO> getList_hoadon() {
 		return list_hoadon;
 	}
 
-	public void setList_hoadon(ArrayList<HoaDonDTO> list_hoadon) {
-		this.list_hoadon = list_hoadon;
-	}
 }

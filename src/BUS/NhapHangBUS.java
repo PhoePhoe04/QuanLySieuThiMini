@@ -69,4 +69,13 @@ public class NhapHangBUS {
     	return nhapHangDAO.docDB(condition);
     }
     
+    // check
+    private boolean unique(NhapHangDTO nh) {
+    	for(int i = 0; i < list_NhapHang.size(); i++) {
+    		if(nh.getMaPN().equals(list_NhapHang.get(i).getMaPN()))
+    				return false;
+    	}
+    	return true;
+    }
+    
 }

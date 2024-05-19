@@ -15,15 +15,6 @@ public class LoaiSP_BUS {
 		this.loaisanphams = db.getLoaiSPs();
 	}
 	
-	public boolean checkid(String id) {
-		for(int i = 0; i < loaisanphams.size(); i++) {
-			if(loaisanphams.get(i).getMaLSP().equals(id)) {
-				return true;
-			}
-		}
-		return false;
-	}	
-	
 	public void addLoaiSP(LoaiSP_DTO sanpham) {
 		if(checkid(sanpham.getMaLSP())) {
 			System.err.println("Product with ID: " + sanpham.getMaLSP() + " already ");
@@ -60,8 +51,24 @@ public class LoaiSP_BUS {
 		return false;
 	}
 	
+	/*
+	 * Check
+	 */
+	private boolean checkid(String id) {
+		for(int i = 0; i < loaisanphams.size(); i++) {
+			if(loaisanphams.get(i).getMaLSP().equals(id)) {
+				return true;
+			}
+		}
+		return false;
+	}	
+	
+	
 	public ArrayList<LoaiSP_DTO> getList(){
 		return this.loaisanphams;
+	}
+	public ArrayList<LoaiSP_DTO> getList(String query){
+		return db.getLoaiSPs(query);
 	}
 	
 	public static void main(String[] args) {

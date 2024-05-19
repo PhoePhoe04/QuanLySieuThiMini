@@ -2,6 +2,7 @@ package GUI_Panel;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -14,6 +15,7 @@ import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -21,6 +23,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
@@ -50,13 +53,15 @@ public class LoaiSanPhamPanel extends JPanel {
 	private JButton btnSua;
 	private JButton btnXoa;
 
-	private JButton btnTim;
+	private JButton btnXuat;
 
-	private AbstractButton btnXuat;
-
-	private AbstractButton btnNhap;
+	private JButton btnNhap;
 
 	private JButton btnRefresh;
+	private JButton btnClear;
+	private JButton btnTra;
+	private JTextField txtTra;
+	private JComboBox comboBox;
 
 	public LoaiSanPhamPanel() {
 		try {
@@ -64,7 +69,7 @@ public class LoaiSanPhamPanel extends JPanel {
 			init();
 			addActionListener();
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
 		}
 	}
 	
@@ -106,26 +111,35 @@ public class LoaiSanPhamPanel extends JPanel {
 		   btnXoa.setPreferredSize(new Dimension(150,50));
 		   pnTop.add(btnXoa);
 		   
-		   btnTim = new JButton("Tìm");
-		   btnTim.setHorizontalAlignment(SwingConstants.LEFT);
-		   btnTim.setIcon(new ImageIcon(LoaiSanPhamPanel.class.getResource("/Image/32_search.png")));
-		   btnTim.setFont(new Font("Tahoma", Font.BOLD, 20));
-		   btnTim.setBounds(440, 15, 130, 50);
-		   pnTop.add(btnTim);
-		   
 		   btnXuat = new JButton("Xuất");
 		   btnXuat.setHorizontalAlignment(SwingConstants.LEFT);
 		   btnXuat.setIcon(new ImageIcon(LoaiSanPhamPanel.class.getResource("/Image/32_excel.png")));
 		   btnXuat.setFont(new Font("Tahoma", Font.BOLD, 20));
-		   btnXuat.setBounds(580, 15, 130, 50);
+		   btnXuat.setBounds(440, 15, 130, 50);
 		   pnTop.add(btnXuat);
 		   
 		   btnNhap = new JButton("Nhập");
 		   btnNhap.setHorizontalAlignment(SwingConstants.LEFT);
 		   btnNhap.setIcon(new ImageIcon(LoaiSanPhamPanel.class.getResource("/Image/32_excel.png")));
 		   btnNhap.setFont(new Font("Tahoma", Font.BOLD, 20));
-		   btnNhap.setBounds(720, 15, 130, 50);
+		   btnNhap.setBounds(580, 15, 130, 50);
 		   pnTop.add(btnNhap);
+		   
+		   btnTra = new JButton("Tra");
+		   btnTra.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		   btnTra.setBounds(1000, 30, 80, 30);
+		   pnTop.add(btnTra);
+		   
+		   txtTra = new JTextField();
+		   txtTra.setBounds(870, 30, 120, 30);
+		   pnTop.add(txtTra);
+		   txtTra.setColumns(10);
+		   
+		   
+		   String[] columnDB = new String[] {"", "Mã loại sản phẩm", "Tên loại sản phẩm"};
+		   comboBox = new JComboBox(columnDB);
+		   comboBox.setBounds(760, 30, 100, 30);
+		   pnTop.add(comboBox);
 		   
 //		   ============================================= CENTER =============================================
 		   JPanel pnCenter = new JPanel();
@@ -158,6 +172,11 @@ public class LoaiSanPhamPanel extends JPanel {
 		   btnRefresh.setIcon(new ImageIcon(LoaiSanPhamPanel.class.getResource("/Image/24_refresh.png")));
 		   btnRefresh.setBounds(1050, 10, 30, 30);
 		   pnCenter.add(btnRefresh);
+		   
+		   btnClear = new JButton("");
+		   btnClear.setIcon(new ImageIcon(LoaiSanPhamPanel.class.getResource("/Image/24_clear.png")));
+		   btnClear.setBounds(1010, 10, 30, 30);
+		   pnCenter.add(btnClear);
 	}
 	
 	/*
@@ -257,7 +276,16 @@ public class LoaiSanPhamPanel extends JPanel {
 		});
 		
 		btnRefresh.addActionListener(e ->{
+			dtmLSP.setRowCount(0);
 			addDataTable(lspBUS.getList());
+		});
+		
+		btnClear.addActionListener(e ->{
+			dtmLSP.setRowCount(0);
+		});
+		
+		btnTra.addActionListener(e ->{
+			tra();
 		});
 	}
 	
@@ -351,7 +379,25 @@ public class LoaiSanPhamPanel extends JPanel {
 			e.printStackTrace();
 		}
 	}
-
+	
+	private void tra() {
+		String query = "";
+		if(comboBox.getSelectedIndex() != 0 && !txtTra.getText().isEmpty()) {
+			switch (comboBox.getSelectedIndex()) {
+				case 1: 
+					query += " maLSP LIKE '%"+ txtTra.getText()+ "%'";
+					break;
+				case 2: 
+					query += " tenLSP LIKE '%"+ txtTra.getText()+ "%'";
+					break;
+				
+			}
+		}
+		if(query.length() > 0) {
+			dtmLSP.setRowCount(0);
+			addDataTable(lspBUS.getList(query));
+		}
+	}
 	
 	/*
 	 * MAIN

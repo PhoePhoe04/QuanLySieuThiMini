@@ -20,11 +20,11 @@ public class NhaCungCapBUS {
      * Thêm một nhà cung cấp vào danh sách và cơ sở dữ liệu
      */
     public boolean them(NhaCungCapDTO ncc) throws SQLException{
-        if(!isUniqueMaNCC(ncc.getMaNCC()))
-            return false;
-        if(nccDAO.them(ncc) > 0) {
-            this.list_NCC.add(ncc);
-            return true;
+        if(check(ncc) && unique(ncc)) {
+        	 if(nccDAO.them(ncc) > 0) {
+                 this.list_NCC.add(ncc);
+                 return true;
+             }
         }
         return false;
     }
@@ -48,25 +48,37 @@ public class NhaCungCapBUS {
      * Sửa thông tin một nhà cung cấp
      */
     public boolean sua(NhaCungCapDTO ncc) throws SQLException{
-        if(nccDAO.sua(ncc) > 0) {
-            for (NhaCungCapDTO nccDTO : list_NCC) {
-                if(nccDTO.getMaNCC().equals(ncc.getMaNCC())) {
-                    int i = list_NCC.indexOf(nccDTO);
-                    list_NCC.set(i, ncc);
-                    return true;
+    	if(check(ncc)) {
+    		if(nccDAO.sua(ncc) > 0) {
+                for (NhaCungCapDTO nccDTO : list_NCC) {
+                    if(nccDTO.getMaNCC().equals(ncc.getMaNCC())) {
+                        int i = list_NCC.indexOf(nccDTO);
+                        list_NCC.set(i, ncc);
+                        return true;
+                    }
                 }
             }
-        }
+    	}
         return false;
     }
     
     // Kiểm tra tính duy nhất của mã nhà cung cấp
-    private boolean isUniqueMaNCC(String maNCC) {
-        for (NhaCungCapDTO nccDTO : list_NCC) {
-            if(nccDTO.getMaNCC().equals(maNCC))
+    private boolean unique(NhaCungCapDTO ncc) {
+    	for (NhaCungCapDTO nccDTO : list_NCC) {
+            if(nccDTO.getMaNCC().equals(ncc.getMaNCC()))
                 return false;
         }
-        return true;
+    	return true;
+    }
+    
+    private boolean check(NhaCungCapDTO ncc) {
+    	if(!ncc.getTenNCC().matches("[\\p{L}\\s]+")) {
+    		return false;
+    	}
+    	if(!ncc.getEmail().matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")) {
+    		return false;
+    	}
+    	return true;
     }
     
     // Lấy dữ liệu

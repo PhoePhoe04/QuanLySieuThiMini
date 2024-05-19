@@ -25,11 +25,13 @@ import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
 import GUI_Panel.HoaDonPanel;
 import GUI_Panel.KhachHangPanel;
+import GUI_Panel.KhuyenMaiPanel;
 import GUI_Panel.LoaiSanPhamPanel;
 import GUI_Panel.NhaCungCapPanel;
 import GUI_Panel.NhanVienPanel;
 import GUI_Panel.PhieuNhapPanel;
 import GUI_Panel.SanPhamPanel;
+import GUI_Panel.TrangChuPanel;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -48,6 +50,7 @@ public class Home extends JFrame {
 	public Home() {
 		init();
 		addActionListener();
+		setVisible(true);
 	}
 	
 	int mouseX, mouseY;
@@ -98,7 +101,9 @@ public class Home extends JFrame {
 			cardLayout.show(cardPanel, "sanpham");
 		});
 		
-		
+		btnKhuyenMai.addActionListener(e ->{
+			cardLayout.show(cardPanel, "khuyenmai");
+		});
 		
 		btnDangXuat.addActionListener(e ->{
 			dispose();
@@ -128,6 +133,7 @@ public class Home extends JFrame {
 		getContentPane().setLayout(new BorderLayout());
 		setUndecorated(true);
 		setResizable(false);
+		setLocationRelativeTo(null);
 		
 //		=============================================== PANEL LEFT ===============================================
 		JPanel pnLeft = new JPanel();
@@ -226,7 +232,7 @@ public class Home extends JFrame {
 		
 		
 		try {
-			JPanel trangChu = new JPanel();
+			JPanel trangChu = new TrangChuPanel();
 			JPanel hoaDon = new HoaDonPanel();
 			JPanel nhaCungCap = new NhaCungCapPanel();
 			JPanel phieuNhap = new PhieuNhapPanel();
@@ -234,7 +240,7 @@ public class Home extends JFrame {
 			JPanel sanpham = new SanPhamPanel();
 			JPanel loaisanpham = new LoaiSanPhamPanel();
 			JPanel nhanvien = new NhanVienPanel();
-			
+			JPanel khuyenMai = new KhuyenMaiPanel();
 			
 			cardPanel.add(trangChu, "trangChu");
 			cardPanel.add(hoaDon, "hoaDon");
@@ -244,6 +250,7 @@ public class Home extends JFrame {
 			cardPanel.add(sanpham, "sanpham");
 			cardPanel.add(loaisanpham, "loaisanpham");
 			cardPanel.add(nhanvien, "nhanvien");
+			cardPanel.add(khuyenMai, "khuyenmai");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

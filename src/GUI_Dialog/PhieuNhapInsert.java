@@ -13,6 +13,7 @@ import java.awt.event.MouseMotionAdapter;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -34,6 +35,7 @@ import DTO.ChiTietPhieuNhapDTO;
 import DTO.NhaCungCapDTO;
 import DTO.NhanVienDTO;
 import DTO.NhapHangDTO;
+import DTO.SanPham_DTO;
 
 import javax.swing.ImageIcon;
 
@@ -80,6 +82,19 @@ public class PhieuNhapInsert extends JDialog {
     private void addListener() {
         btnXacNhan.addActionListener(e -> {
         	dataAccepted = true;
+        	SanPham_BUS spBUS = new SanPham_BUS();
+        	List<SanPham_DTO> list = spBUS.getList();
+        	for(SanPham_DTO sp:list) {
+        		for(ChiTietPhieuNhapDTO ct : list_ctpn) {
+        			if(sp.getMaSP().equals(ct.getMaSP())) {
+        				SanPham_DTO spnew= new SanPham_DTO();
+        				spnew = spBUS.getSP(sp.getMaSP());
+        				spnew.setSoLuong(sp.getSoLuong() + ct.getSoLuong());
+        				spBUS.sua(spnew);
+        				break;
+        			}
+        		}
+        	}
             dispose();
         });
         btnThem.addActionListener(e -> {
@@ -112,6 +127,14 @@ public class PhieuNhapInsert extends JDialog {
         	}
         });
         
+        btnMaSP.addActionListener(e ->{
+        	MySanPham mySP = new MySanPham(this);
+        	if(mySP.showDialog(this)) {
+        		SanPham_DTO sp = mySP.getSanPham();
+        		txtMaSP.setText(sp.getMaSP());
+        		txtTonKho.setText(sp.getSoLuong()+"");
+        	}
+        });
         
         txtMaPN.getDocument().addDocumentListener(new DocumentListener() {
 			
@@ -341,7 +364,7 @@ public class PhieuNhapInsert extends JDialog {
         pnThongTinRight.add(btnMaSP);
         
         txtTonKho = new JTextField();
-        txtTonKho.setBounds(260, 122, 50, 25);
+        txtTonKho.setBounds(260, 120, 50, 25);
         pnThongTinRight.add(txtTonKho);
         txtTonKho.setColumns(10);
         
@@ -353,6 +376,7 @@ public class PhieuNhapInsert extends JDialog {
         txtMaPN_CTHD = new JTextField();
         txtMaPN_CTHD.setEditable(false);
         txtMaPN_CTHD.setBounds(150, 50, 100, 25);
+        txtMaPN_CTHD.setText("PN"+formatted);
         pnThongTinRight.add(txtMaPN_CTHD);
         txtMaPN_CTHD.setColumns(10);
         

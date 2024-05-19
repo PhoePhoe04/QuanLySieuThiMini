@@ -16,9 +16,11 @@ public class KhuyenMaiBUS {
 	}	
 		// Thêm
 		public boolean them(KhuyenMaiDTO km) {
-			if(kmDAO.them(km) > 0) {
-				list_KM.add(km);
-				return true;
+			if(unique(km)) {
+				if(kmDAO.them(km) > 0) {
+					list_KM.add(km);
+					return true;
+				}
 			}
 			return false;
 		}
@@ -67,5 +69,16 @@ public class KhuyenMaiBUS {
 			}
 			return null;
 		}
+		
+		// Check
+		private boolean unique(KhuyenMaiDTO km) {
+			for(int i = 0; i < list_KM.size(); i++) {
+				if(km.getMaKM().equals(list_KM.get(i).getMaKM()))
+					return false;
+			}
+			
+			return true;
+		}
+		
 	
 }

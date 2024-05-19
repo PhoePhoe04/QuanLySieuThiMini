@@ -2,6 +2,7 @@ package GUI_Panel;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -20,6 +22,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
@@ -47,11 +50,16 @@ public class SanPhamPanel extends JPanel {
 	private JButton btnThem;
 	private JButton btnSua;
 	private JButton btnXoa;
-	private JButton btnTim;
 	private JButton btnXuat;
 	private JButton btnNhap;
 
 	private JButton btnRefresh;
+	private JButton btnClear;
+	private JButton btnTra;
+
+	private JTextField txtTra;
+
+	private JComboBox comboBox;
 
 	public SanPhamPanel() {
 		try {
@@ -59,7 +67,7 @@ public class SanPhamPanel extends JPanel {
 			init();
 			addActionListener();
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
 		}
 	}
 	
@@ -98,26 +106,35 @@ public class SanPhamPanel extends JPanel {
 		   btnXoa.setFont(new Font("Tahoma", Font.BOLD, 20));
 		   pnTop.add(btnXoa);
 		   
-		   btnTim = new JButton("Tìm");
-		   btnTim.setHorizontalAlignment(SwingConstants.LEFT);
-		   btnTim.setIcon(new ImageIcon(SanPhamPanel.class.getResource("/Image/32_search.png")));
-		   btnTim.setFont(new Font("Tahoma", Font.BOLD, 20));
-		   btnTim.setBounds(440, 15, 130, 50);
-		   pnTop.add(btnTim);
-		   
 		   btnXuat = new JButton("Xuat");
 		   btnXuat.setHorizontalAlignment(SwingConstants.LEFT);
 		   btnXuat.setIcon(new ImageIcon(SanPhamPanel.class.getResource("/Image/32_excel.png")));
 		   btnXuat.setFont(new Font("Tahoma", Font.BOLD, 20));
-		   btnXuat.setBounds(580, 15, 130, 50);
+		   btnXuat.setBounds(440, 15, 130, 50);
 		   pnTop.add(btnXuat);
 		   
 		   btnNhap = new JButton("Nhập");
 		   btnNhap.setHorizontalAlignment(SwingConstants.LEFT);
 		   btnNhap.setIcon(new ImageIcon(SanPhamPanel.class.getResource("/Image/32_excel.png")));
 		   btnNhap.setFont(new Font("Tahoma", Font.BOLD, 20));
-		   btnNhap.setBounds(720, 15, 130, 50);
+		   btnNhap.setBounds(580, 15, 130, 50);
 		   pnTop.add(btnNhap);
+		   
+		   btnTra = new JButton("Tra");
+		   btnTra.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		   btnTra.setBounds(1000, 30, 80, 30);
+		   pnTop.add(btnTra);
+		   
+		   txtTra = new JTextField();
+		   txtTra.setBounds(870, 30, 120, 30);
+		   pnTop.add(txtTra);
+		   txtTra.setColumns(10);
+		   
+		   
+		   String[] columnDB = new String[] {"", "Mã sản phẩm", "Tên sản phẩm", "Mã loại sản phẩm", "Đơn giá", "Số lượng","Thành tiền"};
+		   comboBox = new JComboBox(columnDB);
+		   comboBox.setBounds(760, 30, 100, 30);
+		   pnTop.add(comboBox);
 		   
 //		   ============================================= CENTER =============================================
 		   JPanel pnCenter = new JPanel();
@@ -133,7 +150,7 @@ public class SanPhamPanel extends JPanel {
 		   dtmSanPham.addColumn("Số lượng");
 		   dtmSanPham.addColumn("Đơn vị tính");
 		   
-//		   addDataTable(spBUS.getList());
+		   addDataTable(spBUS.getList());
 		   
 		   tblSanPham = new JTable(dtmSanPham);
 		   tblSanPham.setFont(new Font("Tahoma", Font.PLAIN, 13));
@@ -154,6 +171,11 @@ public class SanPhamPanel extends JPanel {
 		   btnRefresh.setBounds(1050, 10, 30, 30);
 		   pnCenter.add(btnRefresh);
 		   
+		   btnClear = new JButton("");
+		   btnClear.setIcon(new ImageIcon(SanPhamPanel.class.getResource("/Image/24_clear.png")));
+		   btnClear.setBounds(1010, 10, 30, 30);
+		   pnCenter.add(btnClear);
+		   
 	}
 	
 	/*
@@ -170,6 +192,19 @@ public class SanPhamPanel extends JPanel {
 		
 		btnXoa.addActionListener(e ->{
 			xoa();
+		});
+		
+		btnClear.addActionListener(e ->{
+			dtmSanPham.setRowCount(0);
+		});
+		
+		btnRefresh.addActionListener(e ->{
+			dtmSanPham.setRowCount(0);
+			addDataTable(spBUS.getList());
+		});
+		
+		btnTra.addActionListener(e ->{
+			tra();
 		});
 		
 		btnXuat.addActionListener(e ->{
@@ -394,6 +429,36 @@ public class SanPhamPanel extends JPanel {
 			workbook.close();
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+	
+	private void tra() {
+		String query = "";
+		if(comboBox.getSelectedIndex() != 0 && !txtTra.getText().isEmpty()) {
+			switch (comboBox.getSelectedIndex()) {
+				case 1: 
+					query += " maSP LIKE '%"+ txtTra.getText()+ "%'";
+					break;
+				case 2: 
+					query += " tenSP LIKE '%"+ txtTra.getText()+ "%'";
+					break;
+				case 3: 
+					query += " maLSP LIKE '%"+ txtTra.getText()+ "%'";
+					break;
+				case 4: 
+					query += " donGia LIKE '%"+ txtTra.getText()+ "%'";
+					break;
+				case 5: 
+					query += " soLuong LIKE '%"+ txtTra.getText()+ "%'";
+					break;
+				case 6: 
+					query += " thanhTien LIKE '%"+ txtTra.getText()+ "%'";
+					break;
+			}
+		}
+		if(query.length() > 0) {
+			dtmSanPham.setRowCount(0);
+			addDataTable(spBUS.layDuLieu(query));
 		}
 	}
 	

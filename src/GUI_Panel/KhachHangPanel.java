@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -57,14 +58,19 @@ public class KhachHangPanel extends JPanel {
 	
 	private DefaultTableModel dtmKhachHang;
 	private JTable tblKhachHang;
-	private JTextField textField;
+	private JTextField txtTra;
 	
 	private JButton btnThem;
 	private JButton btnSua;
 	private JButton btnXoa;
 	private JButton btnNhap;
 	private JButton btnXuat;
-	private JButton btnTim;
+	private JButton btnRefresh;
+	private JButton btnClear;
+
+	private JComboBox comboBox;
+
+	private JButton btnTra;
 
 	public KhachHangPanel() throws SQLException{
 		try {
@@ -116,39 +122,34 @@ public class KhachHangPanel extends JPanel {
 	   btnXoa.setPreferredSize(new Dimension(150,50));
 	   pnTop.add(btnXoa);
 	   
-	   btnTim = new JButton("Tìm");
-	   btnTim.setHorizontalAlignment(SwingConstants.LEFT);
-	   btnTim.setIcon(new ImageIcon(KhachHangPanel.class.getResource("/Image/32_search.png")));
-	   btnTim.setFont(new Font("Tahoma", Font.BOLD, 20));
-	   btnTim.setBounds(440, 15, 130, 50);
-	   pnTop.add(btnTim);
-	   
 	   btnXuat = new JButton("Xuất");
 	   btnXuat.setHorizontalAlignment(SwingConstants.LEFT);
 	   btnXuat.setIcon(new ImageIcon(KhachHangPanel.class.getResource("/Image/32_excel.png")));
 	   btnXuat.setFont(new Font("Tahoma", Font.BOLD, 20));
-	   btnXuat.setBounds(580, 15, 130, 50);
+	   btnXuat.setBounds(440, 15, 130, 50);
 	   pnTop.add(btnXuat);
 	   
 	   btnNhap = new JButton("Nhập");
 	   btnNhap.setHorizontalAlignment(SwingConstants.LEFT);
 	   btnNhap.setIcon(new ImageIcon(KhachHangPanel.class.getResource("/Image/32_excel.png")));
 	   btnNhap.setFont(new Font("Tahoma", Font.BOLD, 20));
-	   btnNhap.setBounds(720, 15, 130, 50);
+	   btnNhap.setBounds(580, 15, 130, 50);
 	   pnTop.add(btnNhap);
 	   
-	   JButton btnTra = new JButton("Tra");
+	   btnTra = new JButton("Tra");
 	   btnTra.setFont(new Font("Tahoma", Font.PLAIN, 15));
-	   btnTra.setBounds(1005, 50, 80, 20);
+	   btnTra.setBounds(1000, 30, 80, 30);
 	   pnTop.add(btnTra);
 	   
-	   textField = new JTextField();
-	   textField.setBounds(985, 10, 100, 30);
-	   pnTop.add(textField);
-	   textField.setColumns(10);
+	   txtTra = new JTextField();
+	   txtTra.setBounds(870, 30, 120, 30);
+	   pnTop.add(txtTra);
+	   txtTra.setColumns(10);
 	   
-	   JComboBox comboBox = new JComboBox();
-	   comboBox.setBounds(875, 10, 100, 30);
+	   
+	   String[] columnDB = new String[] {"", "Mã khách hàng", "Họ", "Tên", "Địa chỉ", "Số điện thoại","Gmail"};
+	   comboBox = new JComboBox(columnDB);
+	   comboBox.setBounds(760, 30, 100, 30);
 	   pnTop.add(comboBox);
 	   
 //	   ============================================= CENTER =============================================
@@ -182,6 +183,16 @@ public class KhachHangPanel extends JPanel {
 	   lblKhachHang.setBounds(20, 10, 200, 30);
 	   pnCenter.add(lblKhachHang);
 	   
+	   btnRefresh = new JButton("");
+	   btnRefresh.setIcon(new ImageIcon(KhachHangPanel.class.getResource("/Image/24_refresh.png")));
+	   btnRefresh.setBounds(1050, 10, 30, 30);
+	   pnCenter.add(btnRefresh);
+	   
+	   btnClear = new JButton("");
+	   btnClear.setIcon(new ImageIcon(KhachHangPanel.class.getResource("/Image/24_clear.png")));
+	   btnClear.setBounds(1010, 10, 30, 30);
+	   pnCenter.add(btnClear);
+	   
 	}
 	
 	/*
@@ -198,6 +209,19 @@ public class KhachHangPanel extends JPanel {
 		
 		btnXoa.addActionListener(e -> {
 			xoaKhachHang();
+		});
+		
+		btnClear.addActionListener(e ->{
+			dtmKhachHang.setRowCount(0);
+		});
+		
+		btnRefresh.addActionListener(e ->{
+			dtmKhachHang.setRowCount(0);
+			addDataTable(khachHangBUS.getListKH());
+		});
+		
+		btnTra.addActionListener(e ->{
+			tra();
 		});
 		
 		btnXuat.addActionListener(e ->{
@@ -436,6 +460,36 @@ public class KhachHangPanel extends JPanel {
 			workbook.close();
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+	
+	private void tra() {
+		String query = "";
+		if(comboBox.getSelectedIndex() != 0 && !txtTra.getText().isEmpty()) {
+			switch (comboBox.getSelectedIndex()) {
+				case 1: 
+					query += " maKH LIKE '%"+ txtTra.getText()+ "%'";
+					break;
+				case 2: 
+					query += " hoKH LIKE '%"+ txtTra.getText()+ "%'";
+					break;
+				case 3: 
+					query += " tenKH LIKE '%"+ txtTra.getText()+ "%'";
+					break;
+				case 4: 
+					query += " diaChi LIKE '%"+ txtTra.getText()+ "%'";
+					break;
+				case 5: 
+					query += " soDienThoai LIKE '%"+ txtTra.getText()+ "%'";
+					break;
+				case 6: 
+					query += " gmail LIKE '%"+ txtTra.getText()+ "%'";
+					break;
+			}
+		}
+		if(query.length() > 0) {
+			dtmKhachHang.setRowCount(0);
+			addDataTable(khachHangBUS.layDuLieu(query));
 		}
 	}
 	
